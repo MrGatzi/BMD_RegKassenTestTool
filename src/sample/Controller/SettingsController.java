@@ -1,0 +1,129 @@
+package sample.Controller;
+
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.JFXToggleButton;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
+import sample.Util.Configuration;
+import sample.Util.MenuController;
+
+import java.io.File;
+import java.util.List;
+
+public class SettingsController implements MenuController {
+
+    //From FXML
+    public AnchorPane configPane;
+    public AnchorPane infoPane;
+    public ImageView startFolderButton;
+    public ImageView junkFolderButton;
+    public JFXTextField startFolderTextField;
+    public JFXTextField junkFolderTextField;
+    public JFXComboBox depTestRamComboBox;
+    public JFXToggleButton saveQuestionEnabledButton;
+    public JFXToggleButton popUpEnabledButton;
+    public Label versionLable;
+    public HBox junkFolderInput;
+    public HBox startFolderInput;
+    public HBox allInput;
+    public SplitPane settingPane;
+
+    Configuration config;
+
+
+    public void initialize() {
+        ;
+    }
+
+    @Override
+    public void setConfig(Configuration config) {
+        this.config = config;
+        configPane.maxWidthProperty().bind(settingPane.widthProperty().multiply(0.6));
+        configPane.minWidthProperty().bind(settingPane.widthProperty().multiply(0.6));
+        infoPane.maxWidthProperty().bind(settingPane.widthProperty().multiply(0.4));
+        startFolderInput.prefWidthProperty().bind(configPane.widthProperty());
+        setSettings();
+    }
+
+    public void setSettings() {
+        startFolderTextField.setText(config.getStartFolder());
+        junkFolderTextField.setText(config.getJunkFolder());
+        saveQuestionEnabledButton.setSelected(config.isAskQuestion());
+        popUpEnabledButton.setSelected(config.isPopUp());
+        setRamInput(config.getRamInput(),config.getSelectedRamInput(),depTestRamComboBox);
+        versionLable.setText(config.getVersionNumber());
+    }
+
+    public void setNewStartFolder(ActionEvent actionEvent) {
+        String newfile = chooseAndSetNewFolder(startFolderTextField);
+        if (newfile != null) {
+            config.setStartFolder(newfile);
+        }
+
+    }
+
+    public void setNewJunkFolder(ActionEvent actionEvent) {
+        String newfile = chooseAndSetNewFolder(junkFolderTextField);
+        if (newfile != null) {
+            config.setJunkFolder(newfile);
+        }
+    }
+
+    public void clearStorage(ActionEvent actionEvent) {
+        //TODO: cealr storage
+    }
+
+    public void updateProgramm(ActionEvent actionEvent) {
+        //TODO : input updaterLogic at the end!
+    }
+
+    private String chooseAndSetNewFolder(JFXTextField nameField) {
+        DirectoryChooser chooseDirectory = new DirectoryChooser();
+        setInitialDirectory(chooseDirectory);
+        File selectedDirectory = chooseDirectory.showDialog(configPane.getScene().getWindow());
+        if (selectedDirectory != null) {
+            nameField.setText(selectedDirectory.getAbsolutePath());
+            return selectedDirectory.getAbsolutePath();
+        }
+        return null;
+    }
+
+    public void setPopUp(ActionEvent actionEvent) {
+        config.setPopUp(popUpEnabledButton.selectedProperty().get());
+    }
+
+    public void setupAskQuestions(ActionEvent actionEvent) {
+        config.setAskQuestion(saveQuestionEnabledButton.selectedProperty().get());
+
+    }
+
+    private void setInitialDirectory(DirectoryChooser chooseDirectory) {
+        File file = new File(config.getStartFolder());
+        if (file.exists()) {
+            chooseDirectory.setInitialDirectory(file);
+        }
+    }
+
+    private void setRamInput(List<String> ramInput,String selectedRamInput, JFXComboBox<String> field) {
+        for (String ramNumber : ramInput) {
+            field.getItems().add(ramNumber);
+        }
+        field.getSelectionModel().select(selectedRamInput);
+        field.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue ov, String olditem, String newitem) {
+                config.setSelectedRamInput(newitem);
+            }
+        });
+    }
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<?import com.jfoenix.controls.JFXTabPane?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:id="anchorpane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx"
+            fx:controller="sample.Controller.OutputController" style="-fx-background-color: #E9E9E9">
+    <children>
+        <VBox fx:id="vbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+            <children>
+                <HBox fx:id="hbox" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <children>
+                        <ImageView fitHeight="55.0" fitWidth="123.0" onMouseClicked="#safeResult" pickOnBounds="true"
+                                   preserveRatio="true">
+                            <image>
+                                <Image url="@../Images/baseline_save_black_48dp.png"/>
+                            </image>
+                        </ImageView>
+                        <ImageView fitHeight="55.0" fitWidth="123.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../Images/baseline_save_black_48dp.png"/>
+                            </image>
+                        </ImageView>
+                        <ImageView fitHeight="55.0" fitWidth="123.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../Images/baseline_save_black_48dp.png"/>
+                            </image>
+                        </ImageView>
+                        <ImageView fitHeight="55.0" fitWidth="123.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../Images/baseline_save_black_48dp.png"/>
+                            </image>
+                        </ImageView>
+                        <AnchorPane prefHeight="55.0" prefWidth="214.0"/>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Geprüft: XX Fehler:XX"
+                              wrappingWidth="148.13671875"/>
+                    </children>
+                </HBox>
+                <TabPane fx:id="resultTabPane" stylesheets="@../Styles/TabPaneStyle.css">
+                    <tabs>
+                    </tabs>
+                </TabPane>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

@@ -1,0 +1,41 @@
+package sample;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import sample.Controller.MainController;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+
+
+public class Main extends Application {
+
+    MainController rootController;
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        FXMLLoader rootloader = new FXMLLoader(getClass().getResource("resources/fxml/MainMenu.fxml"));
+        System.out.println(Paths.get(".").toAbsolutePath().normalize().toString());
+        Parent root = rootloader.load();
+        this.rootController = rootloader.<MainController>getController();
+        primaryStage.setTitle("Hello World");
+        primaryStage.setScene(new Scene(root, 900, 800));
+        primaryStage.show();
+
+    }
+    @Override
+    public void stop() {
+        try {
+            rootController.shutdown();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
