@@ -21,22 +21,22 @@
                         <ImageView fitHeight="55.0" fitWidth="123.0" onMouseClicked="#safeResult" pickOnBounds="true"
                                    preserveRatio="true">
                             <image>
-                                <Image url="@../Images/baseline_save_black_48dp.png"/>
+                                <Image url="@../Images/save.png"/>
                             </image>
                         </ImageView>
                         <ImageView fitHeight="55.0" fitWidth="123.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../Images/baseline_save_black_48dp.png"/>
+                                <Image url="@../Images/delete.png"/>
                             </image>
                         </ImageView>
                         <ImageView fitHeight="55.0" fitWidth="123.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../Images/baseline_save_black_48dp.png"/>
+                                <Image url="@../Images/show.png"/>
                             </image>
                         </ImageView>
                         <ImageView fitHeight="55.0" fitWidth="123.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../Images/baseline_save_black_48dp.png"/>
+                                <Image url="@../Images/send.png"/>
                             </image>
                         </ImageView>
                         <AnchorPane prefHeight="55.0" prefWidth="214.0"/>

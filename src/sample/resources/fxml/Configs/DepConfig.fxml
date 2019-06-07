@@ -66,7 +66,7 @@
                                                preserveRatio="true">
                                         <image>
                                             <Image fx:id="openDepFile"
-                                                   url="@../../Images/baseline_visibility_black_48dp.png"/>
+                                                   url="@../../Images/show.png"/>
                                         </image>
                                     </ImageView>
                                 </graphic>
@@ -106,7 +106,7 @@
                                                preserveRatio="true">
                                         <image>
                                             <Image fx:id="openKeyFile"
-                                                   url="@../../Images/baseline_visibility_black_48dp.png"/>
+                                                   url="@../../Images/show.png"/>
                                         </image>
                                     </ImageView>
                                 </graphic>

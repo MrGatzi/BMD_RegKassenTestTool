@@ -1,7 +1,5 @@
 package sample.Util;
 
-import java.rmi.server.ExportException;
-
 public class BMDExeption extends Exception {
     private String message;
     private String title;
