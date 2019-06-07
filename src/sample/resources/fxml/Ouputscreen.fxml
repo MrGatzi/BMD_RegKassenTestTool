@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -8,40 +9,81 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<?import com.jfoenix.controls.JFXTabPane?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:id="anchorpane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx"
-            fx:controller="sample.Controller.OutputController" style="-fx-background-color: #E9E9E9">
+<?import javafx.scene.control.Button?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorpane" style="-fx-background-color: #E9E9E9"
+            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+            AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/11.0.1"
+            fx:controller="sample.Controller.OutputController">
     <children>
         <VBox fx:id="vbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
               AnchorPane.topAnchor="0.0">
             <children>
                 <HBox fx:id="hbox" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>
-                        <ImageView fitHeight="55.0" fitWidth="123.0" onMouseClicked="#safeResult" pickOnBounds="true"
-                                   preserveRatio="true">
-                            <image>
-                                <Image url="@../Images/save.png"/>
-                            </image>
-                        </ImageView>
-                        <ImageView fitHeight="55.0" fitWidth="123.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../Images/delete.png"/>
-                            </image>
-                        </ImageView>
-                        <ImageView fitHeight="55.0" fitWidth="123.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../Images/show.png"/>
-                            </image>
-                        </ImageView>
-                        <ImageView fitHeight="55.0" fitWidth="123.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../Images/send.png"/>
-                            </image>
-                        </ImageView>
-                        <AnchorPane prefHeight="55.0" prefWidth="214.0"/>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Geprüft: XX Fehler:XX"
-                              wrappingWidth="148.13671875"/>
+                        <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onSavePressed"
+                                    stylesheets="@../Styles/chooseButtons.css">
+                                <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" onMouseClicked="#safeResult"
+                                               pickOnBounds="true" preserveRatio="true">
+                                        <image>
+                                            <Image url="@../Images/save.png"/>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onSavePressed"
+                                    stylesheets="@../Styles/chooseButtons.css">
+                                <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
+                                               preserveRatio="true">
+                                        <image>
+                                            <Image url="@../Images/delete.png"/>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onSavePressed"
+                                    stylesheets="@../Styles/chooseButtons.css">
+                                <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
+                                               preserveRatio="true">
+                                        <image>
+                                            <Image url="@../Images/filter.png"/>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onSavePressed"
+                                    stylesheets="@../Styles/chooseButtons.css">
+                                <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
+                                               preserveRatio="true">
+                                        <image>
+                                            <Image url="@../Images/show.png"/>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onSavePressed"
+                                    stylesheets="@../Styles/chooseButtons.css">
+                                <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
+                                               preserveRatio="true">
+                                        <image>
+                                            <Image url="@../Images/share.png"/>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                        <VBox alignment="CENTER_RIGHT">
+                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Geprüft: XX Fehler:XX">
+                                <VBox.margin>
+                                    <Insets right="10.0" left="10.0"/>
+                                </VBox.margin>
+                            </Text>
+                        </VBox>
                     </children>
                 </HBox>
                 <TabPane fx:id="resultTabPane" stylesheets="@../Styles/TabPaneStyle.css">

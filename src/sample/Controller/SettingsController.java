@@ -42,7 +42,7 @@ public class SettingsController implements MenuController {
 
 
     public void initialize() {
-        ;
+        //TODO: FONTSIZE && FONT
     }
 
     @Override
