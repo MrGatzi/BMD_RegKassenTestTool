@@ -24,23 +24,13 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 public class AlertFactory {
-    public AlertFactory(){
+    public AlertFactory() {
 
     }
 
     public JFXAlert createNewDialog(SplitPane parent, Exeption exeption) throws IOException {
 
-        FXMLLoader outputLoader= new FXMLLoader(Main.class.getResource("resources/fxml/Dialogs/ErrorHeader.fxml"));
-        AnchorPane output= outputLoader.load();
-        Label titel = (Label)output.lookup("#ExeptionTitle");
-        if (titel!=null) titel.setText("bye");
-        System.out.println(Paths.get(".").toAbsolutePath().normalize().toString());
-
-        JFXDialogLayout layout = new JFXDialogLayout();
-        File file = new File("src/sample/resources/Images/error.png");
-
-        layout.setHeading(output);
-        layout.setBody(new Label(exeption.getMessage()));
+        JFXDialogLayout layout = setUpAlertLayout(exeption);
 
         JFXAlert<Void> alert = new JFXAlert<Void>((Stage) parent.getScene().getWindow());
         alert.setOverlayClose(true);
@@ -52,9 +42,37 @@ public class AlertFactory {
         closeButton.setOnAction(event -> alert.close());
         layout.setActions(closeButton);
 
-        ///TODO: check if it is warning or Error.
-
         alert.setContent(layout);
         return alert;
+    }
+
+    private JFXDialogLayout setUpAlertLayout(Exeption exeption) throws IOException {
+        JFXDialogLayout layout = new JFXDialogLayout();
+        FXMLLoader layoutLoader;
+        AnchorPane layoutPane;
+        Label titel;
+
+        switch (exeption.getTyp()) {
+            case ERROR:
+                layoutLoader = new FXMLLoader(Main.class.getResource("resources/fxml/Dialogs/ErrorHeader.fxml"));
+                break;
+            case INFO:
+                layoutLoader = new FXMLLoader(Main.class.getResource("resources/fxml/Dialogs/InfoHeader.fxml"));
+                break;
+            case WARNING:
+                layoutLoader = new FXMLLoader(Main.class.getResource("resources/fxml/Dialogs/WarningHeader.fxml"));
+                break;
+            default:
+                layoutLoader = new FXMLLoader(Main.class.getResource("resources/fxml/Dialogs/ErrorHeader.fxml"));
+        }
+
+        layoutPane = layoutLoader.load();
+        titel = (Label) layoutPane.lookup("#ExeptionTitle");
+        if (titel != null) titel.setText(exeption.getTitle());
+
+        layout.setHeading(layoutPane);
+        layout.setBody(new Label(exeption.getMessage()));
+
+        return layout;
     }
 }
