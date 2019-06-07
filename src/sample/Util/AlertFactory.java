@@ -3,32 +3,23 @@ package sample.Util;
 import com.jfoenix.animation.alert.JFXAlertAnimation;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.Main;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 public class AlertFactory {
     public AlertFactory() {
 
     }
 
-    public JFXAlert createNewDialog(SplitPane parent, Exeption exeption) throws IOException {
+    public JFXAlert createNewDialog(SplitPane parent, BMDExeption exeption) throws IOException {
 
         JFXDialogLayout layout = setUpAlertLayout(exeption);
 
@@ -46,7 +37,7 @@ public class AlertFactory {
         return alert;
     }
 
-    private JFXDialogLayout setUpAlertLayout(Exeption exeption) throws IOException {
+    private JFXDialogLayout setUpAlertLayout(BMDExeption exeption) throws IOException {
         JFXDialogLayout layout = new JFXDialogLayout();
         FXMLLoader layoutLoader;
         AnchorPane layoutPane;

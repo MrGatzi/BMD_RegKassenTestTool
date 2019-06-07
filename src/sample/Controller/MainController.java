@@ -89,7 +89,7 @@ public class MainController<called> {
     }
 
     public void showExtMenuPressed() throws IOException {
-        dialogFactory.createNewDialog(grandParent,new Exeption("test msg2","title2",Exeptionstyp.INFO)).showAndWait();
+        dialogFactory.createNewDialog(grandParent,new BMDExeption("test msg2","title2",Exeptionstyp.INFO)).showAndWait();
         setMenuPane(extMenu);
     }
 
