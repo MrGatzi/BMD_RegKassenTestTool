@@ -32,7 +32,7 @@
                                     </ImageView>
                                 </graphic>
                             </Button>
-                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onSavePressed"
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#ondeletePressed"
                                     stylesheets="@../Styles/chooseButtons.css">
                                 <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
@@ -43,7 +43,7 @@
                                     </ImageView>
                                 </graphic>
                             </Button>
-                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onSavePressed"
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onfilterPressed"
                                     stylesheets="@../Styles/chooseButtons.css">
                                 <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
@@ -54,7 +54,7 @@
                                     </ImageView>
                                 </graphic>
                             </Button>
-                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onSavePressed"
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onShowPressed"
                                     stylesheets="@../Styles/chooseButtons.css">
                                 <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
@@ -65,7 +65,7 @@
                                     </ImageView>
                                 </graphic>
                             </Button>
-                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onSavePressed"
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onSharePressed"
                                     stylesheets="@../Styles/chooseButtons.css">
                                 <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"

@@ -11,11 +11,9 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import sample.Util.Configuration;
-import sample.Util.MenuController;
+import sample.Util.uiTools.MenuController;
 
 import java.io.File;
 import java.util.List;

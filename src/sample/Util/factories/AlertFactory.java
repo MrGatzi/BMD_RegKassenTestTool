@@ -1,16 +1,17 @@
-package sample.Util;
+package sample.Util.factories;
 
 import com.jfoenix.animation.alert.JFXAlertAnimation;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialogLayout;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.Main;
+import sample.Util.errorHandling.BMDExeption;
 
 import java.io.IOException;
 
@@ -19,7 +20,7 @@ public class AlertFactory {
 
     }
 
-    public JFXAlert createNewDialog(SplitPane parent, BMDExeption exeption) throws IOException {
+    public JFXAlert createNewDialog(Node parent, BMDExeption exeption) throws IOException {
 
         JFXDialogLayout layout = setUpAlertLayout(exeption);
 

@@ -1,8 +1,11 @@
-package sample.Util;
+package sample.Util.uiTools;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.SplitPane;
 import sample.Main;
+import sample.Util.Configuration;
+import sample.Util.uiTools.MenuController;
+import sample.Util.uiTools.MenuItem;
 
 import java.io.IOException;
 

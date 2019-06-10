@@ -1,4 +1,4 @@
-package sample.Util;
+package sample.Util.uiTools;
 
 import java.io.File;
 

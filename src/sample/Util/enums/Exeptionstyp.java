@@ -1,4 +1,4 @@
-package sample.Util;
+package sample.Util.enums;
 
 public enum Exeptionstyp {
     ERROR,
