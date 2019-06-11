@@ -3,16 +3,17 @@ package sample.logic;
 import java.io.*;
 
 import
+import sample.Util.Configuration;
 import sample.Util.IOTools;
 
 public class depLogic {
 
     //Run DEP-Test
-    public String runDepTest(String DefaultStringDEP, String DefaultStringCRYPTO, boolean futurBox, String outputFile, boolean DetailsBox) {
+    public String runDepTest(String DefaultStringDEP, String DefaultStringCRYPTO, boolean futurBox, String outputFile, boolean DetailsBox, Configuration config) {
         StringBuilder outputstring = new StringBuilder();
 
         Process process = null;
-        IOTools iOTools = new IOTools();
+        IOTools iOTools = new IOTools(config);
         String processString = iOTools.createDepProcessString(DefaultStringDEP, DefaultStringCRYPTO, outputFile, futurBox, DetailsBox);
 
         try {

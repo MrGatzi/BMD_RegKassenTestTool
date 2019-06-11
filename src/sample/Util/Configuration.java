@@ -26,11 +26,15 @@ public class Configuration {
     static String askQuestionProp = "askQuestion";
     static String selectedRamInputProp = "selectedRamInput";
     static String ramInputProp = "ramInput";
+    static String externalDepToolLocationProp = "externalDepToolLocation";
+    static String useDefaultDepToolProp = "useDefaultDep";
 
     private static String versionNumber;
     private static String startFolder;
     private static String junkFolder;
     private static String selectedRamInput;
+    private static String externalDepToolLocation;
+    private static boolean useDefaultDepTool;
     private static boolean popUp;
     private static boolean askQuestion;
     private static List<String> ramInput;
@@ -58,8 +62,10 @@ public class Configuration {
         versionNumber = props.getProperty(versionNumberProp);
         startFolder = props.getProperty(startFolderProp);
         junkFolder = props.getProperty(junkFolderProp);
+        externalDepToolLocation = props.getProperty(externalDepToolLocationProp);
         selectedRamInput = props.getProperty(selectedRamInputProp);
         popUp = Boolean.parseBoolean(props.getProperty(popUpProp));
+        useDefaultDepTool = Boolean.parseBoolean(props.getProperty(useDefaultDepToolProp));
         askQuestion = Boolean.parseBoolean(props.getProperty(askQuestionProp));
         depFiles = Arrays.asList(props.getProperty(depFileProp).split("\\s*,\\s*"));
         depKeyFiles = Arrays.asList(props.getProperty(depKeyFilesProp).split("\\s*,\\s*"));
@@ -87,7 +93,7 @@ public class Configuration {
         props.put(junkFolderProp, junkFolder);
         props.put(selectedRamInputProp, selectedRamInput);
         props.put(popUpProp, Boolean.toString(popUp));
-         props.put(askQuestionProp, Boolean.toString(askQuestion));
+        props.put(askQuestionProp, Boolean.toString(askQuestion));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         Date date = new Date(System.currentTimeMillis());
         props.store(new FileOutputStream("config.properties"), "Safed by dependencies -" + formatter.format(date));
