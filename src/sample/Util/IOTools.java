@@ -28,16 +28,16 @@ public class IOTools {
 
     public String createDepProcessString(String depFileLocation, String cryptoFileLocation, String outputFileLocation, boolean futureReceiptValid, boolean printDetails) {
         StringBuilder depProcessString = new StringBuilder();
-        //TODO: change to use CONFIG!
+
         depProcessString.append("java -Xmx");
         depProcessString.append(config.getRamInput());
         depProcessString.append("m -jar ");
+
         if (config.isUseDefaultDepTool()) {
             depProcessString.append(defaultTool);
         } else {
             depProcessString.append(config.getExternalDepToolLocation());
         }
-
 
         if (futureReceiptValid) {
             depProcessString.append(" -f");
@@ -45,11 +45,13 @@ public class IOTools {
         if (printDetails) {
             depProcessString.append(" -v");
         }
+
         depProcessString.append(" -i ");
         depProcessString.append(depFileLocation);
         depProcessString.append(" -c ");
         depProcessString.append(cryptoFileLocation);
         depProcessString.append(" -o ");
+
         if (outputFileLocation != null) {
             File file = new File(outputFileLocation);
             if (file.isDirectory()) {
