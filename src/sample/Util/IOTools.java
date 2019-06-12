@@ -31,11 +31,11 @@ public class IOTools {
         //TODO: change to use CONFIG!
         depProcessString.append("java -Xmx");
         depProcessString.append(config.getRamInput());
-        depProcessString.append("m -jar");
-        if(//check if Degault){
+        depProcessString.append("m -jar ");
+        if (config.isUseDefaultDepTool()) {
             depProcessString.append(defaultTool);
-        }else{
-            depProcessString.append("aa");
+        } else {
+            depProcessString.append(config.getExternalDepToolLocation());
         }
 
 

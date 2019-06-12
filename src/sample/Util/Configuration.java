@@ -46,7 +46,7 @@ public class Configuration {
     private static List<String> advDepKeyFiles;
 
 
-    private Configuration() {
+    public Configuration() {
 
     }
 
@@ -97,6 +97,22 @@ public class Configuration {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         Date date = new Date(System.currentTimeMillis());
         props.store(new FileOutputStream("config.properties"), "Safed by dependencies -" + formatter.format(date));
+    }
+
+    public static boolean isUseDefaultDepTool() {
+        return useDefaultDepTool;
+    }
+
+    public static void setUseDefaultDepTool(boolean useDefaultDepTool) {
+        Configuration.useDefaultDepTool = useDefaultDepTool;
+    }
+
+    public static String getExternalDepToolLocation() {
+        return externalDepToolLocation;
+    }
+
+    public static void setExternalDepToolLocation(String externalDepToolLocation) {
+        Configuration.externalDepToolLocation = externalDepToolLocation;
     }
 
     public List<String> getRamInput() {

@@ -5,12 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.DecimalFormat;
 
 import org.apache.commons.codec.binary.Base64;
+import sample.Util.Configuration;
+import sample.Util.IOTools;
 
 public class __ShowQrFileInConsole {
 	String[] QR_Code_Titels = { "", "ZDA: ", "Kassen-ID:", "Belegnummer:", "Beleg-Datum-Uhrzeit:",
@@ -19,13 +19,13 @@ public class __ShowQrFileInConsole {
 			"Sig-Voriger-Beleg:", "Signatur:", "", "", "" }; // Array mit die vor einem Wert bei der "ShowDEP" und "schowQR" methode angezeigt werden
 	//coding
 	__Coding code = new __Coding();
-	__ReadFile read = new __ReadFile();
+	IOTools read = new IOTools(new Configuration());
 	
 
 	public String show(String show_4, String show_5) {
 		StringBuilder outputstring = new StringBuilder();
 		try {
-			String Input = read.Readtxt(show_4);
+			String Input = read.readTxtFile(show_4);
 
 			Input = Input.substring(1);
 			Input = Input.substring(0, Input.length() - 1);

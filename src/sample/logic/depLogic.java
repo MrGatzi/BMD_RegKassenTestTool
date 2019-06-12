@@ -2,7 +2,6 @@ package sample.logic;
 
 import java.io.*;
 
-import
 import sample.Util.Configuration;
 import sample.Util.IOTools;
 
@@ -19,6 +18,7 @@ public class depLogic {
         try {
             process = Runtime.getRuntime().exec(processString);
         } catch (IOException e) {
+            //TODO: use BMD Exeption
             System.out.println("Error while calling regkassen-verification-depformat-1.1.1.jar on __ShowDEPFileInConsole.java on Line 290");
             e.printStackTrace();
         }

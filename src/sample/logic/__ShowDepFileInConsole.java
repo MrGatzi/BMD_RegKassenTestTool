@@ -21,6 +21,7 @@ import java.util.Scanner;
 import java.util.regex.*;
 
 import org.apache.commons.codec.binary.Base64;
+import sample.Util.Configuration;
 import sample.Util.IOTools;
 
 //classe die das auslesen, umrechnen und ausgeben der DEP-Files übernimmt
@@ -31,7 +32,8 @@ public class __ShowDepFileInConsole {
             "Sig-Voriger-Beleg:", "Signatur:", "", "", ""}; // Array mit die vor einem Wert bei der "ShowDEP" und "schowQR" methode angezeigt werden
     //coding
     __Coding code = new __Coding();
-    IOTools read = new IOTools();
+    //TODO: Config handling
+    IOTools read = new IOTools(new Configuration());
     //timer
     long startimer = 0;
     long timer = 0;
