@@ -27,7 +27,7 @@ public class Configuration {
     static String selectedRamInputProp = "selectedRamInput";
     static String ramInputProp = "ramInput";
     static String externalDepToolLocationProp = "externalDepToolLocation";
-    static String useDefaultDepToolProp = "useDefaultDep";
+    static String useDefaultDepToolProp = "useDefaultDepTool";
 
     private static String versionNumber;
     private static String startFolder;
@@ -89,6 +89,8 @@ public class Configuration {
         props.put(advDepKeyFilesProp, String.join(",", advDepKeyFiles));
         props.put(ramInputProp, String.join(",", ramInput));
         props.put(versionNumberProp, versionNumber);
+        props.put(externalDepToolLocationProp,externalDepToolLocation);
+        props.put(useDefaultDepToolProp,Boolean.toString(useDefaultDepTool));
         props.put(startFolderProp, startFolder);
         props.put(junkFolderProp, junkFolder);
         props.put(selectedRamInputProp, selectedRamInput);
