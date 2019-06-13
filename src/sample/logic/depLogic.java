@@ -1,9 +1,11 @@
 package sample.logic;
 
 import java.io.*;
+import java.math.BigInteger;
 
 import sample.Util.Configuration;
 import sample.Util.IOTools;
+import sample.Util.Receipt;
 
 public class depLogic {
 
@@ -59,5 +61,33 @@ public class depLogic {
             e.printStackTrace();
         }
         return outputstring.toString();
+    }
+
+    public Receipt StringToReceipt(String input) {
+        String[] receiptParts = input.split("_");
+        Receipt receipt = new Receipt();
+        BigInteger numBig;
+
+        receipt.setRegisterId(receiptParts[2]);
+        receipt.setReceiptId(receiptParts[3]);
+        receipt.setReceiptId(receiptParts[3]);
+        receipt.setReceiptDate(receiptParts[4]);
+
+        numBig = new BigInteger(receiptParts[5].replaceAll("\\.", "").replaceAll(",", ""));
+        receipt.setReceiptSetNormal(numBig.doubleValue());
+
+        numBig = new BigInteger(receiptParts[6].replaceAll("\\.", "").replaceAll(",", ""));
+        receipt.setReceiptSetReduced1(numBig.doubleValue());
+
+        numBig = new BigInteger(receiptParts[7].replaceAll("\\.", "").replaceAll(",", ""));
+        receipt.setReceiptSetReduced2(numBig.doubleValue());
+
+        numBig = new BigInteger(receiptParts[8].replaceAll("\\.", "").replaceAll(",", ""));
+        receipt.setReceiptSetNull(numBig.doubleValue());
+
+        numBig = new BigInteger(receiptParts[9].replaceAll("\\.", "").replaceAll(",", ""));
+        receipt.setReceiptSetSpecial(numBig.doubleValue());
+
+        return receipt;
     }
 }

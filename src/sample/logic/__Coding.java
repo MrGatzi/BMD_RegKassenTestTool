@@ -114,7 +114,7 @@ public class __Coding {
     // Aus dem Github verzeichniss : https://github.com/a-sit-plus/at-registrierkassen-mustercode/blob/master/regkassen-core/src/main/java/at/asitplus/regkassen/core/base/util/CryptoUtil.java
     // den TurnOverCounter checken ob er TRO oder STO ist und wenn dann nicht in die If rein !
     public static long decryptTurnOverCounter(String encryptedTurnOverCounterBase64, String hashAlgorithm, String cashBoxIDUTF8String, String receiptIdentifierUTF8String, SecretKey aesKey) throws Exception {
-        // calc IV value (cashbox if + receipt identifer, both as UTF-8 Strings)
+        // calc IV value (cashbox if + Receipt identifer, both as UTF-8 Strings)
         String IVUTF8StringRepresentation = cashBoxIDUTF8String + receiptIdentifierUTF8String;
 
         // calc hash

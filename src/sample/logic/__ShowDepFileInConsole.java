@@ -23,6 +23,7 @@ import java.util.regex.*;
 import org.apache.commons.codec.binary.Base64;
 import sample.Util.Configuration;
 import sample.Util.IOTools;
+import sample.Util.Receipt;
 
 //classe die das auslesen, umrechnen und ausgeben der DEP-Files übernimmt
 public class __ShowDepFileInConsole {
@@ -30,14 +31,10 @@ public class __ShowDepFileInConsole {
             "Betrag-Satz-Normal:", "Betrag-Satz-Ermaessigt-1:", "Betrag-Satz-Ermaessigt-2:", "Betrag-Satz-Null:",
             "Betrag-Satz-Besonders:", "Stand-Umsatz-Zaehler-AES256-ICM_Entschlüsselt:", "Zertifikat-Seriennummer:",
             "Sig-Voriger-Beleg:", "Signatur:", "", "", ""}; // Array mit die vor einem Wert bei der "ShowDEP" und "schowQR" methode angezeigt werden
-    //coding
     __Coding code = new __Coding();
     //TODO: Config handling
     IOTools read = new IOTools(new Configuration());
-    //timer
-    long startimer = 0;
-    long timer = 0;
-    int countimer = 0;
+    depLogic logic = new depLogic();
     //for Single DEPLines benötigt!
     int rightchainS = 0;
     int wrongchainS = 0;
@@ -72,14 +69,18 @@ public class __ShowDepFileInConsole {
             int falseCounter = 0;
             Date currentDate = null;
             Date oldDate = null;
+            String FlagSignatur = "";
+            boolean errorBlockerCauseSTOorTRA = Startbelegflag;
+
             outputstring.append("DEP_FILE:");
             String DEP = read.readTxtFile(show_2);
-            String FlagSignatur = "";
             indexPrüf = DEP.indexOf("Belege-kompakt");
+
             HashSet<String> BelegIDSet = new HashSet<String>();
             List<String> wrongDatesBelegNr = new ArrayList<String>();
             List<String> wrongFormatDatesBelegNr = new ArrayList<String>();
-            boolean errorBlockerCauseSTOorTRA = Startbelegflag;
+
+
             while (indexPrüf > -1) {
                 DEP = DEP.substring(indexPrüf, DEP.length());
                 String DEP2 = DEP.substring(DEP.indexOf("["), DEP.indexOf("]"));
@@ -102,6 +103,7 @@ public class __ShowDepFileInConsole {
                     String KassenID = "";
                     String BelegID = "";
                     outputstring.append("\r\nBeleg : " + i);
+                    Receipt r=logic.StringToReceipt(PartString);
                     while (Flag2 < parts2.length) {
                         if (Flag2 == 2) {
                             KassenID = parts2[Flag2];
@@ -364,71 +366,6 @@ public class __ShowDepFileInConsole {
         }
         return outputstring.toString();
         //Outputarea.setCaretPosition(0);
-    }
-
-    //Run DEP-Test
-    public String runDepTest(String DefaultStringDEP, String DefaultStringCRYPTO, boolean futurBox, String outputFile, boolean DetailsBox) {
-        StringBuilder outputstring = new StringBuilder();
-        Runtime runtime = Runtime.getRuntime();
-        Process process = null;
-        String proString = "java -Xmx1500m -jar regkassen-verification-depformat-1.1.1.jar";
-        if (futurBox) {
-            proString += " -f";
-        }
-        if (DetailsBox) {
-            proString += " -v";
-        }
-        proString += " -i " + DefaultStringDEP + " -c " + DefaultStringCRYPTO + " -o ";
-        if (outputFile != null) {
-            File file = new File(outputFile);
-            if (file.isDirectory() == true) {
-                proString += outputFile;
-            } else {
-                proString += "OutputFiles";
-            }
-        }
-
-        try {
-            process = runtime.exec(proString);
-        } catch (IOException e2) {
-            System.out.println("Error while calling regkassen-verification-depformat-1.1.1.jar on __ShowDEPFileInConsole.java on Line 290");
-            e2.printStackTrace();
-        }
-        InputStream is = process.getInputStream();
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(isr);
-        String line;
-        // Funktionsblock zum schreiben auf die JTextaera
-        // da die Jtextarea eine Character begrenzung in der Weite hat
-        // (~~~105 Chars) und es Zeilen gibt die mehr beanspruchen
-        // muss zuerst geprüft werden ob die Zeile größer ist. Wenn Sie
-        // größer ist wird sie soo oft geteilt auf die JTextarea
-        // geschrieben
-        // bis keine Chars mehr vorhanden sind.
-        // nach jeder geschriebenen Zeile wird die JTextarea um eine
-        // "row" erweiterd
-        // Am schluss wird der Courser wieder ganz am Anfang gestellt
-        try {
-            while ((line = br.readLine()) != null) {
-
-                if (line.length() > 105) {
-                    int lineCounter = line.length();
-                    int whileFlag = 0;
-                    while (lineCounter - 105 > 0) {
-                        outputstring.append(line.substring(whileFlag, whileFlag + 105) + "\r\n");
-                        whileFlag = whileFlag + 105;
-                        lineCounter = lineCounter - 105;
-                    }
-                    outputstring.append(line.substring(whileFlag, line.length()) + "\r\n");
-                } else {
-                    outputstring.append(line + "\r\n");
-                }
-            }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return outputstring.toString();
     }
 
     //Spezielle Ausgabe von DEP-FIles dies meherer DEP-Exporte in sich haben.
@@ -741,7 +678,7 @@ public class __ShowDepFileInConsole {
         String Sig_Nae_Beleg_String = new String(Sig_Nae_Beleg, "UTF-8");
         outputstring.append("Sig_Nächster_Beleg_Calculated: " + Sig_Nae_Beleg_String + "\r\n");
 
-        //	FlagSignatur = depLine;
+        //	FlagSignatur = Receipt;
         if (!parts4.toString().equals("NOT VALID")) {
             String parts5 = code.base64UrlDecode(parts3[2]);
             byte[] encodedBytes = Base64.encodeBase64(parts5.getBytes());

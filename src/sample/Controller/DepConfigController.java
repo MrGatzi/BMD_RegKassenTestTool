@@ -15,10 +15,12 @@ import sample.TestResult;
 import sample.Util.Configuration;
 import sample.Util.uiTools.CostumComboBoxItem;
 import sample.Util.uiTools.MenuController;
+import sample.logic.__ShowDepFileInConsole;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,10 +61,12 @@ public class DepConfigController implements MenuController {
         this.config.setDepKeyFiles(depKeyFiles);*/
     }
 
-    public void runDepTest() {
-        TestResult test = new TestResult();
+    public void runDepTest() throws ParseException {
+        __ShowDepFileInConsole a= new __ShowDepFileInConsole();
+        a.show(nameDepFile.getSelectionModel().getSelectedItem().getPath(),nameKeyFile.getSelectionModel().getSelectedItem().getPath(),true);
+        /*TestResult test = new TestResult();
         test.setOutputString("oiahfoiabfafawpi");
-        outputController.showResult(test);
+        outputController.showResult(test);*/
     }
 
     public void setOutputController(OutputController outputController) {
