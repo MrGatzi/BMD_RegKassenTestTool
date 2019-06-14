@@ -1,5 +1,10 @@
 package sample.Util;
 
+import sample.logic.__Coding;
+
+import java.io.IOException;
+import java.math.BigInteger;
+
 public class Receipt {
     String[] QR_Code_Titels = {"", "ZDA: ", "Kassen-ID:", "Belegnummer:", "Beleg-Datum-Uhrzeit:",
             "Betrag-Satz-Normal:", "Betrag-Satz-Ermaessigt-1:", "Betrag-Satz-Ermaessigt-2:", "Betrag-Satz-Null:",
@@ -10,11 +15,11 @@ public class Receipt {
     private String registerId;
     private String receiptId;
     private String receiptDate;
-    private double receiptSetNormal;
-    private double receiptSetReduced1;
-    private double receiptSetReduced2;
-    private double receiptSetNull;
-    private double receiptSetSpecial;
+    private String receiptSetNormal;
+    private String receiptSetReduced1;
+    private String receiptSetReduced2;
+    private String receiptSetNull;
+    private String receiptSetSpecial;
     private String revenueDecrypted;
     private String revenueEncrypted;
     private String revenueShouldBe;
@@ -23,17 +28,22 @@ public class Receipt {
     private String signatureNextValue;
     private String signature;
 
+    private double revenueShouldBeNumber;
+    private double revenueDecryptedNumber;
+    private double revenueEncryptedNumber;
+
+    __Coding code = new __Coding();
 
     public Receipt(){
         zda=null;
         registerId=null;
         receiptId =null;
         receiptDate=null;
-        receiptSetNormal=0;
-        receiptSetReduced1=0;
-        receiptSetReduced2=0;
-        receiptSetNull=0;
-        receiptSetSpecial=0;
+        receiptSetNormal=null;
+        receiptSetReduced1=null;
+        receiptSetReduced2=null;
+        receiptSetNull=null;
+        receiptSetSpecial=null;
         revenueEncrypted=null;
         revenueDecrypted=null;
         revenueShouldBe=null;
@@ -45,6 +55,60 @@ public class Receipt {
     public String toString() {
         return "";
     }
+    public void checkNumbers(){
+        BigInteger umBig = new BigInteger(receiptSetNormal.replaceAll("\\.", "").replaceAll(",", ""));
+    }
+    public boolean checkDate(){
+        return true;
+    }
+    public int howManyWrongCentValues(){
+        return 0;
+    }
+
+    public void calculateRevenueShouldBe(double revenueOld,String cryptoFileLocation,boolean isFirstReceipt) throws IOException {
+        // Abfrage ob STO oder TRA (Trainings beleg oder
+        // Storno Beleg)
+        // oder Umsatz wert
+        boolean properEncryption=false;
+        if (revenueEncrypted.equals("U1RP")) {
+            revenueDecrypted="STO";
+            //TODO turn to in ?
+            revenueShouldBe = receiptSetNormal + receiptSetReduced1 + receiptSetReduced2 + receiptSetNull+ receiptSetSpecial + revenueOld;
+            revenueOld = revenueShouldBeNumber;
+            revenueShouldBeNumber = revenueShouldBeNumber/100;
+            properEncryption=true;
+        } else if (revenueEncrypted.equals("VFJB")) {
+            revenueDecrypted="TRA";
+            properEncryption=true;
+        } else {
+
+            long i1 = code.CalcNewValue(registerId, receiptId, revenueDecrypted, cryptoFileLocation);
+            double d = (double) i1;
+            double dflag = d / 100;
+            revenueDecryptedNumber=dflag;
+            revenueShouldBe = receiptSetNormal + receiptSetReduced1 + receiptSetReduced2 + receiptSetNull+ receiptSetSpecial + revenueOld;
+            revenueOld = revenueShouldBeNumber;
+            if (d == revenueShouldBeNumber) {
+                properEncryption=true;
+                revenueShouldBe=""+(revenueShouldBeNumber/100);
+
+            } else {
+                if ((forcounter == 0 && isFirstReceipt) || errorBlockerCauseSTOorTRA) {
+                    properEncryption=true;
+                    revenueOld = d;
+                    revenueShouldBe=""+dflag;
+                            //TODO: DO outside !
+                    //errorBlockerCauseSTOorTRA = false;
+                } else {
+                    properEncryption=false;
+                    revenueOld = d;
+                    revenueShouldBe="FEHLER!";
+                }
+            }
+
+        }
+    }
+
     public String getRevenueDecrypted() {
         return revenueDecrypted;
     }
@@ -100,43 +164,43 @@ public class Receipt {
         this.receiptDate = receiptDate;
     }
 
-    public double getReceiptSetNormal() {
+    public String getReceiptSetNormal() {
         return receiptSetNormal;
     }
 
-    public void setReceiptSetNormal(double receiptSetNormal) {
+    public void setReceiptSetNormal(String receiptSetNormal) {
         this.receiptSetNormal = receiptSetNormal;
     }
 
-    public double getReceiptSetReduced1() {
+    public String getReceiptSetReduced1() {
         return receiptSetReduced1;
     }
 
-    public void setReceiptSetReduced1(double receiptSetReduced1) {
+    public void setReceiptSetReduced1(String receiptSetReduced1) {
         this.receiptSetReduced1 = receiptSetReduced1;
     }
 
-    public double getReceiptSetReduced2() {
+    public String getReceiptSetReduced2() {
         return receiptSetReduced2;
     }
 
-    public void setReceiptSetReduced2(double receiptSetReduced2) {
+    public void setReceiptSetReduced2(String receiptSetReduced2) {
         this.receiptSetReduced2 = receiptSetReduced2;
     }
 
-    public double getReceiptSetNull() {
+    public String getReceiptSetNull() {
         return receiptSetNull;
     }
 
-    public void setReceiptSetNull(double receiptSetNull) {
+    public void setReceiptSetNull(String receiptSetNull) {
         this.receiptSetNull = receiptSetNull;
     }
 
-    public double getReceiptSetSpecial() {
+    public String getReceiptSetSpecial() {
         return receiptSetSpecial;
     }
 
-    public void setReceiptSetSpecial(double receiptSetSpecial) {
+    public void setReceiptSetSpecial(String receiptSetSpecial) {
         this.receiptSetSpecial = receiptSetSpecial;
     }
 

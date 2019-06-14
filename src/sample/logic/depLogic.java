@@ -64,30 +64,25 @@ public class depLogic {
     }
 
     public Receipt StringToReceipt(String input) {
+        //TODO: Error Hanlding e.g when receipTarts.length<12
         String[] receiptParts = input.split("_");
         Receipt receipt = new Receipt();
-        BigInteger numBig;
 
+        receipt.setZda(receiptParts[1]);
         receipt.setRegisterId(receiptParts[2]);
         receipt.setReceiptId(receiptParts[3]);
         receipt.setReceiptId(receiptParts[3]);
         receipt.setReceiptDate(receiptParts[4]);
 
-        numBig = new BigInteger(receiptParts[5].replaceAll("\\.", "").replaceAll(",", ""));
-        receipt.setReceiptSetNormal(numBig.doubleValue());
+        receipt.setReceiptSetNormal(receiptParts[5]);
+        receipt.setReceiptSetReduced1(receiptParts[6]);
+        receipt.setReceiptSetReduced2(receiptParts[7]);
+        receipt.setReceiptSetNull(receiptParts[8]);
+        receipt.setReceiptSetSpecial(receiptParts[9]);
 
-        numBig = new BigInteger(receiptParts[6].replaceAll("\\.", "").replaceAll(",", ""));
-        receipt.setReceiptSetReduced1(numBig.doubleValue());
-
-        numBig = new BigInteger(receiptParts[7].replaceAll("\\.", "").replaceAll(",", ""));
-        receipt.setReceiptSetReduced2(numBig.doubleValue());
-
-        numBig = new BigInteger(receiptParts[8].replaceAll("\\.", "").replaceAll(",", ""));
-        receipt.setReceiptSetNull(numBig.doubleValue());
-
-        numBig = new BigInteger(receiptParts[9].replaceAll("\\.", "").replaceAll(",", ""));
-        receipt.setReceiptSetSpecial(numBig.doubleValue());
-
+        receipt.setRevenueEncrypted(receiptParts[10]);
+        receipt.setCertificateNumber(receiptParts[11]);
+        receipt.setSignature(receiptParts[12]);
         return receipt;
     }
 }
