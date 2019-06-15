@@ -103,7 +103,7 @@ public class __ShowDepFileInConsole {
                     String KassenID = "";
                     String BelegID = "";
                     outputstring.append("\r\nBeleg : " + i);
-                    Receipt r=logic.StringToReceipt(PartString);
+                    Receipt r=logic.StringToReceipt(0,PartString);
                     while (Flag2 < parts2.length) {
                         if (Flag2 == 2) {
                             KassenID = parts2[Flag2];

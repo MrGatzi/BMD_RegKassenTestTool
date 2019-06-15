@@ -65,11 +65,12 @@ public class depLogic {
         return outputstring.toString();
     }
 
-    public Receipt StringToReceipt(String input) {
+    public Receipt StringToReceipt(int receiptNumber, String input) {
         //TODO: Error Hanlding e.g when receipTarts.length<12
         String[] receiptParts = input.split("_");
         Receipt receipt = new Receipt();
 
+        receipt.setReceiptNumber(receiptNumber);
         receipt.setZda(receiptParts[1]);
         receipt.setRegisterId(receiptParts[2]);
         receipt.setReceiptId(receiptParts[3]);
@@ -89,6 +90,11 @@ public class depLogic {
     }
 
     public String decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean firstReceiptFlag) throws IOException {
+        //TODO: delte me
+        File file = new File("delteme.txt");
+        file.createNewFile();
+        FileOutputStream out = new FileOutputStream("delteme.txt");
+
         String depFileContent = ioTools.readTxtFile(depFileLocation);
         int nextReceiptField = depFileContent.indexOf("Belege-kompakt");
         while (nextReceiptField > -1) {
@@ -109,12 +115,13 @@ public class depLogic {
                 }
                 String PartString = new String(parts4, "UTF-8");
                 // add Beleg nummer
-                Receipt r=StringToReceipt(PartString);
+                Receipt r=StringToReceipt(i,PartString);
                 r.calcNumberValuesOfReceiptStrings();
                 r.calculateRevenueShouldBe(0,cryptoFileLocation,false,false,i);
+                out.write(r.toString().getBytes());
             }
         }
-
+        out.close();
         return null;
     }
 }

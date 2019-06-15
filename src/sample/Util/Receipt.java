@@ -11,6 +11,7 @@ public class Receipt {
             "Betrag-Satz-Besonders:", "Stand-Umsatz-Zaehler-AES256-ICM_Entschlüsselt:", "Zertifikat-Seriennummer:",
             "Sig-Voriger-Beleg:", "Signatur:", "", "", ""}; // Array mit die vor einem Wert bei der "ShowDEP" und "schowQR" methode angezeigt werden
 
+    private int receiptNumber;
     private String zda;
     private String registerId;
     private String receiptId;
@@ -38,9 +39,12 @@ public class Receipt {
     private double receiptSetNullNumber;
     private double receiptSetSpecialNumber;
 
+    private boolean receiptProperEncrypted;
+
     __Coding code = new __Coding();
 
     public Receipt(){
+        this.receiptNumber=receiptNumber;
         zda=null;
         registerId=null;
         receiptId =null;
@@ -56,11 +60,83 @@ public class Receipt {
         certificateNumber=null;
         signaturePreviousValue =null;
         signature =null;
+        receiptProperEncrypted =false;
     }
 
     public String toString() {
-        return "";
+        StringBuilder receiptString = new StringBuilder();
+
+        receiptString.append("Beleg: ");
+        receiptString.append(receiptNumber);
+        receiptString.append("\r\n");
+
+        receiptString.append("ZDA: ");
+        receiptString.append(zda);
+        receiptString.append("\r\n");
+
+        receiptString.append("Kassen-ID: ");
+        receiptString.append(registerId);
+        receiptString.append("\r\n");
+
+        receiptString.append("Belegnummer: ");
+        receiptString.append(receiptId);
+        receiptString.append("\r\n");
+
+        receiptString.append("Beleg-Datum-Uhrzeit: ");
+        receiptString.append(receiptDate);
+        receiptString.append("\r\n");
+
+        receiptString.append("Betrag-Satz-Normal: ");
+        receiptString.append(receiptSetNormal);
+        receiptString.append("\r\n");
+
+        receiptString.append("Betrag-Satz-Ermaessigt-1: ");
+        receiptString.append(receiptSetReduced1);
+        receiptString.append("\r\n");
+
+        receiptString.append("Betrag-Satz-Ermaessigt-2: ");
+        receiptString.append(receiptSetReduced2);
+        receiptString.append("\r\n");
+
+        receiptString.append("Betrag-Satz-Null: ");
+        receiptString.append(receiptSetNull);
+        receiptString.append("\r\n");
+
+        receiptString.append("Betrag-Satz-Besonders: ");
+        receiptString.append(receiptSetSpecial);
+        receiptString.append("\r\n");
+
+        receiptString.append("Stand-Umsatz-Zaehler-AES256-ICM_Verschlüsselt: ");
+        receiptString.append(revenueDecrypted);
+        receiptString.append("\r\n");
+
+        receiptString.append("tand-Umsatz-Zaehler-AES256-ICM_Entschlüsselt: ");
+        receiptString.append(revenueEncrypted);
+        receiptString.append("\r\n");
+
+        if(revenueShouldBe!=null) {
+            receiptString.append("Stand-Umsatz-Zaehler_Sollsumme: ");
+            receiptString.append(revenueShouldBe);
+            receiptString.append("\r\n");
+        }
+
+        receiptString.append("Zertifikat-Seriennummer: ");
+        receiptString.append(certificateNumber);
+        receiptString.append("\r\n");
+
+        receiptString.append("Sig-Voriger-Beleg: ");
+        receiptString.append(signaturePreviousValue);
+        receiptString.append("\r\n");
+
+        receiptString.append("Signatur: ");
+        receiptString.append(signature);
+        receiptString.append("\r\n");
+
+        receiptString.append("\r\n");
+
+        return receiptString.toString();
     }
+
     public void checkNumbers(){
         BigInteger umBig = new BigInteger(receiptSetNormal.replaceAll("\\.", "").replaceAll(",", ""));
     }
@@ -110,43 +186,43 @@ public class Receipt {
         // Abfrage ob STO oder TRA (Trainings beleg oder
         // Storno Beleg)
         // oder Umsatz wert
-        boolean properEncryption=false;
+       receiptProperEncrypted =true;
         if (revenueEncrypted.equals("U1RP")) {
             revenueDecrypted="STO";
             //TODO turn to int ?
             revenueShouldBeNumber = receiptSetNormalNumber + receiptSetReduced1Number + receiptSetReduced2Number + receiptSetNullNumber + receiptSetSpecialNumber + revenueOld;
-            revenueShouldBeNumber = revenueShouldBeNumber/100;
-            properEncryption=true;
+            revenueShouldBe=Double.toString(revenueShouldBeNumber/100);
+            return revenueShouldBeNumber;
         } else if (revenueEncrypted.equals("VFJB")) {
             revenueDecrypted="TRA";
-            properEncryption=true;
+            revenueShouldBe=null;
+            return revenueOld;
         } else {
-            long i1 = code.CalcNewValue(registerId, receiptId, revenueDecrypted, cryptoFileLocation);
-            double d = (double) i1;
-            double dflag = d / 100;
-            revenueDecryptedNumber=dflag;
-            revenueShouldBe = receiptSetNormal + receiptSetReduced1 + receiptSetReduced2 + receiptSetNull+ receiptSetSpecial + revenueOld;
-            if (d == revenueShouldBeNumber) {
-                properEncryption=true;
-                revenueShouldBe=""+(revenueShouldBeNumber/100);
 
+            revenueDecryptedNumber = (double) code.CalcNewValue(registerId, receiptId, revenueEncrypted, cryptoFileLocation);
+            revenueDecrypted=Double.toString(revenueDecryptedNumber);
+
+            revenueShouldBeNumber = receiptSetNormalNumber + receiptSetReduced1Number + receiptSetReduced2Number + receiptSetNullNumber + receiptSetSpecialNumber + revenueOld;
+            if (revenueDecryptedNumber == revenueShouldBeNumber) {
+                revenueShouldBe=Double.toString(revenueShouldBeNumber/100);
+                return revenueShouldBeNumber;
             } else {
                 if ((forcounter == 0 && isFirstReceipt) || errorBlockerCauseSTOorTRA) {
-                    properEncryption=true;
-                    revenueOld = d;
-                    revenueShouldBe=""+dflag;
+                    revenueShouldBe=revenueDecrypted;
                     //TODO: DO outside !
                     //errorBlockerCauseSTOorTRA = false;
                 } else {
-                    properEncryption=false;
-                    revenueOld = d;
-                    revenueShouldBe="FEHLER!";
+                    receiptProperEncrypted =false;
+                    revenueShouldBe="FEHLER";
                 }
+                return revenueDecryptedNumber;
             }
 
         }
-        // return properEncryption?
-        return revenueShouldBeNumber;
+    }
+
+    public boolean isReceiptProperEncrypted(){
+        return receiptProperEncrypted;
     }
 
     public String getRevenueDecrypted() {
@@ -172,6 +248,7 @@ public class Receipt {
     public void setSignatureNextValue(String signatureNextValue) {
         this.signatureNextValue = signatureNextValue;
     }
+
     public String getZda() {
         return zda;
     }
@@ -274,5 +351,13 @@ public class Receipt {
 
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    public int getReceiptNumber() {
+        return receiptNumber;
+    }
+
+    public void setReceiptNumber(int receiptNumber) {
+        this.receiptNumber = receiptNumber;
     }
 }
