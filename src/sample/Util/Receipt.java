@@ -1,9 +1,13 @@
 package sample.Util;
 
+import org.apache.commons.codec.binary.Base64;
 import sample.logic.__Coding;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class Receipt {
     String[] QR_Code_Titels = {"", "ZDA: ", "Kassen-ID:", "Belegnummer:", "Beleg-Datum-Uhrzeit:",
@@ -11,6 +15,7 @@ public class Receipt {
             "Betrag-Satz-Besonders:", "Stand-Umsatz-Zaehler-AES256-ICM_Entschlüsselt:", "Zertifikat-Seriennummer:",
             "Sig-Voriger-Beleg:", "Signatur:", "", "", ""}; // Array mit die vor einem Wert bei der "ShowDEP" und "schowQR" methode angezeigt werden
 
+    private String wholeReceipt;
     private int receiptNumber;
     private String zda;
     private String registerId;
@@ -26,12 +31,12 @@ public class Receipt {
     private String revenueShouldBe;
     private String certificateNumber;
     private String signaturePreviousValue;
-    private String signatureNextValue;
+    private String signaturePreviousValueCalculated;
+    private String signatureNextValueCalculated;
     private String signature;
 
     private double revenueShouldBeNumber;
     private double revenueDecryptedNumber;
-    private double revenueEncryptedNumber;
 
     private double receiptSetNormalNumber;
     private double receiptSetReduced1Number;
@@ -44,6 +49,7 @@ public class Receipt {
     __Coding code = new __Coding();
 
     public Receipt(){
+        wholeReceipt=null;
         this.receiptNumber=receiptNumber;
         zda=null;
         registerId=null;
@@ -59,6 +65,8 @@ public class Receipt {
         revenueShouldBe=null;
         certificateNumber=null;
         signaturePreviousValue =null;
+        signatureNextValueCalculated=null;
+        signaturePreviousValueCalculated=null;
         signature =null;
         receiptProperEncrypted =false;
     }
@@ -107,11 +115,11 @@ public class Receipt {
         receiptString.append("\r\n");
 
         receiptString.append("Stand-Umsatz-Zaehler-AES256-ICM_Verschlüsselt: ");
-        receiptString.append(revenueDecrypted);
+        receiptString.append(revenueEncrypted);
         receiptString.append("\r\n");
 
         receiptString.append("tand-Umsatz-Zaehler-AES256-ICM_Entschlüsselt: ");
-        receiptString.append(revenueEncrypted);
+        receiptString.append(revenueDecrypted);
         receiptString.append("\r\n");
 
         if(revenueShouldBe!=null) {
@@ -128,6 +136,14 @@ public class Receipt {
         receiptString.append(signaturePreviousValue);
         receiptString.append("\r\n");
 
+        receiptString.append("Sig_Voriger_Beleg_Calculated: ");
+        receiptString.append(signaturePreviousValueCalculated);
+        receiptString.append("\r\n");
+
+        receiptString.append("Sig_Nächster_Beleg_Calculated: ");
+        receiptString.append(signatureNextValueCalculated);
+        receiptString.append("\r\n");
+
         receiptString.append("Signatur: ");
         receiptString.append(signature);
         receiptString.append("\r\n");
@@ -137,6 +153,7 @@ public class Receipt {
         return receiptString.toString();
     }
 
+    //checks
     public void checkNumbers(){
         BigInteger umBig = new BigInteger(receiptSetNormal.replaceAll("\\.", "").replaceAll(",", ""));
     }
@@ -146,8 +163,12 @@ public class Receipt {
     public int howManyWrongCentValues(){
         return 0;
     }
+    public boolean isReceiptProperEncrypted(){
+        return receiptProperEncrypted;
+    }
 
-    public int calcNumberValuesOfReceiptStrings(){
+    //calculation
+    public int calculateNumberValuesOfReceiptStrings(){
         int wrongReceipts=0;
         String receiptSet =receiptSetNormal.replaceAll("\\.", "");
         if (receiptSet.substring(receiptSet.lastIndexOf(",") + 1).length() > 2) {
@@ -181,7 +202,6 @@ public class Receipt {
 
         return wrongReceipts;
     }
-
     public double calculateRevenueShouldBe(double revenueOld,String cryptoFileLocation,boolean isFirstReceipt, boolean errorBlockerCauseSTOorTRA, int forcounter) throws IOException {
         // Abfrage ob STO oder TRA (Trainings beleg oder
         // Storno Beleg)
@@ -200,7 +220,7 @@ public class Receipt {
         } else {
 
             revenueDecryptedNumber = (double) code.CalcNewValue(registerId, receiptId, revenueEncrypted, cryptoFileLocation);
-            revenueDecrypted=Double.toString(revenueDecryptedNumber);
+            revenueDecrypted=Double.toString(revenueDecryptedNumber/100);
 
             revenueShouldBeNumber = receiptSetNormalNumber + receiptSetReduced1Number + receiptSetReduced2Number + receiptSetNullNumber + receiptSetSpecialNumber + revenueOld;
             if (revenueDecryptedNumber == revenueShouldBeNumber) {
@@ -220,9 +240,27 @@ public class Receipt {
 
         }
     }
+    public void calculatePreviousAndNextSignitarues(String inputForPreviousSignature) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        this.signaturePreviousValueCalculated=calculateSignature(inputForPreviousSignature);
+        this.signatureNextValueCalculated=calculateSignature(wholeReceipt);
+    }
 
-    public boolean isReceiptProperEncrypted(){
-        return receiptProperEncrypted;
+    public String calculateSignature(String input) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        MessageDigest md1 = MessageDigest.getInstance("sha-256");
+
+        //calculate hash value
+        md1.update(input.getBytes());
+        byte[] digest1 = md1.digest();
+
+        // extract number of bytes from hash value
+        int bytesToExtract1 = 8;
+        byte[] conDigest1 = new byte[bytesToExtract1];
+        System.arraycopy(digest1, 0, conDigest1, 0, bytesToExtract1);
+
+        // encode value as BASE64 String ==> chainValue
+        byte[] SignatureArray = Base64.encodeBase64(conDigest1, false);
+        String SignatureString = new String(SignatureArray, "UTF-8");
+        return SignatureString;
     }
 
     public String getRevenueDecrypted() {
@@ -241,12 +279,12 @@ public class Receipt {
         this.revenueShouldBe = revenueShouldBe;
     }
 
-    public String getSignatureNextValue() {
-        return signatureNextValue;
+    public String getSignatureNextValueCalculated() {
+        return signatureNextValueCalculated;
     }
 
-    public void setSignatureNextValue(String signatureNextValue) {
-        this.signatureNextValue = signatureNextValue;
+    public void setSignatureNextValueCalculated(String signatureNextValueCalculated) {
+        this.signatureNextValueCalculated = signatureNextValueCalculated;
     }
 
     public String getZda() {
@@ -359,5 +397,21 @@ public class Receipt {
 
     public void setReceiptNumber(int receiptNumber) {
         this.receiptNumber = receiptNumber;
+    }
+
+    public String getSignaturePreviousValueCalculated() {
+        return signaturePreviousValueCalculated;
+    }
+
+    public void setSignaturePreviousValueCalculated(String signaturePreviousValueCalculated) {
+        this.signaturePreviousValueCalculated = signaturePreviousValueCalculated;
+    }
+
+    public String getWholeReceipt() {
+        return wholeReceipt;
+    }
+
+    public void setWholeReceipt(String wholeReceipt) {
+        this.wholeReceipt = wholeReceipt;
     }
 }

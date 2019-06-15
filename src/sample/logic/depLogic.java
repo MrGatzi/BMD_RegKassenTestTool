@@ -1,7 +1,10 @@
 package sample.logic;
 
 import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
+import org.apache.commons.codec.binary.Base64;
 import sample.Util.Configuration;
 import sample.Util.CryptoTools;
 import sample.Util.IOTools;
@@ -65,32 +68,49 @@ public class depLogic {
         return outputstring.toString();
     }
 
-    public Receipt StringToReceipt(int receiptNumber, String input) {
-        //TODO: Error Hanlding e.g when receipTarts.length<12
-        String[] receiptParts = input.split("_");
+    public Receipt StringToReceipt(int receiptNumber, String input) throws UnsupportedEncodingException {
         Receipt receipt = new Receipt();
 
-        receipt.setReceiptNumber(receiptNumber);
-        receipt.setZda(receiptParts[1]);
-        receipt.setRegisterId(receiptParts[2]);
-        receipt.setReceiptId(receiptParts[3]);
-        receipt.setReceiptId(receiptParts[3]);
-        receipt.setReceiptDate(receiptParts[4]);
+        input = input.substring(input.indexOf("\"") + 1);
+        input = input.substring(0, input.indexOf("\""));
+        String[] inputparts = input.split("[.]");
 
-        receipt.setReceiptSetNormal(receiptParts[5]);
-        receipt.setReceiptSetReduced1(receiptParts[6]);
-        receipt.setReceiptSetReduced2(receiptParts[7]);
-        receipt.setReceiptSetNull(receiptParts[8]);
-        receipt.setReceiptSetSpecial(receiptParts[9]);
+        byte[] payload = null;
+        if (inputparts.length > 1) {
+            payload = cryptoTools.base64Decode(inputparts[1], false);
+            String payloadParts = new String(payload, "UTF-8");
+            String[] receiptParts = payloadParts.split("_");
+            if (receiptParts.length > 11) {
+                receipt.setWholeReceipt(input);
+                receipt.setReceiptNumber(receiptNumber);
+                receipt.setZda(receiptParts[1]);
+                receipt.setRegisterId(receiptParts[2]);
+                receipt.setReceiptId(receiptParts[3]);
+                receipt.setReceiptId(receiptParts[3]);
+                receipt.setReceiptDate(receiptParts[4]);
 
-        receipt.setRevenueEncrypted(receiptParts[10]);
-        receipt.setCertificateNumber(receiptParts[11]);
-        receipt.setSignature(receiptParts[12]);
-        return receipt;
+                receipt.setReceiptSetNormal(receiptParts[5]);
+                receipt.setReceiptSetReduced1(receiptParts[6]);
+                receipt.setReceiptSetReduced2(receiptParts[7]);
+                receipt.setReceiptSetNull(receiptParts[8]);
+                receipt.setReceiptSetSpecial(receiptParts[9]);
+
+                receipt.setRevenueEncrypted(receiptParts[10]);
+                receipt.setCertificateNumber(receiptParts[11]);
+                receipt.setSignaturePreviousValue(receiptParts[12]);
+
+                String signatureLoad = cryptoTools.base64UrlDecode(inputparts[2]);
+                byte[] encodedBytes = Base64.encodeBase64(signatureLoad.getBytes());
+                String signature = new String(encodedBytes, "UTF-8");
+                receipt.setSignature(signature);
+                return receipt;
+            }
+        }
+        return null;
     }
 
-    public String decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean firstReceiptFlag) throws IOException {
-        //TODO: delte me
+    public String decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean firstReceiptFlag) throws IOException, NoSuchAlgorithmException {
+        //TODO: delte me add this ti DEP-TEST!
         File file = new File("delteme.txt");
         file.createNewFile();
         FileOutputStream out = new FileOutputStream("delteme.txt");
@@ -98,30 +118,26 @@ public class depLogic {
         String depFileContent = ioTools.readTxtFile(depFileLocation);
         int nextReceiptField = depFileContent.indexOf("Belege-kompakt");
         while (nextReceiptField > -1) {
-            depFileContent = depFileContent.substring(depFileContent.indexOf("Belege-kompakt"),depFileContent.length()); //check reduntant
+            depFileContent = depFileContent.substring(depFileContent.indexOf("Belege-kompakt"), depFileContent.length()); //check reduntant
             String depFileReceipts = depFileContent.substring(depFileContent.indexOf("["), depFileContent.indexOf("]"));
             nextReceiptField = depFileContent.indexOf("Belege-kompakt", depFileContent.indexOf("Belege-kompakt") + 1);
 
             String[] parts = depFileReceipts.split(",");
+            double oldRevenueValue = 0;
+            String oldSignature="akjsbai";
             for (int i = 0; i < parts.length; i++) {
-                parts[i] = parts[i].substring(parts[i].indexOf("\"") + 1);
-                parts[i] = parts[i].substring(0, parts[i].indexOf("\""));
-                String[] parts3 = parts[i].split("[.]");
-                byte[] parts4 = null;
-                if (parts3.length > 1) {
-                    parts4 = cryptoTools.base64Decode(parts3[1], false);
-                } else {
-                    parts4 = "NOT VALID".getBytes();
-                }
-                String PartString = new String(parts4, "UTF-8");
-                // add Beleg nummer
-                Receipt r=StringToReceipt(i,PartString);
-                r.calcNumberValuesOfReceiptStrings();
-                r.calculateRevenueShouldBe(0,cryptoFileLocation,false,false,i);
+                Receipt r = StringToReceipt(i, parts[i]);
+                r.calculateNumberValuesOfReceiptStrings();
+                oldRevenueValue = r.calculateRevenueShouldBe(oldRevenueValue, cryptoFileLocation, false, false, i);
+                r.isReceiptProperEncrypted();
+                r.calculatePreviousAndNextSignitarues(oldSignature);
+                oldSignature=r.getWholeReceipt();
                 out.write(r.toString().getBytes());
             }
         }
         out.close();
         return null;
     }
+
+
 }

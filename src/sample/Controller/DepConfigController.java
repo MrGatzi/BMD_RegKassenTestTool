@@ -21,6 +21,7 @@ import sample.logic.depLogic;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,9 +63,9 @@ public class DepConfigController implements MenuController {
         this.config.setDepKeyFiles(depKeyFiles);*/
     }
 
-    public void runDepTest() throws ParseException, IOException {
-        /*__ShowDepFileInConsole a= new __ShowDepFileInConsole();
-        a.show(nameDepFile.getSelectionModel().getSelectedItem().getPath(),nameKeyFile.getSelectionModel().getSelectedItem().getPath(),true);*/
+    public void runDepTest() throws ParseException, IOException, NoSuchAlgorithmException {
+        //__ShowDepFileInConsole a= new __ShowDepFileInConsole();
+        //a.show(nameDepFile.getSelectionModel().getSelectedItem().getPath(),nameKeyFile.getSelectionModel().getSelectedItem().getPath(),true);
         depLogic a = new depLogic();
         a.decryptAndStructureDepFile(nameDepFile.getSelectionModel().getSelectedItem().getPath(),nameKeyFile.getSelectionModel().getSelectedItem().getPath(),true);
         /*TestResult test = new TestResult();
