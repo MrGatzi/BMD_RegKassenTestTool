@@ -11,12 +11,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import sample.TestResult;
 import sample.Util.Configuration;
 import sample.Util.uiTools.CostumComboBoxItem;
 import sample.Util.uiTools.MenuController;
-import sample.logic.__ShowDepFileInConsole;
-import sample.logic.depLogic;
+import sample.Util.DepTest;
 
 import java.awt.*;
 import java.io.File;
@@ -66,7 +64,7 @@ public class DepConfigController implements MenuController {
     public void runDepTest() throws ParseException, IOException, NoSuchAlgorithmException {
         //__ShowDepFileInConsole a= new __ShowDepFileInConsole();
         //a.show(nameDepFile.getSelectionModel().getSelectedItem().getPath(),nameKeyFile.getSelectionModel().getSelectedItem().getPath(),true);
-        depLogic a = new depLogic();
+        DepTest a = new DepTest();
         a.decryptAndStructureDepFile(nameDepFile.getSelectionModel().getSelectedItem().getPath(),nameKeyFile.getSelectionModel().getSelectedItem().getPath(),true);
         /*TestResult test = new TestResult();
         test.setOutputString("oiahfoiabfafawpi");

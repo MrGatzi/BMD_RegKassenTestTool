@@ -1,16 +1,12 @@
-package sample.logic;
+package sample.Util;
 
 import java.io.*;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 
 import org.apache.commons.codec.binary.Base64;
-import sample.Util.Configuration;
-import sample.Util.CryptoTools;
-import sample.Util.IOTools;
-import sample.Util.Receipt;
 
-public class depLogic {
+public class DepTest {
     IOTools ioTools = new IOTools(new Configuration());
     CryptoTools cryptoTools = new CryptoTools();
 
@@ -109,12 +105,12 @@ public class depLogic {
         return null;
     }
 
-    public String decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean firstReceiptFlag) throws IOException, NoSuchAlgorithmException {
+    public String decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean firstReceiptFlag) throws IOException, NoSuchAlgorithmException, ParseException {
         //TODO: delte me add this ti DEP-TEST!
         File file = new File("delteme.txt");
         file.createNewFile();
         FileOutputStream out = new FileOutputStream("delteme.txt");
-
+        DepTestResult depTestResult= new DepTestResult();
         String depFileContent = ioTools.readTxtFile(depFileLocation);
         int nextReceiptField = depFileContent.indexOf("Belege-kompakt");
         while (nextReceiptField > -1) {
@@ -127,14 +123,23 @@ public class depLogic {
             String oldSignature="akjsbai";
             for (int i = 0; i < parts.length; i++) {
                 Receipt r = StringToReceipt(i, parts[i]);
+
                 r.calculateNumberValuesOfReceiptStrings();
-                oldRevenueValue = r.calculateRevenueShouldBe(oldRevenueValue, cryptoFileLocation, false, false, i);
-                r.isReceiptProperEncrypted();
                 r.calculatePreviousAndNextSignitarues(oldSignature);
+                oldRevenueValue = r.calculateRevenueShouldBe(oldRevenueValue, cryptoFileLocation, false, false, i);
+
+                depTestResult.addRevenueSet(i,r.isRevenueProperEncrypted());
+                if(r.isDateProperFormated()){
+                    depTestResult.addWrongDate(i);
+                }
+               // r.isDateProperChained("");
+
+
                 oldSignature=r.getWholeReceipt();
                 out.write(r.toString().getBytes());
             }
         }
+        out.write(depTestResult.printResults().getBytes());
         out.close();
         return null;
     }

@@ -1,11 +1,8 @@
 package sample.logic;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -22,8 +19,8 @@ import java.util.regex.*;
 
 import org.apache.commons.codec.binary.Base64;
 import sample.Util.Configuration;
+import sample.Util.DepTest;
 import sample.Util.IOTools;
-import sample.Util.Receipt;
 
 //classe die das auslesen, umrechnen und ausgeben der DEP-Files übernimmt
 public class __ShowDepFileInConsole {
@@ -34,7 +31,7 @@ public class __ShowDepFileInConsole {
     __Coding code = new __Coding();
     //TODO: Config handling
     IOTools read = new IOTools(new Configuration());
-    depLogic logic = new depLogic();
+    DepTest logic = new DepTest();
     //for Single DEPLines benötigt!
     int rightchainS = 0;
     int wrongchainS = 0;
