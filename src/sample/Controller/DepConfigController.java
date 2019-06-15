@@ -16,6 +16,7 @@ import sample.Util.Configuration;
 import sample.Util.uiTools.CostumComboBoxItem;
 import sample.Util.uiTools.MenuController;
 import sample.logic.__ShowDepFileInConsole;
+import sample.logic.depLogic;
 
 import java.awt.*;
 import java.io.File;
@@ -61,9 +62,11 @@ public class DepConfigController implements MenuController {
         this.config.setDepKeyFiles(depKeyFiles);*/
     }
 
-    public void runDepTest() throws ParseException {
-        __ShowDepFileInConsole a= new __ShowDepFileInConsole();
-        a.show(nameDepFile.getSelectionModel().getSelectedItem().getPath(),nameKeyFile.getSelectionModel().getSelectedItem().getPath(),true);
+    public void runDepTest() throws ParseException, IOException {
+        /*__ShowDepFileInConsole a= new __ShowDepFileInConsole();
+        a.show(nameDepFile.getSelectionModel().getSelectedItem().getPath(),nameKeyFile.getSelectionModel().getSelectedItem().getPath(),true);*/
+        depLogic a = new depLogic();
+        a.decryptAndStructureDepFile(nameDepFile.getSelectionModel().getSelectedItem().getPath(),nameKeyFile.getSelectionModel().getSelectedItem().getPath(),true);
         /*TestResult test = new TestResult();
         test.setOutputString("oiahfoiabfafawpi");
         outputController.showResult(test);*/

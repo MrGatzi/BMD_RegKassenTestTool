@@ -1,13 +1,15 @@
 package sample.logic;
 
 import java.io.*;
-import java.math.BigInteger;
 
 import sample.Util.Configuration;
+import sample.Util.CryptoTools;
 import sample.Util.IOTools;
 import sample.Util.Receipt;
 
 public class depLogic {
+    IOTools ioTools = new IOTools(new Configuration());
+    CryptoTools cryptoTools = new CryptoTools();
 
     //Run DEP-Test
     public String runDepTest(String DefaultStringDEP, String DefaultStringCRYPTO, boolean futurBox, String outputFile, boolean DetailsBox, Configuration config) {
@@ -84,5 +86,35 @@ public class depLogic {
         receipt.setCertificateNumber(receiptParts[11]);
         receipt.setSignature(receiptParts[12]);
         return receipt;
+    }
+
+    public String decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean firstReceiptFlag) throws IOException {
+        String depFileContent = ioTools.readTxtFile(depFileLocation);
+        int nextReceiptField = depFileContent.indexOf("Belege-kompakt");
+        while (nextReceiptField > -1) {
+            depFileContent = depFileContent.substring(depFileContent.indexOf("Belege-kompakt"),depFileContent.length()); //check reduntant
+            String depFileReceipts = depFileContent.substring(depFileContent.indexOf("["), depFileContent.indexOf("]"));
+            nextReceiptField = depFileContent.indexOf("Belege-kompakt", depFileContent.indexOf("Belege-kompakt") + 1);
+
+            String[] parts = depFileReceipts.split(",");
+            for (int i = 0; i < parts.length; i++) {
+                parts[i] = parts[i].substring(parts[i].indexOf("\"") + 1);
+                parts[i] = parts[i].substring(0, parts[i].indexOf("\""));
+                String[] parts3 = parts[i].split("[.]");
+                byte[] parts4 = null;
+                if (parts3.length > 1) {
+                    parts4 = cryptoTools.base64Decode(parts3[1], false);
+                } else {
+                    parts4 = "NOT VALID".getBytes();
+                }
+                String PartString = new String(parts4, "UTF-8");
+                // add Beleg nummer
+                Receipt r=StringToReceipt(PartString);
+                r.calcNumberValuesOfReceiptStrings();
+                r.calculateRevenueShouldBe(0,cryptoFileLocation,false,false,i);
+            }
+        }
+
+        return null;
     }
 }

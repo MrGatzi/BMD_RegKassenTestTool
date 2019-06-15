@@ -32,6 +32,12 @@ public class Receipt {
     private double revenueDecryptedNumber;
     private double revenueEncryptedNumber;
 
+    private double receiptSetNormalNumber;
+    private double receiptSetReduced1Number;
+    private double receiptSetReduced2Number;
+    private double receiptSetNullNumber;
+    private double receiptSetSpecialNumber;
+
     __Coding code = new __Coding();
 
     public Receipt(){
@@ -65,29 +71,61 @@ public class Receipt {
         return 0;
     }
 
-    public void calculateRevenueShouldBe(double revenueOld,String cryptoFileLocation,boolean isFirstReceipt) throws IOException {
+    public int calcNumberValuesOfReceiptStrings(){
+        int wrongReceipts=0;
+        String receiptSet =receiptSetNormal.replaceAll("\\.", "");
+        if (receiptSet.substring(receiptSet.lastIndexOf(",") + 1).length() > 2) {
+            wrongReceipts++;
+        }
+        receiptSetNormalNumber = new BigInteger(receiptSet.replaceAll(",", "")).doubleValue();
+
+        receiptSet =receiptSetReduced1.replaceAll("\\.", "");
+        if (receiptSet.substring(receiptSet.lastIndexOf(",") + 1).length() > 2) {
+            wrongReceipts++;
+        }
+        receiptSetReduced1Number = new BigInteger(receiptSet.replaceAll(",", "")).doubleValue();
+
+        receiptSet =receiptSetReduced2.replaceAll("\\.", "");
+        if (receiptSet.substring(receiptSet.lastIndexOf(",") + 1).length() > 2) {
+            wrongReceipts++;
+        }
+        receiptSetReduced2Number = new BigInteger(receiptSet.replaceAll(",", "")).doubleValue();
+
+        receiptSet =receiptSetNull.replaceAll("\\.", "");
+        if (receiptSet.substring(receiptSet.lastIndexOf(",") + 1).length() > 2) {
+            wrongReceipts++;
+        }
+        receiptSetNullNumber = new BigInteger(receiptSet.replaceAll(",", "")).doubleValue();
+
+        receiptSet =receiptSetSpecial.replaceAll("\\.", "");
+        if (receiptSet.substring(receiptSet.lastIndexOf(",") + 1).length() > 2) {
+            wrongReceipts++;
+        }
+        receiptSetSpecialNumber = new BigInteger(receiptSet.replaceAll(",", "")).doubleValue();
+
+        return wrongReceipts;
+    }
+
+    public double calculateRevenueShouldBe(double revenueOld,String cryptoFileLocation,boolean isFirstReceipt, boolean errorBlockerCauseSTOorTRA, int forcounter) throws IOException {
         // Abfrage ob STO oder TRA (Trainings beleg oder
         // Storno Beleg)
         // oder Umsatz wert
         boolean properEncryption=false;
         if (revenueEncrypted.equals("U1RP")) {
             revenueDecrypted="STO";
-            //TODO turn to in ?
-            revenueShouldBe = receiptSetNormal + receiptSetReduced1 + receiptSetReduced2 + receiptSetNull+ receiptSetSpecial + revenueOld;
-            revenueOld = revenueShouldBeNumber;
+            //TODO turn to int ?
+            revenueShouldBeNumber = receiptSetNormalNumber + receiptSetReduced1Number + receiptSetReduced2Number + receiptSetNullNumber + receiptSetSpecialNumber + revenueOld;
             revenueShouldBeNumber = revenueShouldBeNumber/100;
             properEncryption=true;
         } else if (revenueEncrypted.equals("VFJB")) {
             revenueDecrypted="TRA";
             properEncryption=true;
         } else {
-
             long i1 = code.CalcNewValue(registerId, receiptId, revenueDecrypted, cryptoFileLocation);
             double d = (double) i1;
             double dflag = d / 100;
             revenueDecryptedNumber=dflag;
             revenueShouldBe = receiptSetNormal + receiptSetReduced1 + receiptSetReduced2 + receiptSetNull+ receiptSetSpecial + revenueOld;
-            revenueOld = revenueShouldBeNumber;
             if (d == revenueShouldBeNumber) {
                 properEncryption=true;
                 revenueShouldBe=""+(revenueShouldBeNumber/100);
@@ -97,7 +135,7 @@ public class Receipt {
                     properEncryption=true;
                     revenueOld = d;
                     revenueShouldBe=""+dflag;
-                            //TODO: DO outside !
+                    //TODO: DO outside !
                     //errorBlockerCauseSTOorTRA = false;
                 } else {
                     properEncryption=false;
@@ -107,6 +145,8 @@ public class Receipt {
             }
 
         }
+        // return properEncryption?
+        return revenueShouldBeNumber;
     }
 
     public String getRevenueDecrypted() {

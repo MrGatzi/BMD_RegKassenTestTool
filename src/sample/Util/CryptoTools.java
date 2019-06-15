@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.Security;
 
-public class cryptoTools {
+public class CryptoTools {
     public String GenerateJWSSig(String Payload) throws UnsupportedEncodingException {
         String search = "_";
         String jwsSignatureString = Payload.substring(Payload.lastIndexOf(search) + 1, Payload.length());
