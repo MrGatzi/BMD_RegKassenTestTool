@@ -1,10 +1,12 @@
 package sample.Util;
 
-import java.io.File;
+import javafx.scene.control.TextArea;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DepTestResult {
+public class DepTestResult implements Result{
 
     StringBuilder ouuputString = new StringBuilder();
     private List<Integer> wrongChainedReceipts;
@@ -94,5 +96,8 @@ public class DepTestResult {
             ouuputString.append(input);
             ouuputString.append("\r\n");
         }
+    }
+    public File getOuputLocation(){
+        return outputLocation;
     }
 }

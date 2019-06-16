@@ -14,6 +14,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import sample.Util.Configuration;
+import sample.Util.DepTestResult;
+import sample.Util.ResultTab;
 import sample.Util.uiTools.CostumComboBoxItem;
 import sample.Util.uiTools.MenuController;
 import sample.Util.DepTestLogic;
@@ -147,12 +149,14 @@ public class DepConfigController implements MenuController {
             }
         });
     }
-    private void setInitialDirectory(FileChooser fileChooser){
+
+    private void setInitialDirectory(FileChooser fileChooser) {
         File file = new File(config.getStartFolder());
-        if (file.exists()){
+        if (file.exists()) {
             fileChooser.setInitialDirectory(file);
         }
     }
+
     public void runDepTest() throws ParseException, IOException, NoSuchAlgorithmException {
         File tempFile = File.createTempFile("BMDRegKassenTestToolOuput-", ".tmp");
         tempFile.deleteOnExit();
@@ -162,6 +166,7 @@ public class DepConfigController implements MenuController {
                 tempFile.getAbsolutePath(),
                 futureBox.isSelected(),
                 detailsBox.isSelected());
+
     }
 
 
@@ -169,10 +174,23 @@ public class DepConfigController implements MenuController {
         //TODO CHECK for better possibility
         File tempFile = File.createTempFile("BMDRegKassenTestToolOuput-", ".tmp");
         tempFile.deleteOnExit();
-        depTestLogic.decryptAndStructureDepFile(
-                nameDepFile.getSelectionModel().getSelectedItem().getPath(),
-                nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
-                startReceiptBox.isSelected(),
-                tempFile);
+        ResultTab resultTab = outputController.createNewResultTabPane("for onece");
+        resultTab.showLoading();
+        Thread t = new Thread(() -> {
+            try {
+                DepTestResult depTestResult = depTestLogic.decryptAndStructureDepFile(
+                        nameDepFile.getSelectionModel().getSelectedItem().getPath(),
+                        nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
+                        startReceiptBox.isSelected(),
+                        tempFile);
+                resultTab.printResult(depTestResult);
+            } catch (IOException | NoSuchAlgorithmException | ParseException e) {
+                //TODO ERROR HANDLING !
+                e.printStackTrace();
+            }
+
+        });
+        t.start();
+
     }
 }

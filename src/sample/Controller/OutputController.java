@@ -8,7 +8,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import sample.TestResult;
+import sample.Util.DepTestResult;
+import sample.Util.ResultTab;
 import sample.Util.factories.AlertFactory;
 import sample.Util.errorHandling.BMDExeption;
 import sample.Util.enums.Exeptionstyp;
@@ -28,12 +29,12 @@ public class OutputController {
         dialogFactory=new AlertFactory();
     }
 
-    public void showResult(TestResult test) {
+    public ResultTab createNewResultTabPane(String tabName) {
         resultTabPane.prefHeightProperty().bind(vbox.heightProperty());
-        Tab newTab=tabfactory(test.getOutputString());
+        ResultTab newTab=new ResultTab(tabName);
         resultTabPane.getTabs().add(newTab);
         resultTabPane.getSelectionModel().select(newTab);
-        System.out.println(anchorpane.getHeight()+" "+vbox.getHeight()+" "+hbox.getHeight()+ " " +resultTabPane.getHeight());
+        return newTab;
     }
 
     public void safeResult() {
@@ -45,21 +46,6 @@ public class OutputController {
     }
     public void openResult() {
         //TODO: implement
-    }
-
-    private Tab tabfactory(String textContent){
-        int numTabs = resultTabPane.getTabs().size();
-        Tab tab = new Tab("Tab " + (numTabs + 1));
-        TextArea textArea = new TextArea();
-        textArea.setEditable(true);
-        textArea.setWrapText(true);
-        textArea.setText(textContent);
-        BorderPane root = new BorderPane();
-        root.setCenter(textArea);
-
-        tab.setContent(root);
-
-        return tab;
     }
 
     public void onSavePressed(MouseEvent mouseEvent) throws IOException {
