@@ -10,17 +10,21 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 
-public class DepTest {
-    IOTools ioTools = new IOTools(new Configuration());
-    CryptoTools cryptoTools = new CryptoTools();
+public class DepTestLogic {
+    IOTools ioTools;
+    CryptoTools cryptoTools;
+    public DepTestLogic(Configuration config){
+        ioTools = new IOTools(config);
+        cryptoTools = new CryptoTools();
+    }
+
 
     //Run DEP-Test
-    public String runDepTest(String DefaultStringDEP, String DefaultStringCRYPTO, boolean futurBox, String outputFile, boolean DetailsBox, Configuration config) {
+    public String runDepTest(String DefaultStringDEP, String DefaultStringCRYPTO,String outputFile, boolean futurBox, boolean DetailsBox) {
         StringBuilder outputstring = new StringBuilder();
 
         Process process = null;
-        IOTools iOTools = new IOTools(config);
-        String processString = iOTools.createDepProcessString(DefaultStringDEP, DefaultStringCRYPTO, outputFile, futurBox, DetailsBox);
+        String processString = ioTools.createDepProcessString(DefaultStringDEP, DefaultStringCRYPTO, outputFile, futurBox, DetailsBox);
 
         try {
             process = Runtime.getRuntime().exec(processString);
@@ -109,26 +113,23 @@ public class DepTest {
         return null;
     }
 
-    public String decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean isFristReceiptNotIncluded) throws IOException, NoSuchAlgorithmException, ParseException {
-        //TODO: delte me add this ti DEP-TEST!
-        //TODO: how can i make this code actually look good as well?
-        File file = new File("delteme.txt");
-        file.createNewFile();
-        FileOutputStream out = new FileOutputStream("delteme.txt");
-        DepTestResult depTestResult = new DepTestResult();
+    public DepTestResult decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean isFristReceiptNotIncluded, File outputLocation) throws IOException, NoSuchAlgorithmException, ParseException {
+        DepTestResult depTestResult = new DepTestResult(outputLocation);
+        FileOutputStream resultFile = new FileOutputStream(outputLocation.getPath());
         String depFileContent = ioTools.readTxtFile(depFileLocation);
         int nextReceiptField = depFileContent.indexOf("Belege-kompakt");
+
         while (nextReceiptField > -1) {
             depFileContent = depFileContent.substring(depFileContent.indexOf("Belege-kompakt"), depFileContent.length()); //check reduntant
             String depFileReceipts = depFileContent.substring(depFileContent.indexOf("["), depFileContent.indexOf("]"));
             nextReceiptField = depFileContent.indexOf("Belege-kompakt", depFileContent.indexOf("Belege-kompakt") + 1);
 
             String[] parts = depFileReceipts.split(",");
-            //TODO: check start values!
             double oldRevenueValue = 0;
             String oldSignature = "";
             String oldDate = null;
             HashSet allReceiptIds = new HashSet<String>();
+            boolean errorBlocker=isFristReceiptNotIncluded;
 
             for (int i = 0; i < parts.length; i++) {
                 Receipt r = StringToReceipt(i, parts[i]);
@@ -140,42 +141,49 @@ public class DepTest {
                         r.calculatePreviousAndNextSignitarues(oldSignature);
                     }
 
-                    oldRevenueValue = r.calculateRevenueShouldBe(oldRevenueValue, cryptoFileLocation, isFristReceiptNotIncluded, false);
+                    oldRevenueValue = r.calculateRevenueShouldBe(oldRevenueValue, cryptoFileLocation, isFristReceiptNotIncluded, errorBlocker);
 
+                    if(errorBlocker&&r.wasErrorBlockerUsed()){
+                        errorBlocker=false;
+                    }
+                    resultFile.write(r.toString().getBytes());
                     //Tests
                     depTestResult.addChainedReceipt(i,r.isProperChained());
                     depTestResult.addRevenueSet(i, r.isRevenueProperEncrypted());
                     if (isDateProperFormated(r.getReceiptDate())) {
                         if (oldDate != null && !isDateProperChained(r.getReceiptDate(), oldDate)) {
                             depTestResult.addWrongChainedDate(i);
-                            out.write("Datumverkettung: FEHLER\r\n".getBytes());
+                            resultFile.write("Datumverkettung: FEHLER\r\n".getBytes());
                         } else {
                             oldDate = r.getReceiptDate();
                         }
                     } else {
                         depTestResult.addWrongDate(i);
+                        resultFile.write("Datumsformat: FEHLER\r\n".getBytes());
                     }
 
                     if (wrongSetValues > 0) {
                         depTestResult.addWrongSetValue(i);
+                        resultFile.write("Betragsspalte: FEHLER\r\n".getBytes());
                     }
                     if (allReceiptIds.contains(r.getReceiptId())) {
                         depTestResult.addWrongReceiptId(i);
+                        resultFile.write("BelegNummer: FEHLER\r\n".getBytes());
                     } else {
                         allReceiptIds.add(r.getReceiptId());
                     }
 
                     oldDate = r.getReceiptDate();
                     oldSignature = r.getWholeReceipt();
-                    out.write(r.toString().getBytes());
+
                 } else {
                     depTestResult.addWrongStructureValues(i);
                 }
             }
         }
-        out.write(depTestResult.printResults().getBytes());
-        out.close();
-        return null;
+        resultFile.write(depTestResult.printResults().getBytes());
+        resultFile.close();
+        return depTestResult;
     }
 
     //checks

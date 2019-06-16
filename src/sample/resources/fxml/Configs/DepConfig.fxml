@@ -120,18 +120,18 @@
             <VBox fx:id="action" alignment="center" spacing="30">
                 <VBox alignment="center" spacing="20">
                     <HBox fx:id="DepShowCheckboxs" alignment="center" spacing="20">
-                        <JFXCheckBox mnemonicParsing="false" prefHeight="17.0" text="Futuredates valid"/>
-                        <JFXCheckBox mnemonicParsing="false" prefHeight="17.0" text="Details"/>
+                        <JFXCheckBox fx:id="futureBox" mnemonicParsing="false" prefHeight="17.0" text="Futuredates valid"/>
+                        <JFXCheckBox fx:id="detailsBox" mnemonicParsing="false" prefHeight="17.0" text="Details"/>
                     </HBox>
                     <JFXButton fx:id="DepShowButton" mnemonicParsing="false" onAction="#runDepTest" text="Run Test"
                                style="-fx-background-color: lightblue"/>
                 </VBox>
                 <VBox alignment="center" spacing="20">
                     <HBox fx:id="DepTesCheckboxs" alignment="center" spacing="20">
-                        <JFXCheckBox mnemonicParsing="false" prefHeight="17.0" text="Startreceipt not includes"/>
+                        <JFXCheckBox fx:id="startReceiptBox" mnemonicParsing="false" prefHeight="17.0" text="Startreceipt not included"/>
                         <JFXCheckBox mnemonicParsing="false" prefHeight="17.0" text="ToDo"/>
                     </HBox>
-                    <JFXButton fx:id="DepTestButton" mnemonicParsing="false" onAction="#runDepTest" text="Show Dep-File"
+                    <JFXButton fx:id="DepTestButton" mnemonicParsing="false" onAction="#showDepFile" text="Show Dep-File"
                                style="-fx-background-color: #e00000"/>
                     <padding>
                         <Insets bottom="20.0"/>

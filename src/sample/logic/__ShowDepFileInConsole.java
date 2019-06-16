@@ -19,7 +19,7 @@ import java.util.regex.*;
 
 import org.apache.commons.codec.binary.Base64;
 import sample.Util.Configuration;
-import sample.Util.DepTest;
+import sample.Util.DepTestLogic;
 import sample.Util.IOTools;
 
 //classe die das auslesen, umrechnen und ausgeben der DEP-Files übernimmt
@@ -31,7 +31,7 @@ public class __ShowDepFileInConsole {
     __Coding code = new __Coding();
     //TODO: Config handling
     IOTools read = new IOTools(new Configuration());
-    DepTest logic = new DepTest();
+    DepTestLogic logic = new DepTestLogic(new Configuration());
     //for Single DEPLines benötigt!
     int rightchainS = 0;
     int wrongchainS = 0;

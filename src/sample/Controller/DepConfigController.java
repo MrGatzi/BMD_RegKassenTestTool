@@ -1,9 +1,11 @@
 package sample.Controller;
 
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseEvent;
@@ -14,7 +16,7 @@ import javafx.stage.FileChooser;
 import sample.Util.Configuration;
 import sample.Util.uiTools.CostumComboBoxItem;
 import sample.Util.uiTools.MenuController;
-import sample.Util.DepTest;
+import sample.Util.DepTestLogic;
 
 import java.awt.*;
 import java.io.File;
@@ -39,11 +41,15 @@ public class DepConfigController implements MenuController {
     public HBox DepShowCheckboxs;
     public HBox DepTesCheckboxs;
     public HBox inputLine;
+    public JFXCheckBox startReceiptBox;
+    public JFXCheckBox futureBox;
+    public JFXCheckBox detailsBox;
 
     OutputController outputController;
     Configuration config;
     List<CostumComboBoxItem> depFiles;
     List<CostumComboBoxItem> depKeyFiles;
+    DepTestLogic depTestLogic;
 
     public void initialize() {
         inputLine.prefWidthProperty().bind(ParentPane.widthProperty());
@@ -54,6 +60,7 @@ public class DepConfigController implements MenuController {
         DepShowCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
         DepTesCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
         setupTextField();
+
     }
 
     public void shutdown() {
@@ -61,15 +68,6 @@ public class DepConfigController implements MenuController {
         this.config.setDepKeyFiles(depKeyFiles);*/
     }
 
-    public void runDepTest() throws ParseException, IOException, NoSuchAlgorithmException {
-        //__ShowDepFileInConsole a= new __ShowDepFileInConsole();
-        //a.show(nameDepFile.getSelectionModel().getSelectedItem().getPath(),nameKeyFile.getSelectionModel().getSelectedItem().getPath(),true);
-        DepTest a = new DepTest();
-        a.decryptAndStructureDepFile(nameDepFile.getSelectionModel().getSelectedItem().getPath(),nameKeyFile.getSelectionModel().getSelectedItem().getPath(),false);
-        /*TestResult test = new TestResult();
-        test.setOutputString("oiahfoiabfafawpi");
-        outputController.showResult(test);*/
-    }
 
     public void setOutputController(OutputController outputController) {
         this.outputController = outputController;
@@ -82,8 +80,7 @@ public class DepConfigController implements MenuController {
 
         setSavedFileNames(depFiles, nameDepFile);
         setSavedFileNames(depKeyFiles, nameKeyFile);
-
-
+        depTestLogic = new DepTestLogic(config);
     }
 
     public void chooseDepFile(MouseEvent mouseEvent) throws IOException {
@@ -155,5 +152,27 @@ public class DepConfigController implements MenuController {
         if (file.exists()){
             fileChooser.setInitialDirectory(file);
         }
+    }
+    public void runDepTest() throws ParseException, IOException, NoSuchAlgorithmException {
+        File tempFile = File.createTempFile("BMDRegKassenTestToolOuput-", ".tmp");
+        tempFile.deleteOnExit();
+        depTestLogic.runDepTest(
+                nameDepFile.getSelectionModel().getSelectedItem().getPath(),
+                nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
+                tempFile.getAbsolutePath(),
+                futureBox.isSelected(),
+                detailsBox.isSelected());
+    }
+
+
+    public void showDepFile(ActionEvent actionEvent) throws IOException, ParseException, NoSuchAlgorithmException {
+        //TODO CHECK for better possibility
+        File tempFile = File.createTempFile("BMDRegKassenTestToolOuput-", ".tmp");
+        tempFile.deleteOnExit();
+        depTestLogic.decryptAndStructureDepFile(
+                nameDepFile.getSelectionModel().getSelectedItem().getPath(),
+                nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
+                startReceiptBox.isSelected(),
+                tempFile);
     }
 }

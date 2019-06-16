@@ -1,5 +1,6 @@
 package sample.Util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +16,9 @@ public class DepTestResult {
     private List<Integer> wrongDates;
     private List<Integer> wrongChainedDates;
     private List<Integer> wrongReceiptId;
+    private File outputLocation;
 
-    public DepTestResult() {
+    public DepTestResult(File outputLocation) {
         wrongChainedReceipts = new ArrayList<Integer>();
         properChainedReceipts = 0;
         wrongRevenueSet = new ArrayList<Integer>();
@@ -26,6 +28,7 @@ public class DepTestResult {
         wrongDates = new ArrayList<Integer>();
         wrongChainedDates = new ArrayList<Integer>();
         wrongReceiptId = new ArrayList<Integer>();
+        this.outputLocation=outputLocation;
     }
 
     public void addChainedReceipt(int receiptId, boolean proper) {

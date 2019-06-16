@@ -1,17 +1,12 @@
 package sample.Util;
 
 import org.apache.commons.codec.binary.Base64;
-import sample.logic.__Coding;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.regex.Pattern;
 
 public class Receipt {
     CryptoTools code = new CryptoTools();
@@ -47,6 +42,7 @@ public class Receipt {
     private boolean receiptProperChained;
     private boolean revenueProperEncrypted;
     private int wrongReceiptSetValues;
+    private boolean errorBlockerUsed;
 
     public Receipt() {
         wholeReceipt = null;
@@ -69,6 +65,7 @@ public class Receipt {
         signaturePreviousValueCalculated = null;
         signature = null;
         revenueProperEncrypted = false;
+        errorBlockerUsed=false;
     }
 
     public String toString() {
@@ -209,7 +206,6 @@ public class Receipt {
             revenueShouldBe = null;
             return revenueOld;
         } else {
-
             revenueDecryptedNumber = (double) code.CalcNewValue(registerId, receiptId, revenueEncrypted, cryptoFileLocation);
             revenueDecrypted = Double.toString(revenueDecryptedNumber / 100);
 
@@ -220,8 +216,7 @@ public class Receipt {
             } else {
                 if ((receiptNumber == 0 && isFirstReceiptNotIncluded) || errorBlockerCauseSTOorTRA) {
                     revenueShouldBe = revenueDecrypted;
-                    //TODO: DO outside ?
-                    //errorBlockerCauseSTOorTRA = false;
+                    errorBlockerUsed =true;
                 } else {
                     revenueProperEncrypted = false;
                     revenueShouldBe = "FEHLER";
@@ -262,7 +257,9 @@ public class Receipt {
     }
 
 
-
+    public boolean wasErrorBlockerUsed(){
+        return errorBlockerUsed;
+    }
     public String getRevenueDecrypted() {
         return revenueDecrypted;
     }
