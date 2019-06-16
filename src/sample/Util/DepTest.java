@@ -3,6 +3,10 @@ package sample.Util;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -105,12 +109,13 @@ public class DepTest {
         return null;
     }
 
-    public String decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean firstReceiptFlag) throws IOException, NoSuchAlgorithmException, ParseException {
+    public String decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean isFristReceiptNotIncluded) throws IOException, NoSuchAlgorithmException, ParseException {
         //TODO: delte me add this ti DEP-TEST!
+        //TODO: how can i make this code actually look good as well?
         File file = new File("delteme.txt");
         file.createNewFile();
         FileOutputStream out = new FileOutputStream("delteme.txt");
-        DepTestResult depTestResult= new DepTestResult();
+        DepTestResult depTestResult = new DepTestResult();
         String depFileContent = ioTools.readTxtFile(depFileLocation);
         int nextReceiptField = depFileContent.indexOf("Belege-kompakt");
         while (nextReceiptField > -1) {
@@ -119,24 +124,53 @@ public class DepTest {
             nextReceiptField = depFileContent.indexOf("Belege-kompakt", depFileContent.indexOf("Belege-kompakt") + 1);
 
             String[] parts = depFileReceipts.split(",");
+            //TODO: check start values!
             double oldRevenueValue = 0;
-            String oldSignature="akjsbai";
+            String oldSignature = "";
+            String oldDate = null;
+            HashSet allReceiptIds = new HashSet<String>();
+
             for (int i = 0; i < parts.length; i++) {
                 Receipt r = StringToReceipt(i, parts[i]);
+                if (r != null) {
+                    int wrongSetValues = r.calculateNumberValuesOfReceiptStrings();
+                    if(i == 0 && !isFristReceiptNotIncluded){
+                        r.calculatePreviousAndNextSignitarues(r.getRegisterId());
+                    }else{
+                        r.calculatePreviousAndNextSignitarues(oldSignature);
+                    }
 
-                r.calculateNumberValuesOfReceiptStrings();
-                r.calculatePreviousAndNextSignitarues(oldSignature);
-                oldRevenueValue = r.calculateRevenueShouldBe(oldRevenueValue, cryptoFileLocation, false, false, i);
+                    oldRevenueValue = r.calculateRevenueShouldBe(oldRevenueValue, cryptoFileLocation, isFristReceiptNotIncluded, false);
 
-                depTestResult.addRevenueSet(i,r.isRevenueProperEncrypted());
-                if(r.isDateProperFormated()){
-                    depTestResult.addWrongDate(i);
+                    //Tests
+                    depTestResult.addChainedReceipt(i,r.isProperChained());
+                    depTestResult.addRevenueSet(i, r.isRevenueProperEncrypted());
+                    if (isDateProperFormated(r.getReceiptDate())) {
+                        if (oldDate != null && !isDateProperChained(r.getReceiptDate(), oldDate)) {
+                            depTestResult.addWrongChainedDate(i);
+                            out.write("Datumverkettung: FEHLER\r\n".getBytes());
+                        } else {
+                            oldDate = r.getReceiptDate();
+                        }
+                    } else {
+                        depTestResult.addWrongDate(i);
+                    }
+
+                    if (wrongSetValues > 0) {
+                        depTestResult.addWrongSetValue(i);
+                    }
+                    if (allReceiptIds.contains(r.getReceiptId())) {
+                        depTestResult.addWrongReceiptId(i);
+                    } else {
+                        allReceiptIds.add(r.getReceiptId());
+                    }
+
+                    oldDate = r.getReceiptDate();
+                    oldSignature = r.getWholeReceipt();
+                    out.write(r.toString().getBytes());
+                } else {
+                    depTestResult.addWrongStructureValues(i);
                 }
-               // r.isDateProperChained("");
-
-
-                oldSignature=r.getWholeReceipt();
-                out.write(r.toString().getBytes());
             }
         }
         out.write(depTestResult.printResults().getBytes());
@@ -144,5 +178,22 @@ public class DepTest {
         return null;
     }
 
+    //checks
+    public boolean isDateProperFormated(String input) throws ParseException {
+        if (Pattern.matches("\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d", input)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isDateProperChained(String currentReceiptDate, String oldReceiptDate) throws ParseException {
+        String currentDateString = currentReceiptDate.replace('T', ' ');
+        Date currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(currentDateString);
+
+        String oldDateString = oldReceiptDate.replace('T', ' ');
+        Date oldDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(oldDateString);
+
+        return currentDate.compareTo(oldDate) > 0;
+    }
 
 }

@@ -66,9 +66,9 @@ public class DepTestResult {
 
     public String printResults() {
         ouuputString = new StringBuilder();
-        ouuputString.append("Listen Elemente: " + (wrongChainedReceipts.size() + properChainedReceipts) + " , davon falsch verkettet:" + wrongChainedReceipts.size() + " \r\n");
+        ouuputString.append("Listen Elemente: " + (wrongChainedReceipts.size() + properChainedReceipts) + " , davon falsch verkettet: " + wrongChainedReceipts.size() + " \r\n");
         addReceiptIdOfWrongValues(wrongChainedReceipts);
-        ouuputString.append("Berechnete Umsatzzähler: " + (properRevenueSet + wrongRevenueSet.size()) + " , davon falsch verkettet:" + wrongRevenueSet.size() + " \r\n");
+        ouuputString.append("Berechnete Umsatzzähler: " + (properRevenueSet + wrongRevenueSet.size()) + " , davon falsch verkettet: " + wrongRevenueSet.size() + " \r\n");
         addReceiptIdOfWrongValues(wrongRevenueSet);
         ouuputString.append("Belege mit falschen Betragsspalten: " + wrongSetValues.size() + " \r\n");
         addReceiptIdOfWrongValues(wrongSetValues);
@@ -88,10 +88,7 @@ public class DepTestResult {
     public void addReceiptIdOfWrongValues(List<Integer> input) {
         if (input.size() > 0) {
             ouuputString.append("Folgende Belege sind betroffen: ");
-            for (int receiptId : input) {
-                ouuputString.append(receiptId);
-                ouuputString.append(", ");
-            }
+            ouuputString.append(input);
             ouuputString.append("\r\n");
         }
     }

@@ -1,10 +1,15 @@
 package sample.Util;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -12,48 +17,12 @@ import java.security.MessageDigest;
 import java.security.Security;
 
 public class CryptoTools {
-    public String GenerateJWSSig(String Payload) throws UnsupportedEncodingException {
-        String search = "_";
-        String jwsSignatureString = Payload.substring(Payload.lastIndexOf(search) + 1, Payload.length());
-        Payload = Payload.substring(0, Payload.lastIndexOf(search));
-        String jwsHeader = "eyJhbGciOiJFUzI1NiJ9"; // ES256 Header for JWS
-        byte[] jwsPayload = Base64.encodeBase64(Payload.getBytes(), true); // get
-        // payload
-        String jwsPayloadString = new String(jwsPayload, "UTF-8");
-        String[] partsString = jwsPayloadString.split("=");
-        jwsPayloadString = partsString[0];
-        partsString = jwsSignatureString.split("=");
-        jwsSignatureString = partsString[0];
-        jwsSignatureString = jwsSignatureString.replace('+', '-').replace('/', '_');
-        String jwsCompactRep = jwsHeader + "." + jwsPayloadString + "." + jwsSignatureString;
-        jwsCompactRep = jwsCompactRep.replace("\n", "").replace("\r", "");
-
-        return jwsCompactRep;
-    }
-
-    // Funktion die es einem base64URL decodiern l�sst.
-    public String base64UrlDecode(String input) {
-        String result = null;
-        Base64 decoder = new Base64(true);
-        byte[] decodedBytes = decoder.decode(input);
-        result = new String(decodedBytes);
-        return result;
-    }
-
-    // Funktion die es einem base64URL encodiern l�sst.
-    public String base64UrlEncode(String input) {
-        String result = null;
-        Base64 encoder = new Base64(true);
-        byte[] encoded = encoder.encode(input.getBytes());
-        result = new String(encoded);
-        return result;
-    }
-
     public static byte[] base64Decode(String base64Data, boolean isUrlSafe) {
         Base64 decoder = new Base64(isUrlSafe);
         return decoder.decode(base64Data);
     }
-    // Funktion zum Entschl�sseln des Umsatzz�hlers
+
+    // Funktion zum Entschlüsseln des Umsatzzählers
     // Aus dem Github verzeichniss : https://github.com/a-sit-plus/at-registrierkassen-mustercode/blob/master/regkassen-core/src/main/java/at/asitplus/regkassen/core/base/util/CryptoUtil.java
     // den TurnOverCounter checken ob er TRO oder STO ist und wenn dann nicht in die If rein !
     public static long decryptTurnOverCounter(String encryptedTurnOverCounterBase64, String hashAlgorithm, String cashBoxIDUTF8String, String receiptIdentifierUTF8String, SecretKey aesKey) throws Exception {
@@ -102,24 +71,85 @@ public class CryptoTools {
         // remove junk bytes by extracting known length of plain text
         byte[] testPlainTurnOverValue = new byte[lengthOfEncryptedTurnOverValue];
         System.arraycopy(testPlainTurnOverValueComplete, 0, testPlainTurnOverValue, 0, lengthOfEncryptedTurnOverValue);
-        //return
-        return new BigInteger(testPlainTurnOverValue).longValue();
 
-        // Alte BErechnung ! nicht l�nger relevant !
-        // create java LONG out of ByteArray (avoid Error when ByteArray is less then 4)
-			/*ByteBuffer plainTurnOverValueByteBuffer = ByteBuffer.wrap(testPlainTurnOverValue);
-			if (plainTurnOverValueByteBuffer.remaining() > 4) {
-				return plainTurnOverValueByteBuffer.getLong();
-			}else{
-				long i=0;
-				byte[] test = base64Decode(encryptedTurnOverCounterBase64,false);
-				if(test[0]==83){
-					i=98989898;
-				}
-				if(test[0]==84){
-					i=97979797;
-				}
-				return i;
-			}*/
+        return new BigInteger(testPlainTurnOverValue).longValue();
+    }
+
+    public String GenerateJWSSig(String Payload) throws UnsupportedEncodingException {
+        String search = "_";
+        String jwsSignatureString = Payload.substring(Payload.lastIndexOf(search) + 1, Payload.length());
+        Payload = Payload.substring(0, Payload.lastIndexOf(search));
+        String jwsHeader = "eyJhbGciOiJFUzI1NiJ9"; // ES256 Header for JWS
+        byte[] jwsPayload = Base64.encodeBase64(Payload.getBytes(), true); // get
+        // payload
+        String jwsPayloadString = new String(jwsPayload, "UTF-8");
+        String[] partsString = jwsPayloadString.split("=");
+        jwsPayloadString = partsString[0];
+        partsString = jwsSignatureString.split("=");
+        jwsSignatureString = partsString[0];
+        jwsSignatureString = jwsSignatureString.replace('+', '-').replace('/', '_');
+        String jwsCompactRep = jwsHeader + "." + jwsPayloadString + "." + jwsSignatureString;
+        jwsCompactRep = jwsCompactRep.replace("\n", "").replace("\r", "");
+
+        return jwsCompactRep;
+    }
+
+    // Funktion die es einem base64URL decodiern l�sst.
+    public String base64UrlDecode(String input) {
+        String result = null;
+        Base64 decoder = new Base64(true);
+        byte[] decodedBytes = decoder.decode(input);
+        result = new String(decodedBytes);
+        return result;
+    }
+
+    // Funktion die es einem base64URL encodiern l�sst.
+    public String base64UrlEncode(String input) {
+        String result = null;
+        Base64 encoder = new Base64(true);
+        byte[] encoded = encoder.encode(input.getBytes());
+        result = new String(encoded);
+        return result;
+    }
+
+    // Funktion die den Wert zurückgibt wenn ein verschlüsselter umsatzzähler
+    // eingegben wird.
+    // Input sind KassenId / Beleg ID (wie im QR File auszulesen) und der
+    // verschl�sselte Umsatz
+    // es wird zuerst der AES Schl�ssel aus dem aktuellen Crypto File ausgelesen
+    // (nach dem 3 ") (w�re auch mit Json gegangen)
+    // der AES key wird Base64codiert und in die Entschl�ssunlungs Funktion
+    // mit�bergeben
+    public long CalcNewValue(String KassenID, String BelegID, String Umsatz, String FilePath) throws IOException {
+        long NewValue1 = 99; // --> Kennzeichnet Fehler !
+        FileInputStream inputStream = new FileInputStream(FilePath);
+        try {
+            String everything = "";
+            try {
+                everything = IOUtils.toString(inputStream);
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+                System.out.println("Keinen Key im Crypto File !");
+            }
+            String[] parts = everything.split("\"");
+            String key = parts[3];// 128 bit
+            byte[] a = base64Decode(key, true);
+            if (a.length < 32) {
+                a = base64Decode("WQRtiiya3hYh/Uz44Bv3x8ETl1nrH6nCdErn69g5/lU=", true);
+            }
+            SecretKey aesKey = new SecretKeySpec(a, "AES");// AES Key in
+            // Byte Array
+            // einf�gen !
+            try {
+                NewValue1 = decryptTurnOverCounter(Umsatz, "sha-256", KassenID, BelegID, aesKey);
+            } catch (Exception e) {
+
+                e.printStackTrace();
+            }
+        } finally {
+            inputStream.close();
+        }
+        return NewValue1;
     }
 }

@@ -14,11 +14,7 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 public class Receipt {
-    String[] QR_Code_Titels = {"", "ZDA: ", "Kassen-ID:", "Belegnummer:", "Beleg-Datum-Uhrzeit:",
-            "Betrag-Satz-Normal:", "Betrag-Satz-Ermaessigt-1:", "Betrag-Satz-Ermaessigt-2:", "Betrag-Satz-Null:",
-            "Betrag-Satz-Besonders:", "Stand-Umsatz-Zaehler-AES256-ICM_Entschlüsselt:", "Zertifikat-Seriennummer:",
-            "Sig-Voriger-Beleg:", "Signatur:", "", "", ""}; // Array mit die vor einem Wert bei der "ShowDEP" und "schowQR" methode angezeigt werden
-    __Coding code = new __Coding();
+    CryptoTools code = new CryptoTools();
     //receipt values
     private String wholeReceipt;
     private int receiptNumber;
@@ -48,6 +44,7 @@ public class Receipt {
     private double receiptSetNullNumber;
     private double receiptSetSpecialNumber;
     //booleans and flags for tests;
+    private boolean receiptProperChained;
     private boolean revenueProperEncrypted;
     private int wrongReceiptSetValues;
 
@@ -121,7 +118,7 @@ public class Receipt {
         receiptString.append(revenueEncrypted);
         receiptString.append("\r\n");
 
-        receiptString.append("tand-Umsatz-Zaehler-AES256-ICM_Entschlüsselt: ");
+        receiptString.append("Stand-Umsatz-Zaehler-AES256-ICM_Entschlüsselt: ");
         receiptString.append(revenueDecrypted);
         receiptString.append("\r\n");
 
@@ -156,32 +153,13 @@ public class Receipt {
         return receiptString.toString();
     }
 
-    //checks
-    public boolean isDateProperFormated() throws ParseException {
-        if (Pattern.matches("\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d", receiptDate)) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isDateProperChained(String oldReceiptDate) throws ParseException {
-        String currentDateString = receiptDate.replace('T', ' ');
-        Date currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(currentDateString);
-
-        String oldDateString = oldReceiptDate.replace('T', ' ');
-        Date oldDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(oldDateString);
-
-        return currentDate.compareTo(oldDate) < 0;
-    }
-
-    public int howManyWrongCentValues() {
-        return 0;
-    }
-
     public boolean isRevenueProperEncrypted() {
         return revenueProperEncrypted;
     }
 
+    public boolean isProperChained(){
+        return receiptProperChained;
+    }
     //calculation
     public int calculateNumberValuesOfReceiptStrings() {
         wrongReceiptSetValues = 0;
@@ -218,14 +196,11 @@ public class Receipt {
         return wrongReceiptSetValues;
     }
 
-    public double calculateRevenueShouldBe(double revenueOld, String cryptoFileLocation, boolean isFirstReceipt, boolean errorBlockerCauseSTOorTRA, int forcounter) throws IOException {
-        // Abfrage ob STO oder TRA (Trainings beleg oder
-        // Storno Beleg)
-        // oder Umsatz wert
+    public double calculateRevenueShouldBe(double revenueOld, String cryptoFileLocation, boolean isFirstReceiptNotIncluded, boolean errorBlockerCauseSTOorTRA) throws IOException {
+        // Abfrage ob STO oder TRA (Trainings beleg oder Storno Beleg) oder Umsatz wert
         revenueProperEncrypted = true;
         if (revenueEncrypted.equals("U1RP")) {
             revenueDecrypted = "STO";
-            //TODO turn to int ?
             revenueShouldBeNumber = receiptSetNormalNumber + receiptSetReduced1Number + receiptSetReduced2Number + receiptSetNullNumber + receiptSetSpecialNumber + revenueOld;
             revenueShouldBe = Double.toString(revenueShouldBeNumber / 100);
             return revenueShouldBeNumber;
@@ -243,7 +218,7 @@ public class Receipt {
                 revenueShouldBe = Double.toString(revenueShouldBeNumber / 100);
                 return revenueShouldBeNumber;
             } else {
-                if ((forcounter == 0 && isFirstReceipt) || errorBlockerCauseSTOorTRA) {
+                if ((receiptNumber == 0 && isFirstReceiptNotIncluded) || errorBlockerCauseSTOorTRA) {
                     revenueShouldBe = revenueDecrypted;
                     //TODO: DO outside ?
                     //errorBlockerCauseSTOorTRA = false;
@@ -260,6 +235,12 @@ public class Receipt {
     public void calculatePreviousAndNextSignitarues(String inputForPreviousSignature) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         this.signaturePreviousValueCalculated = calculateSignature(inputForPreviousSignature);
         this.signatureNextValueCalculated = calculateSignature(wholeReceipt);
+        if(signaturePreviousValueCalculated.equals(signaturePreviousValue)){
+            receiptProperChained=true;
+        }else{
+            receiptProperChained=false;
+            signaturePreviousValueCalculated=signaturePreviousValueCalculated+" -FEHLER";
+        }
     }
 
     public String calculateSignature(String input) throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -279,6 +260,8 @@ public class Receipt {
         String SignatureString = new String(SignatureArray, "UTF-8");
         return SignatureString;
     }
+
+
 
     public String getRevenueDecrypted() {
         return revenueDecrypted;

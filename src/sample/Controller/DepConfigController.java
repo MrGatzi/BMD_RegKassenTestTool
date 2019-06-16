@@ -65,7 +65,7 @@ public class DepConfigController implements MenuController {
         //__ShowDepFileInConsole a= new __ShowDepFileInConsole();
         //a.show(nameDepFile.getSelectionModel().getSelectedItem().getPath(),nameKeyFile.getSelectionModel().getSelectedItem().getPath(),true);
         DepTest a = new DepTest();
-        a.decryptAndStructureDepFile(nameDepFile.getSelectionModel().getSelectedItem().getPath(),nameKeyFile.getSelectionModel().getSelectedItem().getPath(),true);
+        a.decryptAndStructureDepFile(nameDepFile.getSelectionModel().getSelectedItem().getPath(),nameKeyFile.getSelectionModel().getSelectedItem().getPath(),false);
         /*TestResult test = new TestResult();
         test.setOutputString("oiahfoiabfafawpi");
         outputController.showResult(test);*/
