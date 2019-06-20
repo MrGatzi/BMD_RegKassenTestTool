@@ -14,8 +14,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import sample.Util.Configuration;
+import sample.Util.TmpFactory;
 import sample.Util.depLogic.DepShowResult;
 import sample.Util.depLogic.DepTestResult;
+import sample.Util.enums.ActionTyp;
 import sample.Util.ui.ResultTab;
 import sample.Util.ui.CostumComboBoxItem;
 import sample.Util.ui.MenuController;
@@ -53,6 +55,7 @@ public class DepConfigController implements MenuController {
     List<CostumComboBoxItem> depFiles;
     List<CostumComboBoxItem> depKeyFiles;
     DepTestLogic depTestLogic;
+    TmpFactory tmpFactory;
 
     public void initialize() {
         inputLine.prefWidthProperty().bind(ParentPane.widthProperty());
@@ -84,6 +87,7 @@ public class DepConfigController implements MenuController {
         setSavedFileNames(depFiles, nameDepFile);
         setSavedFileNames(depKeyFiles, nameKeyFile);
         depTestLogic = new DepTestLogic(config);
+        tmpFactory = new TmpFactory(config);
     }
 
     public void chooseDepFile(MouseEvent mouseEvent) throws IOException {
@@ -158,11 +162,9 @@ public class DepConfigController implements MenuController {
         }
     }
 
-    public void runDepTest() throws ParseException, IOException {
-        File tempFile = File.createTempFile("BMDRegKassenTestToolOuput-", ".txt");
-        tempFile.deleteOnExit();
-
-        ResultTab resultTab = outputController.createNewResultTabPane("for onece");
+    public void runDepTest() throws IOException {
+        File tmpFile=tmpFactory.getNewTmpFile(ActionTyp.RUNDEPTEST);
+        ResultTab resultTab = outputController.createNewResultTabPane(tmpFile.getName());
         resultTab.showLoading();
         Thread t = new Thread(() -> {
             try {
@@ -171,7 +173,7 @@ public class DepConfigController implements MenuController {
                         nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         futureBox.isSelected(),
                         detailsBox.isSelected(),
-                        tempFile);
+                        tmpFile);
                 resultTab.printResult(depShowResult);
             } catch (IOException e) {
                 //TODO HANDLE EXEPTIONS
@@ -185,9 +187,8 @@ public class DepConfigController implements MenuController {
 
     public void showDepFile(ActionEvent actionEvent) throws IOException{
         //TODO CHECK for better possibility
-        File tempFile = File.createTempFile("BMDRegKassenTestToolOuput-", ".txt");
-        tempFile.deleteOnExit();
-        ResultTab resultTab = outputController.createNewResultTabPane("for onece");
+        File tmpFile=tmpFactory.getNewTmpFile(ActionTyp.SHOWDEPFILE);
+        ResultTab resultTab = outputController.createNewResultTabPane(tmpFile.getName());
         resultTab.showLoading();
         Thread t = new Thread(() -> {
             try {
@@ -195,7 +196,7 @@ public class DepConfigController implements MenuController {
                         nameDepFile.getSelectionModel().getSelectedItem().getPath(),
                         nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         startReceiptBox.isSelected(),
-                        tempFile);
+                        tmpFile);
                 resultTab.printResult(depTestResult);
             } catch (IOException | NoSuchAlgorithmException | ParseException e) {
                 //TODO ERROR HANDLING !
