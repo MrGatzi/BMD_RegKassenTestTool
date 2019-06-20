@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import sample.Util.Configuration;
 import sample.Util.DepTestResult;
-import sample.Util.ResultTab;
+import sample.Util.uiTools.ResultTab;
 import sample.Util.uiTools.CostumComboBoxItem;
 import sample.Util.uiTools.MenuController;
 import sample.Util.DepTestLogic;
@@ -172,7 +172,7 @@ public class DepConfigController implements MenuController {
 
     public void showDepFile(ActionEvent actionEvent) throws IOException, ParseException, NoSuchAlgorithmException {
         //TODO CHECK for better possibility
-        File tempFile = File.createTempFile("BMDRegKassenTestToolOuput-", ".tmp");
+        File tempFile = File.createTempFile("BMDRegKassenTestToolOuput-", ".txt");
         tempFile.deleteOnExit();
         ResultTab resultTab = outputController.createNewResultTabPane("for onece");
         resultTab.showLoading();

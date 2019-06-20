@@ -24,8 +24,7 @@
                             <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onSavePressed"
                                     stylesheets="@../Styles/chooseButtons.css">
                                 <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" onMouseClicked="#safeResult"
-                                               pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                         <image>
                                             <Image url="@../Images/save.png"/>
                                         </image>

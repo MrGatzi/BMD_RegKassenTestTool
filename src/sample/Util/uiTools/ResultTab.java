@@ -1,4 +1,4 @@
-package sample.Util;
+package sample.Util.uiTools;
 
 import com.jfoenix.controls.JFXSpinner;
 import javafx.application.Platform;
@@ -8,8 +8,10 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import sample.Util.Result;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -19,14 +21,15 @@ public class ResultTab extends Tab {
     public ResultTab(String filename) {
         super.setText(filename);
         result = null;
+        this.setOnClosed(c->{onClose();});
     }
 
     public void printResult(Result result) throws IOException {
+        this.result = result;
         TextArea textArea = new TextArea();
         textArea.setEditable(true);
         textArea.setWrapText(true);
-        result = result;
-        StringBuilder contentBuilder = new StringBuilder();
+
         try (BufferedReader br = new BufferedReader(new FileReader(result.getOuputLocation()))) {
             String sCurrentLine;
             while ((sCurrentLine = br.readLine()) != null) {
@@ -34,14 +37,13 @@ public class ResultTab extends Tab {
                 textArea.appendText("\r\n");
             }
         }
+
         BorderPane root = new BorderPane();
         root.setCenter(textArea);
 
         Platform.runLater(()->{this.setContent(root);});
-
         Result finalResult = result;
-        this.setOnClosed(c->{
-            finalResult.getOuputLocation().delete();});
+
     }
 
     ;
@@ -60,4 +62,11 @@ public class ResultTab extends Tab {
         return result;
     }
 
+    public File getFile(){
+        return result.getOuputLocation();
+    }
+
+    public void onClose(){
+        result.getOuputLocation().delete();
+    }
 }
