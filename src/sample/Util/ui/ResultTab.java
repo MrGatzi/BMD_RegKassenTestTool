@@ -1,4 +1,4 @@
-package sample.Util.uiTools;
+package sample.Util.ui;
 
 import com.jfoenix.controls.JFXSpinner;
 import javafx.application.Platform;
@@ -42,8 +42,6 @@ public class ResultTab extends Tab {
         root.setCenter(textArea);
 
         Platform.runLater(()->{this.setContent(root);});
-        Result finalResult = result;
-
     }
 
     ;

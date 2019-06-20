@@ -14,12 +14,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import sample.Util.Configuration;
-import sample.Util.DepShowResult;
-import sample.Util.DepTestResult;
-import sample.Util.uiTools.ResultTab;
-import sample.Util.uiTools.CostumComboBoxItem;
-import sample.Util.uiTools.MenuController;
-import sample.Util.DepTestLogic;
+import sample.Util.depLogic.DepShowResult;
+import sample.Util.depLogic.DepTestResult;
+import sample.Util.ui.ResultTab;
+import sample.Util.ui.CostumComboBoxItem;
+import sample.Util.ui.MenuController;
+import sample.Util.depLogic.DepTestLogic;
 
 import java.awt.*;
 import java.io.File;

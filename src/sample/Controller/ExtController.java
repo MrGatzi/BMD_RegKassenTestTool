@@ -2,7 +2,7 @@ package sample.Controller;
 
 import javafx.event.ActionEvent;
 import sample.Util.Configuration;
-import sample.Util.uiTools.MenuController;
+import sample.Util.ui.MenuController;
 
 public class ExtController implements MenuController {
     

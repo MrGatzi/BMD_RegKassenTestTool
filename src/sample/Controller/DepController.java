@@ -4,7 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import sample.Main;
 import sample.Util.Configuration;
-import sample.Util.uiTools.MenuController;
+import sample.Util.ui.MenuController;
 
 import java.io.IOException;
 

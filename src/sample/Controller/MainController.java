@@ -8,8 +8,8 @@ import sample.Util.*;
 import sample.Util.enums.Exeptionstyp;
 import sample.Util.errorHandling.BMDExeption;
 import sample.Util.factories.AlertFactory;
-import sample.Util.uiTools.MenuItem;
-import sample.Util.uiTools.SplitPaneItem;
+import sample.Util.ui.MenuItem;
+import sample.Util.ui.SplitPaneItem;
 
 import java.io.IOException;
 

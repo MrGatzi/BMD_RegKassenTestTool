@@ -1,4 +1,4 @@
-package sample.Util.uiTools;
+package sample.Util.ui;
 
 import javafx.fxml.FXMLLoader;
 
@@ -6,8 +6,6 @@ import java.io.IOException;
 
 import javafx.scene.layout.AnchorPane;
 import sample.Util.Configuration;
-import sample.Util.uiTools.MenuController;
-import sample.Util.uiTools.MenuItem;
 
 public class AnchorPaneItem implements MenuItem {;
 

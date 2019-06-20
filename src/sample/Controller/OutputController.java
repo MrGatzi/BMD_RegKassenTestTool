@@ -6,7 +6,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import sample.Util.uiTools.ResultTab;
+import sample.Util.ui.ResultTab;
 import sample.Util.factories.AlertFactory;
 import sample.Util.errorHandling.BMDExeption;
 import sample.Util.enums.Exeptionstyp;
@@ -14,8 +14,6 @@ import sample.Util.enums.Exeptionstyp;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 public class OutputController {
 

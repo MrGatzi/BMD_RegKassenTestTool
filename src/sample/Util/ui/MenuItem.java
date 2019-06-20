@@ -1,4 +1,4 @@
-package sample.Util.uiTools;
+package sample.Util.ui;
 
 import javafx.scene.Node;
 

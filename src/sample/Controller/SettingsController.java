@@ -13,7 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 import sample.Util.Configuration;
-import sample.Util.uiTools.MenuController;
+import sample.Util.ui.MenuController;
 
 import java.io.File;
 import java.util.List;
