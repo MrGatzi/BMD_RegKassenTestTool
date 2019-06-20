@@ -30,10 +30,11 @@ public class IOTools {
         StringBuilder depProcessString = new StringBuilder();
 
         depProcessString.append("java -Xmx");
-        depProcessString.append(config.getRamInput());
+        depProcessString.append(config.getSelectedRamInput());
         depProcessString.append("m -jar ");
 
         if (config.isUseDefaultDepTool()) {
+            //TODO: DOESN'T WORK TEST
             depProcessString.append(defaultTool);
         } else {
             depProcessString.append(config.getExternalDepToolLocation());

@@ -66,7 +66,13 @@ public class ResultTab extends Tab {
         return result.getOuputLocation();
     }
 
+    public void setFile(File file){
+        result.setOuputLocation(file);
+    }
+
     public void onClose(){
-        result.getOuputLocation().delete();
+        if(result.getOuputLocation().exists()){
+            result.getOuputLocation().delete();
+        }
     }
 }

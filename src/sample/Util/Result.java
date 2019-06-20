@@ -7,4 +7,5 @@ import java.io.IOException;
 
 public interface Result {
      File getOuputLocation();
+     void setOuputLocation(File file);
 }

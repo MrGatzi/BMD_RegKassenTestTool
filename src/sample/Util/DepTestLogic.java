@@ -1,6 +1,7 @@
 package sample.Util;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,65 +12,47 @@ import java.util.regex.Pattern;
 import org.apache.commons.codec.binary.Base64;
 
 public class DepTestLogic {
+
     IOTools ioTools;
     CryptoTools cryptoTools;
-    public DepTestLogic(Configuration config){
+
+    public DepTestLogic(Configuration config) {
         ioTools = new IOTools(config);
         cryptoTools = new CryptoTools();
     }
 
 
     //Run DEP-Test
-    public String runDepTest(String DefaultStringDEP, String DefaultStringCRYPTO,String outputFile, boolean futurBox, boolean DetailsBox) {
-        StringBuilder outputstring = new StringBuilder();
+    public DepShowResult runDepTest(String DefaultStringDEP, String DefaultStringCRYPTO, boolean futurBox, boolean DetailsBox, File outputFile) throws IOException {
+        DepShowResult depShowResult = new DepShowResult(outputFile);
+        FileOutputStream resultFile = new FileOutputStream(outputFile.getPath());
 
-        Process process = null;
-        String processString = ioTools.createDepProcessString(DefaultStringDEP, DefaultStringCRYPTO, outputFile, futurBox, DetailsBox);
+        String decodedPath = URLDecoder.decode(DepTestLogic.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
 
-        try {
-            process = Runtime.getRuntime().exec(processString);
-        } catch (IOException e) {
-            //TODO: use BMD Exeption
-            System.out.println("Error while calling regkassen-verification-depformat-1.1.1.jar on __ShowDEPFileInConsole.java on Line 290");
-            e.printStackTrace();
-        }
+        String processString = ioTools.createDepProcessString(DefaultStringDEP, DefaultStringCRYPTO, outputFile.getAbsolutePath(), futurBox, DetailsBox);
+
+        Process process = Runtime.getRuntime().exec(processString);
         InputStream depToolOutputStream = process.getInputStream();
         InputStreamReader depToolOutputStreamReader = new InputStreamReader(depToolOutputStream);
         BufferedReader br = new BufferedReader(depToolOutputStreamReader);
         String line;
+        while ((line = br.readLine()) != null) {
 
-        /*Funktionsblock zum schreiben auf die JTextaera
-         da die Jtextarea eine Character begrenzung in der Weite hat
-         (~~~105 Chars) und es Zeilen gibt die mehr beanspruchen
-         muss zuerst geprüft werden ob die Zeile größer ist. Wenn Sie
-         größer ist wird sie soo oft geteilt auf die JTextarea
-         geschrieben
-         bis keine Chars mehr vorhanden sind.
-         nach jeder geschriebenen Zeile wird die JTextarea um eine
-         "row" erweiterd
-         Am schluss wird der Courser wieder ganz am Anfang gestellt*/
-
-        try {
-            while ((line = br.readLine()) != null) {
-
-                if (line.length() > 105) {
-                    int lineCounter = line.length();
-                    int whileFlag = 0;
-                    while (lineCounter - 105 > 0) {
-                        outputstring.append(line.substring(whileFlag, whileFlag + 105) + "\r\n");
-                        whileFlag = whileFlag + 105;
-                        lineCounter = lineCounter - 105;
-                    }
-                    outputstring.append(line.substring(whileFlag, line.length()) + "\r\n");
-                } else {
-                    outputstring.append(line + "\r\n");
+            if (line.length() > 105) {
+                int lineCounter = line.length();
+                int whileFlag = 0;
+                while (lineCounter - 105 > 0) {
+                    resultFile.write((line.substring(whileFlag, whileFlag + 105) + "\r\n").getBytes());
+                    whileFlag = whileFlag + 105;
+                    lineCounter = lineCounter - 105;
                 }
+                resultFile.write((line.substring(whileFlag, line.length()) + "\r\n").getBytes());
+            } else {
+                resultFile.write((line + "\r\n").getBytes());
             }
-        } catch (IOException e) {
-            // TODO BMD Exeptions
-            e.printStackTrace();
         }
-        return outputstring.toString();
+        resultFile.close();
+        return depShowResult;
     }
 
     public Receipt StringToReceipt(int receiptNumber, String input) throws UnsupportedEncodingException {
@@ -129,26 +112,26 @@ public class DepTestLogic {
             String oldSignature = "";
             String oldDate = null;
             HashSet allReceiptIds = new HashSet<String>();
-            boolean errorBlocker=isFristReceiptNotIncluded;
+            boolean errorBlocker = isFristReceiptNotIncluded;
 
             for (int i = 0; i < parts.length; i++) {
                 Receipt r = StringToReceipt(i, parts[i]);
                 if (r != null) {
                     int wrongSetValues = r.calculateNumberValuesOfReceiptStrings();
-                    if(i == 0 && !isFristReceiptNotIncluded){
+                    if (i == 0 && !isFristReceiptNotIncluded) {
                         r.calculatePreviousAndNextSignitarues(r.getRegisterId());
-                    }else{
+                    } else {
                         r.calculatePreviousAndNextSignitarues(oldSignature);
                     }
 
                     oldRevenueValue = r.calculateRevenueShouldBe(oldRevenueValue, cryptoFileLocation, isFristReceiptNotIncluded, errorBlocker);
 
-                    if(errorBlocker&&r.wasErrorBlockerUsed()){
-                        errorBlocker=false;
+                    if (errorBlocker && r.wasErrorBlockerUsed()) {
+                        errorBlocker = false;
                     }
                     resultFile.write(r.toString().getBytes());
                     //Tests
-                    depTestResult.addChainedReceipt(i,r.isProperChained());
+                    depTestResult.addChainedReceipt(i, r.isProperChained());
                     depTestResult.addRevenueSet(i, r.isRevenueProperEncrypted());
                     if (isDateProperFormated(r.getReceiptDate())) {
                         if (oldDate != null && !isDateProperChained(r.getReceiptDate(), oldDate)) {

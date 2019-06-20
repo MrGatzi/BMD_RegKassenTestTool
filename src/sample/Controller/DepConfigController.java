@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import sample.Util.Configuration;
+import sample.Util.DepShowResult;
 import sample.Util.DepTestResult;
 import sample.Util.uiTools.ResultTab;
 import sample.Util.uiTools.CostumComboBoxItem;
@@ -157,20 +158,32 @@ public class DepConfigController implements MenuController {
         }
     }
 
-    public void runDepTest() throws ParseException, IOException, NoSuchAlgorithmException {
-        File tempFile = File.createTempFile("BMDRegKassenTestToolOuput-", ".tmp");
+    public void runDepTest() throws ParseException, IOException {
+        File tempFile = File.createTempFile("BMDRegKassenTestToolOuput-", ".txt");
         tempFile.deleteOnExit();
-        depTestLogic.runDepTest(
-                nameDepFile.getSelectionModel().getSelectedItem().getPath(),
-                nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
-                tempFile.getAbsolutePath(),
-                futureBox.isSelected(),
-                detailsBox.isSelected());
 
+        ResultTab resultTab = outputController.createNewResultTabPane("for onece");
+        resultTab.showLoading();
+        Thread t = new Thread(() -> {
+            try {
+                DepShowResult depShowResult = depTestLogic.runDepTest(
+                        nameDepFile.getSelectionModel().getSelectedItem().getPath(),
+                        nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
+                        futureBox.isSelected(),
+                        detailsBox.isSelected(),
+                        tempFile);
+                resultTab.printResult(depShowResult);
+            } catch (IOException e) {
+                //TODO HANDLE EXEPTIONS
+                e.printStackTrace();
+            }
+
+        });
+        t.start();
     }
 
 
-    public void showDepFile(ActionEvent actionEvent) throws IOException, ParseException, NoSuchAlgorithmException {
+    public void showDepFile(ActionEvent actionEvent) throws IOException{
         //TODO CHECK for better possibility
         File tempFile = File.createTempFile("BMDRegKassenTestToolOuput-", ".txt");
         tempFile.deleteOnExit();

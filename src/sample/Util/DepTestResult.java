@@ -100,4 +100,9 @@ public class DepTestResult implements Result{
     public File getOuputLocation(){
         return outputLocation;
     }
+
+    @Override
+    public void setOuputLocation(File file) {
+        outputLocation=file;
+    }
 }

@@ -53,11 +53,10 @@ public class OutputController {
         chooser.getExtensionFilters().add(filter);
         File file = chooser.showSaveDialog(resultTabPane.getScene().getWindow());
         if (file != null) {
+            File newfile = new File(file + ".txt");
             ResultTab selectedTab = (ResultTab) resultTabPane.getSelectionModel().getSelectedItem();
-            selectedTab.getFile().renameTo(new File(file + ".txt"));
-
+            selectedTab.getFile().renameTo(newfile);
         }
-        //TODO: implement
     }
 
     public void ondeletePressed(MouseEvent mouseEvent) throws IOException {
