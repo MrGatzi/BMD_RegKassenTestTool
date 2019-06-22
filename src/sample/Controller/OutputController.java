@@ -1,26 +1,26 @@
 package sample.Controller;
 
+import com.google.common.io.Files;
 import javafx.scene.control.Button;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import sample.Util.Configuration;
-import sample.Util.PartFilterResult;
+import sample.Util.depLogic.FilterResult;
 import sample.Util.enums.ActionTyp;
 import sample.Util.factories.TmpFactory;
 import sample.Util.ui.ResultTab;
+import sample.Util.Result;
 import sample.Util.factories.AlertFactory;
-import sample.Util.errorHandling.BMDExeption;
-import sample.Util.enums.Exeptionstyp;
 
 import java.awt.*;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 public class OutputController {
 
@@ -30,6 +30,7 @@ public class OutputController {
     public AnchorPane anchorpane;
     public HBox hbox;
     public Button filterButton;
+    public Text checkedTextField;
     AlertFactory dialogFactory;
 
     Configuration config;
@@ -42,9 +43,16 @@ public class OutputController {
         });
     }
 
-    public ResultTab createNewResultTabPane(String tabName,ActionTyp resultTyp) {
+    public ResultTab createNewResultTabPane(String tabName, ActionTyp resultTyp) {
         resultTabPane.prefHeightProperty().bind(vbox.heightProperty());
-        ResultTab newTab = new ResultTab(tabName,resultTyp);
+        ResultTab newTab = new ResultTab(tabName, resultTyp);
+        resultTabPane.getTabs().add(newTab);
+        resultTabPane.getSelectionModel().select(newTab);
+        return newTab;
+    }
+    public ResultTab createNewResultTabPane(String tabName, ActionTyp resultTyp,Result result) throws IOException {
+        resultTabPane.prefHeightProperty().bind(vbox.heightProperty());
+        ResultTab newTab = new ResultTab(tabName, resultTyp,result);
         resultTabPane.getTabs().add(newTab);
         resultTabPane.getSelectionModel().select(newTab);
         return newTab;
@@ -77,16 +85,19 @@ public class OutputController {
     public void onFilterPressed(MouseEvent mouseEvent) throws IOException {
         //check typ
         if (((ResultTab) resultTabPane.getSelectionModel().getSelectedItem()).getResultTyp() == ActionTyp.RUNDEPTEST) {
-            File outputFile = tmpFactory.getNewTmpFile(ActionTyp.FILTERDEPTEST);
             String textToCheck = ((ResultTab) resultTabPane.getSelectionModel().getSelectedItem()).getCurrentlyDisplayedText();
-            PartFilterResult PartFilterResult = new PartFilterResult();
-            PartFilterResult.addToResultString("Fehler gefunden in Step 1 :\r\n");
-            PartFilterResult.add(checkForErrors(textToCheck, "Machine readable code validation #"));
-            PartFilterResult.addToResultString("-------------------------------------------------------------------------------\nFehler gefunden in Step 2 :\r\n");
-            PartFilterResult.add(checkForErrors(textToCheck, "RKSV-DEP-EXPORT-validation #"));
-        }
+            File outputFile = tmpFactory.getNewTmpFile(ActionTyp.FILTERDEPTEST);
 
-        //TODO: PrintResult
+
+            FilterResult filterResult = new FilterResult();
+            filterResult.addToResultString("Fehler gefunden in Step 1 :\r\n");
+            filterResult.add(checkForErrors(textToCheck, "Machine readable code validation #"));
+            filterResult.addToResultString("-------------------------------------------------------------------------------\nFehler gefunden in Step 2 :\r\n");
+            filterResult.add(checkForErrors(textToCheck, "RKSV-DEP-EXPORT-validation #"));
+            Files.write(filterResult.getResultString(), outputFile, Charset.forName("UTF-8"));
+            filterResult.setOuputLocation(outputFile);
+            ResultTab resultTab = createNewResultTabPane(outputFile.getName(), ActionTyp.FILTERDEPTEST, filterResult);
+        }
 
     }
 
@@ -94,11 +105,7 @@ public class OutputController {
         Desktop.getDesktop().open(((ResultTab) resultTabPane.getSelectionModel().getSelectedItem()).getFile());
     }
 
-    public void onSharePressed(MouseEvent mouseEvent) throws IOException {
-        dialogFactory.createNewDialog(anchorpane, new BMDExeption("This feature is not implemented yet", "Work in progress", Exeptionstyp.INFO)).showAndWait();
-    }
-
-    private PartFilterResult checkForErrors(String textToCheck, String checkString) {
+    private FilterResult checkForErrors(String textToCheck, String checkString) {
         int checkedReceipt = 0;
         int errorsFound = 0;
         int index = textToCheck.indexOf(checkString);
@@ -120,21 +127,39 @@ public class OutputController {
             }
             index = index2;
         }
-        PartFilterResult partFilterResult = new PartFilterResult(checkedReceipt, errorsFound, errorMessages.toString());
+        FilterResult partFilterResult = new FilterResult(checkedReceipt, errorsFound, errorMessages.toString());
         return partFilterResult;
+    }
+
+    public void setCheckedTextField(FilterResult result) {
+        checkedTextField.setText("Checked: " + result.getCheckedReceipt() + " Errors: " + result.getErrorsFound());
+        hideCheckedTextField(false);
+    }
+
+    public void hideCheckedTextField(boolean hide) {
+        if (hide) {
+            checkedTextField.setText("Checked: XX Errors:XX");
+            checkedTextField.setVisible(false);
+        } else {
+            checkedTextField.setVisible(true);
+        }
     }
 
     public void updateNavBar(ResultTab newTab) {
         switch (newTab.getResultTyp()) {
             case RUNDEPTEST:
                 filterButton.setDisable(false);
+                hideCheckedTextField(true);
                 break;
             case SHOWDEPFILE:
                 filterButton.setDisable(true);
+                hideCheckedTextField(true);
                 break;
             case FILTERDEPTEST:
-                filterButton.setDisable(false);
+                filterButton.setDisable(true);
+                setCheckedTextField((FilterResult) newTab.getResult());
                 break;
         }
     }
+
 }

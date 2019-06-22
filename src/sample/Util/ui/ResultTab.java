@@ -23,18 +23,33 @@ public class ResultTab extends Tab {
 
     public ResultTab(String filename, ActionTyp resultTyp) {
         super.setText(filename);
-        result = null;
+        this.result = null;
+        this.textArea = new TextArea();
+        this.resultTyp = resultTyp;
+
         this.setOnClosed(c -> {
             onClose();
         });
+
+    }
+
+    public ResultTab(String filename, ActionTyp resultTyp, Result result) throws IOException {
+        super.setText(filename);
+        this.result = null;
+        this.textArea = new TextArea();
         this.resultTyp = resultTyp;
+
+        this.setOnClosed(c -> {
+            onClose();
+        });
+        printResult(result);
     }
 
     public void printResult(Result result) throws IOException {
         this.result = result;
-        textArea = new TextArea();
-        textArea.setEditable(true);
-        textArea.setWrapText(true);
+
+        this.textArea.setEditable(true);
+        this.textArea.setWrapText(true);
 
         try (BufferedReader br = new BufferedReader(new FileReader(result.getOuputLocation()))) {
             String sCurrentLine;
@@ -45,7 +60,7 @@ public class ResultTab extends Tab {
         }
 
         BorderPane root = new BorderPane();
-        root.setCenter(textArea);
+        root.setCenter(this.textArea);
 
         Platform.runLater(() -> {
             this.setContent(root);
@@ -83,7 +98,7 @@ public class ResultTab extends Tab {
     }
 
     public String getCurrentlyDisplayedText() {
-        return textArea.getText();
+        return this.textArea.getText();
     }
 
     public ActionTyp getResultTyp() {

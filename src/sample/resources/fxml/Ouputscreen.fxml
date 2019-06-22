@@ -64,20 +64,9 @@
                                     </ImageView>
                                 </graphic>
                             </Button>
-                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onSharePressed"
-                                    stylesheets="@../Styles/chooseButtons.css">
-                                <graphic>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <image>
-                                            <Image url="@../Images/share.png"/>
-                                        </image>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
                         </HBox>
                         <VBox alignment="CENTER_RIGHT">
-                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Geprüft: XX Fehler:XX">
+                            <Text fx:id="checkedTextField" strokeType="OUTSIDE" strokeWidth="0.0" text="Checked: XX Errors:XX">
                                 <VBox.margin>
                                     <Insets right="10.0" left="10.0"/>
                                 </VBox.margin>
