@@ -31,7 +31,7 @@
                                     </ImageView>
                                 </graphic>
                             </Button>
-                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#ondeletePressed"
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onDeletePressed"
                                     stylesheets="@../Styles/chooseButtons.css">
                                 <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
@@ -42,7 +42,7 @@
                                     </ImageView>
                                 </graphic>
                             </Button>
-                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onfilterPressed"
+                            <Button fx:id="filterButton" contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onFilterPressed"
                                     stylesheets="@../Styles/chooseButtons.css">
                                 <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"

@@ -37,6 +37,7 @@ public class DepController implements MenuController {
     public void setConfig( Configuration config){
         this.config=config;
         configController.setConfig(this.config);
+        outputController.setConfig(this.config);
     }
 
     public void runDepTest() {

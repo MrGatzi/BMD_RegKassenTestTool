@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import sample.Controller.MainController;
 
@@ -17,6 +18,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        primaryStage.getIcons().add(new Image("sample/resources/Images/BMD_RegKassenTestTool_Logo.png"));
         FXMLLoader rootloader = new FXMLLoader(getClass().getResource("resources/fxml/MainMenu.fxml"));
         System.out.println(Paths.get(".").toAbsolutePath().normalize().toString());
         Parent root = rootloader.load();

@@ -1,5 +1,6 @@
-package sample.Util;
+package sample.Util.factories;
 
+import sample.Util.Configuration;
 import sample.Util.enums.ActionTyp;
 
 import java.io.File;
@@ -22,16 +23,19 @@ public class TmpFactory {
         if (!junkFolder.exists()) {
             junkFolder.mkdir();
         }
-        String name="";
+        String name = "";
         switch (typ) {
             case RUNDEPTEST:
-                name="DepTestResult";
+                name = "DepTestResult";
                 break;
             case SHOWDEPFILE:
-                name="DepFile";
+                name = "DepFile";
+                break;
+            case FILTERDEPTEST:
+                name = "FilterResult";
                 break;
         }
-        File tempFile = File.createTempFile(name, ".txt", junkFolder);
+        File tempFile = File.createTempFile(name, ".tmp.txt", junkFolder);
         tempFile.deleteOnExit();
         return tempFile;
     }

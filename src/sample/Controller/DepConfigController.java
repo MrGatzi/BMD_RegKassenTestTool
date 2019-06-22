@@ -14,7 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import sample.Util.Configuration;
-import sample.Util.TmpFactory;
+import sample.Util.factories.TmpFactory;
 import sample.Util.depLogic.DepShowResult;
 import sample.Util.depLogic.DepTestResult;
 import sample.Util.enums.ActionTyp;
@@ -163,8 +163,8 @@ public class DepConfigController implements MenuController {
     }
 
     public void runDepTest() throws IOException {
-        File tmpFile=tmpFactory.getNewTmpFile(ActionTyp.RUNDEPTEST);
-        ResultTab resultTab = outputController.createNewResultTabPane(tmpFile.getName());
+        File tmpFile = tmpFactory.getNewTmpFile(ActionTyp.RUNDEPTEST);
+        ResultTab resultTab = outputController.createNewResultTabPane(tmpFile.getName(), ActionTyp.RUNDEPTEST);
         resultTab.showLoading();
         Thread t = new Thread(() -> {
             try {
@@ -185,10 +185,10 @@ public class DepConfigController implements MenuController {
     }
 
 
-    public void showDepFile(ActionEvent actionEvent) throws IOException{
+    public void showDepFile(ActionEvent actionEvent) throws IOException {
         //TODO CHECK for better possibility
-        File tmpFile=tmpFactory.getNewTmpFile(ActionTyp.SHOWDEPFILE);
-        ResultTab resultTab = outputController.createNewResultTabPane(tmpFile.getName());
+        File tmpFile = tmpFactory.getNewTmpFile(ActionTyp.SHOWDEPFILE);
+        ResultTab resultTab = outputController.createNewResultTabPane(tmpFile.getName(), ActionTyp.SHOWDEPFILE);
         resultTab.showLoading();
         Thread t = new Thread(() -> {
             try {

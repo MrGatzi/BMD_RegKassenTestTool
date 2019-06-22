@@ -9,6 +9,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import sample.Util.Result;
+import sample.Util.enums.ActionTyp;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,16 +18,21 @@ import java.io.IOException;
 
 public class ResultTab extends Tab {
     Result result;
+    TextArea textArea;
+    ActionTyp resultTyp;
 
-    public ResultTab(String filename) {
+    public ResultTab(String filename, ActionTyp resultTyp) {
         super.setText(filename);
         result = null;
-        this.setOnClosed(c->{onClose();});
+        this.setOnClosed(c -> {
+            onClose();
+        });
+        this.resultTyp = resultTyp;
     }
 
     public void printResult(Result result) throws IOException {
         this.result = result;
-        TextArea textArea = new TextArea();
+        textArea = new TextArea();
         textArea.setEditable(true);
         textArea.setWrapText(true);
 
@@ -41,7 +47,9 @@ public class ResultTab extends Tab {
         BorderPane root = new BorderPane();
         root.setCenter(textArea);
 
-        Platform.runLater(()->{this.setContent(root);});
+        Platform.runLater(() -> {
+            this.setContent(root);
+        });
     }
 
     ;
@@ -52,7 +60,7 @@ public class ResultTab extends Tab {
         Label loadingLabel = new Label("Loading ....");
         hbox.setAlignment(Pos.CENTER);
         hbox.setSpacing(10);
-        hbox.getChildren().addAll(loadingSpinner,loadingLabel);
+        hbox.getChildren().addAll(loadingSpinner, loadingLabel);
         this.setContent(hbox);
     }
 
@@ -60,17 +68,25 @@ public class ResultTab extends Tab {
         return result;
     }
 
-    public File getFile(){
+    public File getFile() {
         return result.getOuputLocation();
     }
 
-    public void setFile(File file){
+    public void setFile(File file) {
         result.setOuputLocation(file);
     }
 
-    public void onClose(){
-        if(result.getOuputLocation().exists()){
+    public void onClose() {
+        if (result.getOuputLocation().exists()) {
             result.getOuputLocation().delete();
         }
+    }
+
+    public String getCurrentlyDisplayedText() {
+        return textArea.getText();
+    }
+
+    public ActionTyp getResultTyp() {
+        return this.resultTyp;
     }
 }
