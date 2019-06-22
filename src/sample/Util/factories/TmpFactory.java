@@ -1,12 +1,10 @@
 package sample.Util.factories;
 
 import sample.Util.Configuration;
-import sample.Util.enums.ActionTyp;
+import sample.Util.enums.ResultTyp;
 
 import java.io.File;
 import java.io.IOException;
-
-import static sample.Util.enums.ActionTyp.RUNDEPTEST;
 
 
 public class TmpFactory {
@@ -17,7 +15,7 @@ public class TmpFactory {
         this.config = config;
     }
 
-    public File getNewTmpFile(ActionTyp typ) throws IOException {
+    public File getNewTmpFile(ResultTyp typ) throws IOException {
         File junkFolder = new File(config.getJunkFolder());
 
         if (!junkFolder.exists()) {

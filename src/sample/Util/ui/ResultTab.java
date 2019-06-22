@@ -9,7 +9,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import sample.Util.Result;
-import sample.Util.enums.ActionTyp;
+import sample.Util.enums.ResultTabState;
+import sample.Util.enums.ResultTyp;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,9 +20,9 @@ import java.io.IOException;
 public class ResultTab extends Tab {
     Result result;
     TextArea textArea;
-    ActionTyp resultTyp;
-
-    public ResultTab(String filename, ActionTyp resultTyp) {
+    ResultTyp resultTyp;
+    ResultTabState resultTabState;
+    public ResultTab(String filename, ResultTyp resultTyp) {
         super.setText(filename);
         this.result = null;
         this.textArea = new TextArea();
@@ -30,10 +31,10 @@ public class ResultTab extends Tab {
         this.setOnClosed(c -> {
             onClose();
         });
-
+        resultTabState= ResultTabState.CREATED;
     }
 
-    public ResultTab(String filename, ActionTyp resultTyp, Result result) throws IOException {
+    public ResultTab(String filename, ResultTyp resultTyp, Result result) throws IOException {
         super.setText(filename);
         this.result = null;
         this.textArea = new TextArea();
@@ -43,12 +44,13 @@ public class ResultTab extends Tab {
             onClose();
         });
         printResult(result);
+        resultTabState= ResultTabState.CREATED;
     }
 
     public void printResult(Result result) throws IOException {
         this.result = result;
 
-        this.textArea.setEditable(true);
+        this.textArea.setEditable(false);
         this.textArea.setWrapText(true);
 
         try (BufferedReader br = new BufferedReader(new FileReader(result.getOuputLocation()))) {
@@ -65,6 +67,7 @@ public class ResultTab extends Tab {
         Platform.runLater(() -> {
             this.setContent(root);
         });
+        resultTabState= ResultTabState.PRINTED;
     }
 
     ;
@@ -77,6 +80,11 @@ public class ResultTab extends Tab {
         hbox.setSpacing(10);
         hbox.getChildren().addAll(loadingSpinner, loadingLabel);
         this.setContent(hbox);
+        resultTabState= ResultTabState.LOADING;
+    }
+
+    public ResultTabState getResultTabState() {
+        return resultTabState;
     }
 
     public Result getResult() {
@@ -101,7 +109,7 @@ public class ResultTab extends Tab {
         return this.textArea.getText();
     }
 
-    public ActionTyp getResultTyp() {
+    public ResultTyp getResultTyp() {
         return this.resultTyp;
     }
 }

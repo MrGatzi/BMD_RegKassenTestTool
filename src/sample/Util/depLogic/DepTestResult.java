@@ -1,8 +1,6 @@
 package sample.Util.depLogic;
 
-import javafx.scene.control.TextArea;
 import sample.Util.Result;
-import sample.Util.enums.ActionTyp;
 
 import java.io.*;
 import java.util.ArrayList;

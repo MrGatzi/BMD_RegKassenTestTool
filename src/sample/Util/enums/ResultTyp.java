@@ -1,6 +1,6 @@
 package sample.Util.enums;
 
-public enum ActionTyp {
+public enum ResultTyp {
     RUNDEPTEST,
     SHOWDEPFILE,
     FILTERDEPTEST
