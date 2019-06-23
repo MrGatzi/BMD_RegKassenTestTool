@@ -1,7 +1,9 @@
 package sample.Util.ui;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.AnchorPane;
 import sample.Main;
 import sample.Util.Configuration;
 

@@ -51,9 +51,10 @@ public class OutputController {
         resultTabPane.getSelectionModel().select(newTab);
         return newTab;
     }
+
     public ResultTab createNewResultTabPane(String tabName, ResultTyp resultTyp, Result result) throws IOException {
         resultTabPane.prefHeightProperty().bind(vbox.heightProperty());
-        ResultTab newTab = new ResultTab(tabName, resultTyp,result);
+        ResultTab newTab = new ResultTab(tabName, resultTyp, result);
         resultTabPane.getTabs().add(newTab);
         resultTabPane.getSelectionModel().select(newTab);
         return newTab;
@@ -65,8 +66,8 @@ public class OutputController {
     }
 
     public void onSavePressed(MouseEvent mouseEvent) throws IOException {
-        ResultTab currentTab=((ResultTab) resultTabPane.getSelectionModel().getSelectedItem());
-        if (currentTab.getResultTabState()== ResultTabState.PRINTED) {
+        ResultTab currentTab = ((ResultTab) resultTabPane.getSelectionModel().getSelectedItem());
+        if (currentTab != null && currentTab.getResultTabState() == ResultTabState.PRINTED) {
             FileChooser chooser = new FileChooser();
             chooser.setTitle("Export File");
             FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Text", "txt");
@@ -80,16 +81,16 @@ public class OutputController {
     }
 
     public void onDeletePressed(MouseEvent mouseEvent) throws IOException {
-        ResultTab currentTab=((ResultTab) resultTabPane.getSelectionModel().getSelectedItem());
-        if (currentTab.getResultTabState()== ResultTabState.PRINTED) {
+        ResultTab currentTab = ((ResultTab) resultTabPane.getSelectionModel().getSelectedItem());
+        if (currentTab != null && currentTab.getResultTabState() == ResultTabState.PRINTED) {
             currentTab.onClose();
             resultTabPane.getTabs().remove(currentTab);
         }
     }
 
     public void onFilterPressed(MouseEvent mouseEvent) throws IOException {
-        ResultTab currentTab=((ResultTab) resultTabPane.getSelectionModel().getSelectedItem());
-        if (currentTab.getResultTyp() == ResultTyp.RUNDEPTEST && currentTab.getResultTabState()== ResultTabState.PRINTED) {
+        ResultTab currentTab = ((ResultTab) resultTabPane.getSelectionModel().getSelectedItem());
+        if (currentTab != null && currentTab.getResultTyp() == ResultTyp.RUNDEPTEST && currentTab.getResultTabState() == ResultTabState.PRINTED) {
             String textToCheck = ((ResultTab) resultTabPane.getSelectionModel().getSelectedItem()).getCurrentlyDisplayedText();
             File outputFile = tmpFactory.getNewTmpFile(ResultTyp.FILTERDEPTEST);
             FilterResult filterResult = new FilterResult();
@@ -105,8 +106,8 @@ public class OutputController {
     }
 
     public void onShowPressed(MouseEvent mouseEvent) throws IOException {
-        ResultTab currentTab=((ResultTab) resultTabPane.getSelectionModel().getSelectedItem());
-        if (currentTab.getResultTyp() == ResultTyp.RUNDEPTEST && currentTab.getResultTabState()== ResultTabState.PRINTED) {
+        ResultTab currentTab = ((ResultTab) resultTabPane.getSelectionModel().getSelectedItem());
+        if (currentTab != null && currentTab.getResultTyp() == ResultTyp.RUNDEPTEST && currentTab.getResultTabState() == ResultTabState.PRINTED) {
             Desktop.getDesktop().open(currentTab.getFile());
         }
     }

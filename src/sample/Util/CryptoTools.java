@@ -7,7 +7,6 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -17,6 +16,11 @@ import java.security.MessageDigest;
 import java.security.Security;
 
 public class CryptoTools {
+
+    public CryptoTools(){
+
+    }
+
     public static byte[] base64Decode(String base64Data, boolean isUrlSafe) {
         Base64 decoder = new Base64(isUrlSafe);
         return decoder.decode(base64Data);

@@ -2,9 +2,7 @@ package sample.Util;
 
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 
 public class IOTools {
     private String defaultTool = "regkassen-verification-depformat-1.1.1.jar";
@@ -14,16 +12,30 @@ public class IOTools {
         this.config = config;
     }
 
-    // Universale funktion um einen Text aus einem angebenen File zu lesen. (Input File-Path)
     public String readTxtFile(String File) throws IOException {
-        String Output = "";
+        /*String Output = "";
         FileInputStream inputStream = new FileInputStream(File);
         try {
             Output = IOUtils.toString(inputStream);
         } finally {
             inputStream.close();
         }
-        return Output;
+        return Output;*/
+        StringBuilder contentBuilder = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader(File)))
+        {
+
+            String sCurrentLine;
+            while ((sCurrentLine = br.readLine()) != null)
+            {
+                contentBuilder.append(sCurrentLine).append("\n");
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return contentBuilder.toString();
     }
 
     public String createDepProcessString(String depFileLocation, String cryptoFileLocation, String outputFileLocation, boolean futureReceiptValid, boolean printDetails) {

@@ -8,13 +8,14 @@ import sample.Util.ui.MenuController;
 
 import java.io.IOException;
 
-public class DepController implements MenuController {
+public class DepAdvController implements MenuController {
     public AnchorPane configPane;
     public AnchorPane outputPane;
     OutputController outputController;
     DepConfigController configController;
 
     Configuration config;
+
     public void initialize() {
         try {
             FXMLLoader outputLoader= new FXMLLoader(Main.class.getResource("resources/fxml/Ouputscreen.fxml"));
@@ -22,12 +23,12 @@ public class DepController implements MenuController {
             outputPane.getChildren().add(output);
             outputController = outputLoader.<OutputController>getController();
 
-            FXMLLoader configLoader= new FXMLLoader(Main.class.getResource("resources/fxml/Configs/DepConfig.fxml"));
+            FXMLLoader configLoader= new FXMLLoader(Main.class.getResource("resources/fxml/Configs/QrConfig.fxml"));
             AnchorPane config = configLoader.load();
             configPane.getChildren().add(config);
             configController = configLoader.<DepConfigController>getController();
-            configController.setOutputController(outputController);
 
+            configController.setOutputController(outputController);
 
         } catch (IOException e) {
             e.printStackTrace();
