@@ -1,4 +1,4 @@
-package sample.Util.depLogic;
+package sample.Util.DepLogic.Results;
 
 import sample.Util.Result;
 
