@@ -12,7 +12,7 @@ public class QrController implements MenuController {
     public AnchorPane configPane;
     public AnchorPane outputPane;
     OutputController outputController;
-    DepConfigController configController;
+    QrConfigController configController;
 
     Configuration config;
 
@@ -26,7 +26,7 @@ public class QrController implements MenuController {
             FXMLLoader configLoader= new FXMLLoader(Main.class.getResource("resources/fxml/Configs/QrConfig.fxml"));
             AnchorPane config = configLoader.load();
             configPane.getChildren().add(config);
-            configController = configLoader.<DepConfigController>getController();
+            configController = configLoader.<QrConfigController>getController();
 
             configController.setOutputController(outputController);
 
