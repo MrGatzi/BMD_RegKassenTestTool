@@ -19,7 +19,7 @@ import java.util.regex.*;
 
 import org.apache.commons.codec.binary.Base64;
 import sample.Util.Configuration;
-import sample.Util.depLogic.DepTestLogic;
+import sample.Util.DepLogic.DepTestLogic;
 import sample.Util.IOTools;
 
 //classe die das auslesen, umrechnen und ausgeben der DEP-Files übernimmt

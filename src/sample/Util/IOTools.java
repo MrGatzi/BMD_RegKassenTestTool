@@ -1,11 +1,10 @@
 package sample.Util;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.*;
 
 public class IOTools {
-    private String defaultTool = "regkassen-verification-depformat-1.1.1.jar";
+    private String defaultDepTool = "regkassen-verification-depformat-1.1.1.jar";
+    private String defaultQrTool = "regkassen-verification-receipts-1.1.1.jar";
     private Configuration config;
 
     public IOTools(Configuration config) {
@@ -47,9 +46,49 @@ public class IOTools {
 
         if (config.isUseDefaultDepTool()) {
             //TODO: DOESN'T WORK TEST
-            depProcessString.append(defaultTool);
+            depProcessString.append(defaultDepTool);
         } else {
             depProcessString.append(config.getExternalDepToolLocation());
+        }
+
+        if (futureReceiptValid) {
+            depProcessString.append(" -f");
+        }
+        if (printDetails) {
+            depProcessString.append(" -v");
+        }
+
+        depProcessString.append(" -i ");
+        depProcessString.append(depFileLocation);
+        depProcessString.append(" -c ");
+        depProcessString.append(cryptoFileLocation);
+        depProcessString.append(" -o ");
+
+        if (outputFileLocation != null) {
+            File file = new File(outputFileLocation);
+            if (file.isDirectory()) {
+                depProcessString.append(outputFileLocation);
+            } else {
+                depProcessString.append("OutputFiles");
+            }
+        } else {
+            //TODO: add ERROR HAndling + tmp Files
+        }
+        return depProcessString.toString();
+    }
+
+    public String createQrProcessString(String depFileLocation, String cryptoFileLocation, String outputFileLocation, boolean futureReceiptValid, boolean printDetails) {
+        StringBuilder depProcessString = new StringBuilder();
+
+        depProcessString.append("java -Xmx");
+        depProcessString.append(config.getSelectedRamInput());
+        depProcessString.append("m -jar ");
+
+        if (config.isUseDefaultDepTool()) {
+            //TODO: DOESN'T WORK TEST
+            depProcessString.append(defaultQrTool);
+        } else {
+            depProcessString.append(config.getExternalQrToolLocation());
         }
 
         if (futureReceiptValid) {

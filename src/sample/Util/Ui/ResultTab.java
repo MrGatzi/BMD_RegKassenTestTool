@@ -1,4 +1,4 @@
-package sample.Util.ui;
+package sample.Util.Ui;
 
 import com.jfoenix.controls.JFXSpinner;
 import javafx.application.Platform;
@@ -9,8 +9,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import sample.Util.Result;
-import sample.Util.enums.ResultTabState;
-import sample.Util.enums.ResultTyp;
+import sample.Util.Enums.ResultTabState;
+import sample.Util.Enums.ResultTyp;
 
 import java.io.BufferedReader;
 import java.io.File;

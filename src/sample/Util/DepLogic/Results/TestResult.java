@@ -1,4 +1,4 @@
-package sample.Util.depLogic;
+package sample.Util.DepLogic.Results;
 
 import sample.Util.Result;
 
@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DepTestResult implements Result {
+public class TestResult implements Result {
 
     StringBuilder ouuputString = new StringBuilder();
     private List<Integer> wrongChainedReceipts;
@@ -20,7 +20,7 @@ public class DepTestResult implements Result {
     private List<Integer> wrongReceiptId;
     private File outputLocation;
 
-    public DepTestResult(File outputLocation) {
+    public TestResult(File outputLocation) {
         wrongChainedReceipts = new ArrayList<Integer>();
         properChainedReceipts = 0;
         wrongRevenueSet = new ArrayList<Integer>();

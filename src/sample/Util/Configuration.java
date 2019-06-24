@@ -27,6 +27,7 @@ public class Configuration {
     static String selectedRamInputProp = "selectedRamInput";
     static String ramInputProp = "ramInput";
     static String externalDepToolLocationProp = "externalDepToolLocation";
+    static String externalQrToolLocationProp = "externalQrToolLocation";
     static String useDefaultDepToolProp = "useDefaultDepTool";
 
     private static String versionNumber;
@@ -34,6 +35,7 @@ public class Configuration {
     private static String junkFolder;
     private static String selectedRamInput;
     private static String externalDepToolLocation;
+    private static String externalQrToolLocation;
     private static boolean useDefaultDepTool;
     private static boolean popUp;
     private static boolean askQuestion;
@@ -63,6 +65,7 @@ public class Configuration {
         startFolder = props.getProperty(startFolderProp);
         junkFolder = props.getProperty(junkFolderProp);
         externalDepToolLocation = props.getProperty(externalDepToolLocationProp);
+        externalQrToolLocation= props.getProperty(externalQrToolLocationProp);
         selectedRamInput = props.getProperty(selectedRamInputProp);
         popUp = Boolean.parseBoolean(props.getProperty(popUpProp));
         useDefaultDepTool = Boolean.parseBoolean(props.getProperty(useDefaultDepToolProp));
@@ -90,6 +93,7 @@ public class Configuration {
         props.put(ramInputProp, String.join(",", ramInput));
         props.put(versionNumberProp, versionNumber);
         props.put(externalDepToolLocationProp,externalDepToolLocation);
+        props.put(externalQrToolLocationProp,externalQrToolLocation);
         props.put(useDefaultDepToolProp,Boolean.toString(useDefaultDepTool));
         props.put(startFolderProp, startFolder);
         props.put(junkFolderProp, junkFolder);
@@ -114,6 +118,14 @@ public class Configuration {
     }
 
     public static void setExternalDepToolLocation(String externalDepToolLocation) {
+        Configuration.externalDepToolLocation = externalDepToolLocation;
+    }
+
+    public static String getExternalQrToolLocation() {
+        return externalQrToolLocation;
+    }
+
+    public static void setExternalQrToolLocation(String externalQrToolLocation) {
         Configuration.externalDepToolLocation = externalDepToolLocation;
     }
 

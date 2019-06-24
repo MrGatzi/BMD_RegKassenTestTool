@@ -1,4 +1,4 @@
-package sample.Util.factories;
+package sample.Util.Factories;
 
 import com.jfoenix.animation.alert.JFXAlertAnimation;
 import com.jfoenix.controls.JFXAlert;
@@ -11,7 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.Main;
-import sample.Util.errorHandling.BMDExeption;
+import sample.Util.ErrorHandling.BMDExeption;
 
 import java.io.IOException;
 

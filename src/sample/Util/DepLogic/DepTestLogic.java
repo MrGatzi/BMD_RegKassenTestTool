@@ -1,16 +1,16 @@
-package sample.Util.depLogic;
+package sample.Util.DepLogic;
 
 import java.io.*;
 import java.net.URLDecoder;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.regex.Pattern;
 
-import org.apache.commons.codec.binary.Base64;
 import sample.Util.*;
+import sample.Util.DepLogic.Results.ShowResult;
+import sample.Util.DepLogic.Results.TestResult;
+import sample.Util.DepLogic.Helper.LogicInput;
+import sample.Util.DepLogic.Helper.LogicOutput;
 
 public class DepTestLogic {
 
@@ -24,8 +24,8 @@ public class DepTestLogic {
 
 
     //Run DEP-Test
-    public DepShowResult runDepTest(String DefaultStringDEP, String DefaultStringCRYPTO, boolean futurBox, boolean DetailsBox, File outputFile) throws IOException {
-        DepShowResult depShowResult = new DepShowResult(outputFile);
+    public ShowResult runDepTest(String DefaultStringDEP, String DefaultStringCRYPTO, boolean futurBox, boolean DetailsBox, File outputFile) throws IOException {
+        ShowResult showResult = new ShowResult(outputFile);
         FileOutputStream resultFile = new FileOutputStream(outputFile.getPath());
 
         String decodedPath = URLDecoder.decode(DepTestLogic.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
@@ -53,11 +53,11 @@ public class DepTestLogic {
             }
         }
         resultFile.close();
-        return depShowResult;
+        return showResult;
     }
 
-    public DepTestResult decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean isFristReceiptNotIncluded, File outputLocation) throws IOException, NoSuchAlgorithmException, ParseException {
-        DepTestResult depTestResult = new DepTestResult(outputLocation);
+    public TestResult decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean isFristReceiptNotIncluded, File outputLocation) throws IOException, NoSuchAlgorithmException, ParseException {
+        TestResult testResult = new TestResult(outputLocation);
         FileOutputStream resultFile = new FileOutputStream(outputLocation.getPath());
         String depFileContent = ioTools.readTxtFile(depFileLocation);
         int nextReceiptField = depFileContent.indexOf("Belege-kompakt");
@@ -76,7 +76,7 @@ public class DepTestLogic {
             String[] parts = depFileReceipts.split(",");
             Receipt[] receipts = decryptionLogic.convertDepReceiptsToReceipts(parts);
             //actual Test
-            LogicInput logicInput = new LogicInput(receipts, oldRevenueValue, oldSignature, oldDate, allReceiptIds, errorBlocker, isFristReceiptNotIncluded, cryptoFileLocation, depTestResult, resultFile);
+            LogicInput logicInput = new LogicInput(receipts, oldRevenueValue, oldSignature, oldDate, allReceiptIds, errorBlocker, isFristReceiptNotIncluded, cryptoFileLocation, testResult, resultFile);
             LogicOutput logicOutput = decryptionLogic.decryptParts(logicInput);
             //output
             isFristReceiptNotIncluded = logicOutput.isFristReceiptNotIncluded;
@@ -85,12 +85,12 @@ public class DepTestLogic {
             oldDate = logicOutput.oldDate;
             allReceiptIds = logicOutput.allReceiptIds;
             errorBlocker = logicOutput.errorBlocker;
-            depTestResult = logicOutput.depTestResult;
+            testResult = logicOutput.testResult;
 
         }
-        resultFile.write(depTestResult.printResults().getBytes());
+        resultFile.write(testResult.printResults().getBytes());
         resultFile.close();
-        return depTestResult;
+        return testResult;
     }
 
 }

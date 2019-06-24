@@ -1,14 +1,14 @@
-package sample.Util.depLogic;
+package sample.Util.DepLogic.Results;
 
 import sample.Util.Result;
 
 import java.io.File;
 
-public class DepShowResult implements Result {
+public class ShowResult implements Result {
 
     private File outputLocation;
 
-    public DepShowResult(File outputLocation) {
+    public ShowResult(File outputLocation) {
         this.outputLocation = outputLocation;
     }
 

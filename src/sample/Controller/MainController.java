@@ -5,16 +5,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import sample.Util.*;
-import sample.Util.enums.Exeptionstyp;
-import sample.Util.errorHandling.BMDExeption;
-import sample.Util.factories.AlertFactory;
-import sample.Util.ui.MenuItem;
-import sample.Util.ui.SplitPaneItem;
+import sample.Util.Enums.Exeptionstyp;
+import sample.Util.ErrorHandling.BMDExeption;
+import sample.Util.Factories.AlertFactory;
+import sample.Util.Ui.MenuItem;
+import sample.Util.Ui.SplitPaneItem;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class MainController<called> {
 

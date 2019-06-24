@@ -1,6 +1,6 @@
-package sample.Util.errorHandling;
+package sample.Util.ErrorHandling;
 
-import sample.Util.enums.Exeptionstyp;
+import sample.Util.Enums.Exeptionstyp;
 
 public class BMDExeption extends Exception {
     private String message;

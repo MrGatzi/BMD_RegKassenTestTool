@@ -1,4 +1,4 @@
-package sample.Util.ui;
+package sample.Util.Ui;
 
 import sample.Util.Configuration;
 

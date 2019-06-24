@@ -14,15 +14,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import sample.Util.Configuration;
-import sample.Util.depLogic.DepShowResult;
-import sample.Util.depLogic.DepTestLogic;
-import sample.Util.depLogic.DepTestResult;
-import sample.Util.depLogic.QrTestLogic;
-import sample.Util.enums.ResultTyp;
-import sample.Util.factories.TmpFactory;
-import sample.Util.ui.CostumComboBoxItem;
-import sample.Util.ui.MenuController;
-import sample.Util.ui.ResultTab;
+import sample.Util.DepLogic.Results.ShowResult;
+import sample.Util.DepLogic.Results.TestResult;
+import sample.Util.DepLogic.QrTestLogic;
+import sample.Util.Enums.ResultTyp;
+import sample.Util.Factories.TmpFactory;
+import sample.Util.Ui.CostumComboBoxItem;
+import sample.Util.Ui.MenuController;
+import sample.Util.Ui.ResultTab;
 
 import java.awt.*;
 import java.io.File;
@@ -169,13 +168,13 @@ public class QrConfigController implements MenuController {
         resultTab.showLoading();
         Thread t = new Thread(() -> {
             try {
-                DepShowResult depShowResult = qrTestLogic.runDepTest(
+                ShowResult showResult = qrTestLogic.runDepTest(
                         nameQrFile.getSelectionModel().getSelectedItem().getPath(),
                         nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         futureBox.isSelected(),
                         detailsBox.isSelected(),
                         tmpFile);
-                resultTab.printResult(depShowResult);
+                resultTab.printResult(showResult);
             } catch (IOException e) {
                 //TODO HANDLE EXEPTIONS
                 e.printStackTrace();
@@ -193,12 +192,12 @@ public class QrConfigController implements MenuController {
         resultTab.showLoading();
         Thread t = new Thread(() -> {
             try {
-                DepTestResult depTestResult = qrTestLogic.decryptAndStructureDepFile(
+                TestResult testResult = qrTestLogic.decryptAndStructureDepFile(
                         nameQrFile.getSelectionModel().getSelectedItem().getPath(),
                         nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         startReceiptBox.isSelected(),
                         tmpFile);
-                resultTab.printResult(depTestResult);
+                resultTab.printResult(testResult);
             } catch (IOException | NoSuchAlgorithmException | ParseException e) {
                 //TODO ERROR HANDLING !
                 e.printStackTrace();

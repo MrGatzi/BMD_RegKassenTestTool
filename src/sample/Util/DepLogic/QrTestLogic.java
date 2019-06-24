@@ -1,8 +1,12 @@
-package sample.Util.depLogic;
+package sample.Util.DepLogic;
 
 import sample.Util.Configuration;
 import sample.Util.IOTools;
 import sample.Util.Receipt;
+import sample.Util.DepLogic.Results.ShowResult;
+import sample.Util.DepLogic.Results.TestResult;
+import sample.Util.DepLogic.Helper.LogicInput;
+import sample.Util.DepLogic.Helper.LogicOutput;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -21,18 +25,18 @@ public class QrTestLogic {
 
 
     //Run DEP-Test
-    public DepShowResult runDepTest(String DefaultStringDEP, String DefaultStringCRYPTO, boolean futurBox, boolean DetailsBox, File outputFile) throws IOException {
-        DepShowResult depShowResult = new DepShowResult(outputFile);
+    public ShowResult runDepTest(String DefaultStringDEP, String DefaultStringCRYPTO, boolean futurBox, boolean DetailsBox, File outputFile) throws IOException {
+        ShowResult showResult = new ShowResult(outputFile);
         FileOutputStream resultFile = new FileOutputStream(outputFile.getPath());
 
         String decodedPath = URLDecoder.decode(DepTestLogic.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
 
-        String processString = ioTools.createDepProcessString(DefaultStringDEP, DefaultStringCRYPTO, outputFile.getAbsolutePath(), futurBox, DetailsBox);
+        String processString = ioTools.createQrProcessString(DefaultStringDEP, DefaultStringCRYPTO, outputFile.getAbsolutePath(), futurBox, DetailsBox);
 
         Process process = Runtime.getRuntime().exec(processString);
-        InputStream depToolOutputStream = process.getInputStream();
-        InputStreamReader depToolOutputStreamReader = new InputStreamReader(depToolOutputStream);
-        BufferedReader br = new BufferedReader(depToolOutputStreamReader);
+        InputStream qrToolOutputStream = process.getInputStream();
+        InputStreamReader qrToolOutputStreamReader = new InputStreamReader(qrToolOutputStream);
+        BufferedReader br = new BufferedReader(qrToolOutputStreamReader);
         String line;
         while ((line = br.readLine()) != null) {
 
@@ -50,11 +54,11 @@ public class QrTestLogic {
             }
         }
         resultFile.close();
-        return depShowResult;
+        return showResult;
     }
 
-    public DepTestResult decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean isFristReceiptNotIncluded, File outputLocation) throws IOException, NoSuchAlgorithmException, ParseException {
-        DepTestResult depTestResult = new DepTestResult(outputLocation);
+    public TestResult decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean isFristReceiptNotIncluded, File outputLocation) throws IOException, NoSuchAlgorithmException, ParseException {
+        TestResult testResult = new TestResult(outputLocation);
         FileOutputStream resultFile = new FileOutputStream(outputLocation.getPath());
         String qrFileContent = ioTools.readTxtFile(depFileLocation);
 
@@ -66,19 +70,14 @@ public class QrTestLogic {
 
         Receipt[] receipts = decryptionLogic.convertQrInputToReceipts(qrFileContent);
         //actual Test
-        LogicInput logicInput = new LogicInput(receipts, oldRevenueValue, oldSignature, oldDate, allReceiptIds, errorBlocker, isFristReceiptNotIncluded, cryptoFileLocation, depTestResult, resultFile);
+        LogicInput logicInput = new LogicInput(receipts, oldRevenueValue, oldSignature, oldDate, allReceiptIds, errorBlocker, isFristReceiptNotIncluded, cryptoFileLocation, testResult, resultFile);
         LogicOutput logicOutput = decryptionLogic.decryptParts(logicInput);
         //output
-        isFristReceiptNotIncluded = logicOutput.isFristReceiptNotIncluded;
-        oldRevenueValue = logicOutput.oldRevenueValue;
-        oldSignature = logicOutput.oldSignature;
-        oldDate = logicOutput.oldDate;
-        allReceiptIds = logicOutput.allReceiptIds;
-        errorBlocker = logicOutput.errorBlocker;
-        depTestResult = logicOutput.depTestResult;
 
-        resultFile.write(depTestResult.printResults().getBytes());
+        testResult = logicOutput.testResult;
+
+        resultFile.write(testResult.printResults().getBytes());
         resultFile.close();
-        return depTestResult;
+        return testResult;
     }
 }

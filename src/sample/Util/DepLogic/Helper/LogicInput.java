@@ -1,7 +1,7 @@
-package sample.Util.depLogic;
+package sample.Util.DepLogic.Helper;
 
 import sample.Util.Receipt;
-import sample.Util.Result;
+import sample.Util.DepLogic.Results.TestResult;
 
 import java.io.FileOutputStream;
 import java.util.HashSet;
@@ -15,10 +15,10 @@ public class LogicInput {
     public boolean errorBlocker;
     public boolean isFristReceiptNotIncluded;
     public String cryptoFileLocation;
-    public DepTestResult depTestResult;
+    public TestResult testResult;
     public FileOutputStream resultFile;
 
-    public LogicInput(Receipt[] parts, double oldRevenueValue, String oldSignature, String oldDate, HashSet allReceiptIds, boolean errorBlocker, boolean isFristReceiptNotIncluded, String cryptoFileLocation, DepTestResult depTestResult, FileOutputStream resultFile) {
+    public LogicInput(Receipt[] parts, double oldRevenueValue, String oldSignature, String oldDate, HashSet allReceiptIds, boolean errorBlocker, boolean isFristReceiptNotIncluded, String cryptoFileLocation, TestResult testResult, FileOutputStream resultFile) {
         this.parts = parts;
         this.oldRevenueValue = oldRevenueValue;
         this.oldSignature = oldSignature;
@@ -27,7 +27,7 @@ public class LogicInput {
         this.errorBlocker = errorBlocker;
         this.isFristReceiptNotIncluded = isFristReceiptNotIncluded;
         this.cryptoFileLocation = cryptoFileLocation;
-        this.depTestResult = depTestResult;
+        this.testResult = testResult;
         this.resultFile = resultFile;
     }
 }

@@ -1,7 +1,7 @@
-package sample.Util.factories;
+package sample.Util.Factories;
 
 import sample.Util.Configuration;
-import sample.Util.enums.ResultTyp;
+import sample.Util.Enums.ResultTyp;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class TmpFactory {
         String name = "";
         switch (typ) {
             case RUNDEPTEST:
-                name = "DepTestResult";
+                name = "TestResult";
                 break;
             case SHOWDEPFILE:
                 name = "DepFile";

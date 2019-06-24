@@ -1,4 +1,4 @@
-package sample.Util.factories;
+package sample.Util.Factories;
 
 public class ExeptionFactory {
 

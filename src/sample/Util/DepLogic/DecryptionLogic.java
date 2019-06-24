@@ -1,11 +1,13 @@
-package sample.Util.depLogic;
+package sample.Util.DepLogic;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import sample.Util.CryptoTools;
 import sample.Util.Receipt;
+import sample.Util.DepLogic.Results.TestResult;
+import sample.Util.DepLogic.Helper.LogicInput;
+import sample.Util.DepLogic.Helper.LogicOutput;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,7 +30,7 @@ public class DecryptionLogic {
         HashSet allReceiptIds = logicInput.allReceiptIds;
         boolean errorBlocker = logicInput.errorBlocker;
         String cryptoFileLocation = logicInput.cryptoFileLocation;
-        DepTestResult depTestResult = logicInput.depTestResult;
+        TestResult testResult = logicInput.testResult;
         FileOutputStream resultFile = logicInput.resultFile;
 
         for (int i = 0; i < parts.length; i++) {
@@ -49,26 +51,26 @@ public class DecryptionLogic {
                 }
                 resultFile.write(receiptToTest.toString().getBytes());
                 //Tests
-                depTestResult.addChainedReceipt(i, receiptToTest.isProperChained());
-                depTestResult.addRevenueSet(i, receiptToTest.isRevenueProperEncrypted());
+                testResult.addChainedReceipt(i, receiptToTest.isProperChained());
+                testResult.addRevenueSet(i, receiptToTest.isRevenueProperEncrypted());
                 if (isDateProperFormated(receiptToTest.getReceiptDate())) {
                     if (oldDate != null && !isDateProperChained(receiptToTest.getReceiptDate(), oldDate)) {
-                        depTestResult.addWrongChainedDate(i);
+                        testResult.addWrongChainedDate(i);
                         resultFile.write("Datumverkettung: FEHLER\r\n".getBytes());
                     } else {
                         oldDate = receiptToTest.getReceiptDate();
                     }
                 } else {
-                    depTestResult.addWrongDate(i);
+                    testResult.addWrongDate(i);
                     resultFile.write("Datumsformat: FEHLER\r\n".getBytes());
                 }
 
                 if (wrongSetValues > 0) {
-                    depTestResult.addWrongSetValue(i);
+                    testResult.addWrongSetValue(i);
                     resultFile.write("Betragsspalte: FEHLER\r\n".getBytes());
                 }
                 if (allReceiptIds.contains(receiptToTest.getReceiptId())) {
-                    depTestResult.addWrongReceiptId(i);
+                    testResult.addWrongReceiptId(i);
                     resultFile.write("BelegNummer: FEHLER\r\n".getBytes());
                 } else {
                     allReceiptIds.add(receiptToTest.getReceiptId());
@@ -78,14 +80,15 @@ public class DecryptionLogic {
                 oldSignature = receiptToTest.getWholeReceipt();
 
             } else {
-                depTestResult.addWrongStructureValues(i);
+                testResult.addWrongStructureValues(i);
             }
         }
-        LogicOutput logicOutput = new LogicOutput(oldRevenueValue, oldSignature, oldDate, allReceiptIds, errorBlocker, isFristReceiptNotIncluded, depTestResult);
+        LogicOutput logicOutput = new LogicOutput(oldRevenueValue, oldSignature, oldDate, allReceiptIds, errorBlocker, isFristReceiptNotIncluded, testResult);
         return logicOutput;
 
     }
 
+    //Helper methods
     public Receipt DepStringToReceipt(int receiptNumber, String input) throws UnsupportedEncodingException {
         CryptoTools cryptoTools = new CryptoTools();
 
@@ -99,10 +102,12 @@ public class DecryptionLogic {
             Receipt receipt = StringToReceipt(receiptNumber, payloadParts);
             if (receipt != null) {
                 //old calculation might be relevant?
+
                 /*String signatureLoad = cryptoTools.base64UrlDecode(inputparts[2]);
                 byte[] encodedBytes = Base64.encodeBase64(signatureLoad.getBytes());
                 String signature = new String(encodedBytes, "UTF-8");
                 receipt.setSignature(signature);*/
+
                 receipt.setSignature(inputparts[2]);
                 receipt.setWholeReceipt(input);
                 return receipt;
