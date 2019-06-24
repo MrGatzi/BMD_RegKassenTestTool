@@ -17,6 +17,7 @@ import sample.Util.Configuration;
 import sample.Util.depLogic.DepShowResult;
 import sample.Util.depLogic.DepTestLogic;
 import sample.Util.depLogic.DepTestResult;
+import sample.Util.depLogic.QrTestLogic;
 import sample.Util.enums.ResultTyp;
 import sample.Util.factories.TmpFactory;
 import sample.Util.ui.CostumComboBoxItem;
@@ -54,7 +55,7 @@ public class QrConfigController implements MenuController {
     Configuration config;
     List<CostumComboBoxItem> depFiles;
     List<CostumComboBoxItem> depKeyFiles;
-    DepTestLogic depTestLogic;
+    QrTestLogic qrTestLogic;
     TmpFactory tmpFactory;
 
     public void initialize() {
@@ -86,7 +87,7 @@ public class QrConfigController implements MenuController {
 
         setSavedFileNames(depFiles, nameQrFile);
         setSavedFileNames(depKeyFiles, nameKeyFile);
-        depTestLogic = new DepTestLogic(config);
+        qrTestLogic = new QrTestLogic(config);
         tmpFactory = new TmpFactory(config);
     }
 
@@ -168,7 +169,7 @@ public class QrConfigController implements MenuController {
         resultTab.showLoading();
         Thread t = new Thread(() -> {
             try {
-                DepShowResult depShowResult = depTestLogic.runDepTest(
+                DepShowResult depShowResult = qrTestLogic.runDepTest(
                         nameQrFile.getSelectionModel().getSelectedItem().getPath(),
                         nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         futureBox.isSelected(),
@@ -192,7 +193,7 @@ public class QrConfigController implements MenuController {
         resultTab.showLoading();
         Thread t = new Thread(() -> {
             try {
-                DepTestResult depTestResult = depTestLogic.decryptAndStructureDepFile(
+                DepTestResult depTestResult = qrTestLogic.decryptAndStructureDepFile(
                         nameQrFile.getSelectionModel().getSelectedItem().getPath(),
                         nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         startReceiptBox.isSelected(),

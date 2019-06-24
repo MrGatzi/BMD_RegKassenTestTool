@@ -98,21 +98,12 @@ public class CryptoTools {
         return jwsCompactRep;
     }
 
-    // Funktion die es einem base64URL decodiern l�sst.
-    public String base64UrlDecode(String input) {
-        String result = null;
-        Base64 decoder = new Base64(true);
-        byte[] decodedBytes = decoder.decode(input);
-        result = new String(decodedBytes);
-        return result;
-    }
-
     // Funktion die es einem base64URL encodiern l�sst.
-    public String base64UrlEncode(String input) {
+    public String base64UrlEncode(String input) throws UnsupportedEncodingException {
         String result = null;
         Base64 encoder = new Base64(true);
         byte[] encoded = encoder.encode(input.getBytes());
-        result = new String(encoded);
+        result = new String(encoded,"UTF-8");
         return result;
     }
 

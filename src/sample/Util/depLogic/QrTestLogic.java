@@ -1,23 +1,20 @@
 package sample.Util.depLogic;
 
+import sample.Util.Configuration;
+import sample.Util.IOTools;
+import sample.Util.Receipt;
+
 import java.io.*;
 import java.net.URLDecoder;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.regex.Pattern;
 
-import org.apache.commons.codec.binary.Base64;
-import sample.Util.*;
-
-public class DepTestLogic {
-
+public class QrTestLogic {
     IOTools ioTools;
     DecryptionLogic decryptionLogic;
 
-    public DepTestLogic(Configuration config) {
+    public QrTestLogic(Configuration config) {
         ioTools = new IOTools(config);
         decryptionLogic = new DecryptionLogic();
     }
@@ -59,8 +56,7 @@ public class DepTestLogic {
     public DepTestResult decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean isFristReceiptNotIncluded, File outputLocation) throws IOException, NoSuchAlgorithmException, ParseException {
         DepTestResult depTestResult = new DepTestResult(outputLocation);
         FileOutputStream resultFile = new FileOutputStream(outputLocation.getPath());
-        String depFileContent = ioTools.readTxtFile(depFileLocation);
-        int nextReceiptField = depFileContent.indexOf("Belege-kompakt");
+        String qrFileContent = ioTools.readTxtFile(depFileLocation);
 
         double oldRevenueValue = 0;
         String oldSignature = "";
@@ -68,29 +64,21 @@ public class DepTestLogic {
         HashSet allReceiptIds = new HashSet<String>();
         boolean errorBlocker = isFristReceiptNotIncluded;
 
-        while (nextReceiptField > -1) {
-            //prepare
-            depFileContent = depFileContent.substring(depFileContent.indexOf("Belege-kompakt"), depFileContent.length()); //check reduntant
-            String depFileReceipts = depFileContent.substring(depFileContent.indexOf("["), depFileContent.indexOf("]"));
-            nextReceiptField = depFileContent.indexOf("Belege-kompakt", depFileContent.indexOf("Belege-kompakt") + 1);
-            String[] parts = depFileReceipts.split(",");
-            Receipt[] receipts = decryptionLogic.convertDepReceiptsToReceipts(parts);
-            //actual Test
-            LogicInput logicInput = new LogicInput(receipts, oldRevenueValue, oldSignature, oldDate, allReceiptIds, errorBlocker, isFristReceiptNotIncluded, cryptoFileLocation, depTestResult, resultFile);
-            LogicOutput logicOutput = decryptionLogic.decryptParts(logicInput);
-            //output
-            isFristReceiptNotIncluded = logicOutput.isFristReceiptNotIncluded;
-            oldRevenueValue = logicOutput.oldRevenueValue;
-            oldSignature = logicOutput.oldSignature;
-            oldDate = logicOutput.oldDate;
-            allReceiptIds = logicOutput.allReceiptIds;
-            errorBlocker = logicOutput.errorBlocker;
-            depTestResult = logicOutput.depTestResult;
+        Receipt[] receipts = decryptionLogic.convertQrInputToReceipts(qrFileContent);
+        //actual Test
+        LogicInput logicInput = new LogicInput(receipts, oldRevenueValue, oldSignature, oldDate, allReceiptIds, errorBlocker, isFristReceiptNotIncluded, cryptoFileLocation, depTestResult, resultFile);
+        LogicOutput logicOutput = decryptionLogic.decryptParts(logicInput);
+        //output
+        isFristReceiptNotIncluded = logicOutput.isFristReceiptNotIncluded;
+        oldRevenueValue = logicOutput.oldRevenueValue;
+        oldSignature = logicOutput.oldSignature;
+        oldDate = logicOutput.oldDate;
+        allReceiptIds = logicOutput.allReceiptIds;
+        errorBlocker = logicOutput.errorBlocker;
+        depTestResult = logicOutput.depTestResult;
 
-        }
         resultFile.write(depTestResult.printResults().getBytes());
         resultFile.close();
         return depTestResult;
     }
-
 }
