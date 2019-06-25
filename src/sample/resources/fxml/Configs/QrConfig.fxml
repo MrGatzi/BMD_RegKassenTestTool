@@ -126,7 +126,7 @@
                         <JFXCheckBox fx:id="startReceiptBox" mnemonicParsing="false" prefHeight="17.0" text="Startreceipt not included"/>
                         <JFXCheckBox mnemonicParsing="false" prefHeight="17.0" text="ToDo"/>
                     </HBox>
-                    <JFXButton fx:id="DepTestButton" mnemonicParsing="false" onAction="#showDepFile" text="Show Dep-File"
+                    <JFXButton fx:id="DepTestButton" mnemonicParsing="false" onAction="#showDepFile" text="Show Qr-File"
                                style="-fx-background-color: #e00000"/>
                     <padding>
                         <Insets bottom="20.0"/>

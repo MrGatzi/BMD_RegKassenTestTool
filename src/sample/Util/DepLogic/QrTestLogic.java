@@ -5,8 +5,6 @@ import sample.Util.IOTools;
 import sample.Util.Receipt;
 import sample.Util.DepLogic.Results.ShowResult;
 import sample.Util.DepLogic.Results.TestResult;
-import sample.Util.DepLogic.Helper.LogicInput;
-import sample.Util.DepLogic.Helper.LogicOutput;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -61,7 +59,7 @@ public class QrTestLogic {
         //prepare
         FileOutputStream resultFile = new FileOutputStream(outputLocation.getPath());
         String qrFileContent = ioTools.readTxtFile(depFileLocation);
-        LogicInput logicInput = new LogicInput(0,
+        TestData testData = new TestData(0,
                 "",
                 null,
                 new HashSet<String>(),
@@ -73,10 +71,10 @@ public class QrTestLogic {
         //decrypt
         Receipt[] receipts = decryptionLogic.convertQrInputToReceipts(qrFileContent);
         //actual Test
-        logicInput = decryptionLogic.checkGroupOfReceipt(receipts,logicInput);
+        testData = decryptionLogic.checkGroupOfReceipt(receipts, testData);
         //output
-        resultFile.write(logicInput.testResult.printResults().getBytes());
+        resultFile.write(testData.testResult.printResults().getBytes());
         resultFile.close();
-        return logicInput.testResult;
+        return testData.testResult;
     }
 }

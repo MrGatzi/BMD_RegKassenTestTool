@@ -3,28 +3,47 @@ package sample.Util.DepLogic;
 import org.apache.commons.codec.binary.Base64;
 import sample.Util.Configuration;
 import sample.Util.CryptoTools;
+import sample.Util.DepLogic.Results.TestResult;
 import sample.Util.Enums.ResultTyp;
 import sample.Util.Factories.TmpFactory;
+import sample.Util.Receipt;
 
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class AdvDepTestLogic {
     Configuration config;
     TmpFactory tmpFactory;
+    DecryptionLogic decryptionLogic;
 
     public AdvDepTestLogic(Configuration config) {
         this.config = config;
+        this.decryptionLogic = new DecryptionLogic();
         this.tmpFactory = new TmpFactory(config);
     }
 
-    /*public void runWithDEP(String depFileLocation) throws IOException {
+    public void runWithDEP(String depFileLocation,String cryptoFileLocation,boolean isFristReceiptNotIncluded) throws IOException, ParseException {
         String open = "{\r\n  \"Belege-Gruppe\": [\r\n    {\r\n      \"Signaturzertifikat\": \"\",\r\n      \"Zertifizierungsstellen\": [],\r\n      \"Belege-kompakt\": [";
         String end = "      ]\r\n    }\r\n   ]\r\n}";
         String linebefore = "";
+
+
+        FileOutputStream resultFile = new FileOutputStream("");
+        TestData testData = new TestData(0,
+                "",
+                null,
+                new HashSet<String>(),
+                isFristReceiptNotIncluded,
+                isFristReceiptNotIncluded,
+                cryptoFileLocation,
+                new TestResult(new File("")),
+                resultFile);
+
 
         List<String> firstDepLines = getFirstDepLines(depFileLocation);
         List<String> firstDepLinesOrdered = new ArrayList<>();
@@ -40,9 +59,9 @@ public class AdvDepTestLogic {
             BufferedWriter writer2;
             int forcounter = 0;
             int forcounter2 = 0;
+            Receipt receipt;
             boolean firstLineFlag = true;
             for (String element : firstDepLinesOrdered) {
-                lineNr = 0;
                 //TODO: create new Tmp Files?
                 file =tmpFactory.getNewJsonTmpFile(ResultTyp.ADVDEPTEST);
                 writer = new BufferedWriter(new FileWriter(file));
@@ -60,27 +79,23 @@ public class AdvDepTestLogic {
                     }
                     if (firstLineFlag && line.contains(".")) {
                         lineNr++;
-                        if (lineNr == 1) {
-                            writer2.write(decryptDepLine(line, CryptoFile, lineNr, true, linebefore));
-                        } else {
-                            writer2.write(decryptDepLine(line, CryptoFile, lineNr, false, linebefore));
-                        }
+                        receipt=decryptionLogic.DepStringToReceipt(lineNr,line);
+                        writer2.write(receipt.toString());
+                        testData = decryptionLogic.checkReceipt(receipt, testData);
                         linebefore = line;
                         writer.write(line);
                         writer.newLine();
-
                     }
+
                     if (line.contains(element)) {
                         writer.write(open);
                         writer.newLine();
                         for (String element2 : firstDepLinesOrdered) {
                             if (forcounter2 < forcounter) {
                                 lineNr++;
-                                if (lineNr == 1) {
-                                    writer2.write(decryptDepLine(element2, CryptoFile, lineNr, true, linebefore));
-                                } else {
-                                    writer2.write(decryptDepLine(element2, CryptoFile, lineNr, false, linebefore));
-                                }
+                                receipt=decryptionLogic.DepStringToReceipt(lineNr,line);
+                                writer2.write(receipt.toString());
+                                testData = decryptionLogic.checkReceipt(receipt, testData);
                                 linebefore = element2;
                                 writer.write(element2);
                                 writer.newLine();
@@ -88,11 +103,9 @@ public class AdvDepTestLogic {
                             forcounter2++;
                         }
                         lineNr++;
-                        if (lineNr == 1) {
-                            writer2.write(decryptDepLine(line, CryptoFile, lineNr, true, linebefore));
-                        } else {
-                            writer2.write(decryptDepLine(line, CryptoFile, lineNr, false, linebefore));
-                        }
+                        receipt=decryptionLogic.DepStringToReceipt(lineNr,line);
+                        writer2.write(receipt.toString());
+                        testData = decryptionLogic.checkReceipt(receipt, testData);
                         linebefore = line;
                         writer.write(line);
                         writer.newLine();
@@ -100,30 +113,7 @@ public class AdvDepTestLogic {
                     }
 
                 }
-                writer2.write("Listen Elemente: " + elementsUsedS + " , davon richtig verkettet:" + flagControllS
-                        + " \r\n");
-                writer2.write("Berechnete Umsatzzähler: " + (rightchainS + wrongchainS)
-                        + " , davon richtig verkettet:" + rightchainS + " \r\n");
-                if (elementsUsedS == flagControllS) {
-                    Outputarea.append("Dep-Tests for File :" + (forcounter + 1) + "  -> Verkettungen korrekt\r\n");
-                } else {
-                    Outputarea.append("Dep-Tests for File :" + (forcounter + 1) + "  -> Verkettungen nicht korrekt\r\n");
-                }
-                ;
-                if (wrongchainS == 0) {
-                    Outputarea.append("Dep-Tests for File :" + (forcounter + 1) + "  -> Umsatzzähler korrekt\r\n");
-                } else {
-                    Outputarea.append("Dep-Tests for File :" + (forcounter + 1) + "  -> Umsatzzähler nicht korrekt\r\n");
-                }
-                ;
-                Outputarea.setCaretPosition(Outputarea.getDocument().getLength());
-                Outputarea.update(Outputarea.getGraphics());
-                umsatzählerAltS = 0;
-                elementsUsedS = 0;
-                rightchainS = 0;
-                wrongchainS = 0;
-                flagControllS = 0;
-                fstream.close();
+                writer2.write(testData.testResult.printResults());
                 forcounter++;
                 writer.write(end);
                 writer.flush();
@@ -137,7 +127,9 @@ public class AdvDepTestLogic {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        try {
+
+        /*try {
+
             File fileDep;
 
             int forcounterDep = 0;
@@ -145,10 +137,6 @@ public class AdvDepTestLogic {
             for (String element1 : firstDepLinesOrdered) {
 
                 forcounterDep++;
-                Outputarea.append("Running Dep-Tests for File :" + (forcounterDep) + "\r\n");
-                Outputarea.setCaretPosition(Outputarea.getDocument().getLength());
-                Outputarea.update(Outputarea.getGraphics());
-                contentPane.repaint();
                 fileDep = new File(OutFolder + "/_DepTest_" + (forcounterDep) + ".json");
                 fileDep.createNewFile();
                 writerDep = new BufferedWriter(new FileWriter(fileDep));
@@ -171,18 +159,12 @@ public class AdvDepTestLogic {
                 }
                 writerDep.flush();
                 writerDep.close();
-                Outputarea.append("Closed File : _Dep_" + (forcounterDep) + "\r\n\r\n");
-                Outputarea.setCaretPosition(Outputarea.getDocument().getLength());
-                Outputarea.update(Outputarea.getGraphics());
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-        Outputarea.append("Done\r\n");
-
-
-    }*/
+        }*/
+    }
 
     private List<String> getFirstDepLines(String depFileLocation) throws IOException {
         boolean firstLineFlag = false;

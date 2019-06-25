@@ -6,9 +6,134 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            prefHeight="400.0" prefWidth="600.0"
+<?import javafx.geometry.Insets?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.image.ImageView?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import javafx.scene.image.Image?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXButton?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:id="ParentPane" style="-fx-background-color: #F0F0F0"
+            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+            AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx"
             fx:controller="sample.Controller.DepConfigController">
-
+    <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <top>
+            <VBox alignment="center" spacing="20">
+                <padding>
+                    <Insets top="20.0"/>
+                </padding>
+                <Label text="DEP-Test" BorderPane.alignment="CENTER"/>
+            </VBox>
+        </top>
+        <center>
+            <HBox fx:id="inputLine" alignment="CENTER">
+                <VBox fx:id="input" alignment="CENTER" spacing="50">
+                    <VBox spacing="5">
+                        <HBox alignment="center">
+                            <JFXTextField fx:id="folderDepFile" disable="true"/>
+                            <ImageView fitHeight="25.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true"/>
+                        </HBox>
+                        <HBox alignment="center" spacing="10">
+                            <ImageView fitHeight="25.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@../../Images/advDepFile.png"/>
+                                </image>
+                            </ImageView>
+                            <JFXComboBox fx:id="nameDepFile" maxWidth="1.7976931348623157E308" prefWidth="150.0"/>
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#chooseDepFile"
+                                    stylesheets="@../../Styles/chooseButtons.css">
+                                <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="23.0" onMouseClicked="#chooseDepFile"
+                                               pickOnBounds="true"
+                                               preserveRatio="true">
+                                        <image>
+                                            <Image fx:id="chooseDepFile"
+                                                   url="@../../Images/baseline_folder_black_48dp.png"/>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#openDepFile"
+                                    stylesheets="@../../Styles/chooseButtons.css">
+                                <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="23.0" onMouseClicked="#openDepFile"
+                                               pickOnBounds="true"
+                                               preserveRatio="true">
+                                        <image>
+                                            <Image fx:id="openDepFile"
+                                                   url="@../../Images/show.png"/>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                    </VBox>
+                    <VBox spacing="5">
+                        <HBox alignment="center">
+                            <JFXTextField fx:id="folderKeyFile" disable="true"/>
+                            <ImageView fitHeight="25.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true"/>
+                        </HBox>
+                        <HBox alignment="center" spacing="10">
+                            <ImageView fitHeight="25.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@../../Images/key.png"/>
+                                </image>
+                            </ImageView>
+                            <JFXComboBox fx:id="nameKeyFile" maxWidth="1.7976931348623157E308" prefWidth="150.0"/>
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#chooseKeyFile"
+                                    stylesheets="@../../Styles/chooseButtons.css">
+                                <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="23.0" onMouseClicked="#chooseKeyFile"
+                                               pickOnBounds="true"
+                                               preserveRatio="true">
+                                        <image>
+                                            <Image fx:id="chooseKeyFile"
+                                                   url="@../../Images/baseline_folder_black_48dp.png"/>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#openKeyFile"
+                                    stylesheets="@../../Styles/chooseButtons.css">
+                                <graphic>
+                                    <ImageView fitHeight="25.0" fitWidth="23.0" onMouseClicked="#openKeyFile"
+                                               pickOnBounds="true"
+                                               preserveRatio="true">
+                                        <image>
+                                            <Image fx:id="openKeyFile"
+                                                   url="@../../Images/show.png"/>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </HBox>
+        </center>
+        <bottom>
+            <VBox fx:id="action" alignment="center" spacing="30">
+                <VBox alignment="center" spacing="20">
+                    <HBox fx:id="DepShowCheckboxs" alignment="center" spacing="20">
+                        <JFXCheckBox fx:id="futureBox" mnemonicParsing="false" prefHeight="17.0" text="Futuredates valid"/>
+                        <JFXCheckBox fx:id="detailsBox" mnemonicParsing="false" prefHeight="17.0" text="Details"/>
+                    </HBox>
+                    <JFXButton fx:id="DepShowButton" mnemonicParsing="false" onAction="#runDepTest" text="With-DepTest"
+                               style="-fx-background-color: lightblue"/>
+                </VBox>
+                <VBox alignment="center" spacing="20">
+                    <HBox fx:id="DepTesCheckboxs" alignment="center" spacing="20">
+                        <JFXCheckBox fx:id="startReceiptBox" mnemonicParsing="false" prefHeight="17.0" text="Startreceipt not included"/>
+                        <JFXCheckBox mnemonicParsing="false" prefHeight="17.0" text="ToDo"/>
+                    </HBox>
+                    <JFXButton fx:id="DepTestButton" mnemonicParsing="false" onAction="#showDepFile" text="Without-DepTest"
+                               style="-fx-background-color: #e00000"/>
+                    <padding>
+                        <Insets bottom="20.0"/>
+                    </padding>
+                </VBox>
+            </VBox>
+        </bottom>
+    </BorderPane>
 </AnchorPane>

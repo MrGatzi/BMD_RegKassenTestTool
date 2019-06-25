@@ -23,11 +23,10 @@ public class DepAdvController implements MenuController {
             outputPane.getChildren().add(output);
             outputController = outputLoader.<OutputController>getController();
 
-            FXMLLoader configLoader= new FXMLLoader(Main.class.getResource("resources/fxml/Configs/QrConfig.fxml"));
+            FXMLLoader configLoader= new FXMLLoader(Main.class.getResource("resources/fxml/Configs/DepAdvConfig.fxml"));
             AnchorPane config = configLoader.load();
             configPane.getChildren().add(config);
             configController = configLoader.<DepConfigController>getController();
-
             configController.setOutputController(outputController);
 
         } catch (IOException e) {
@@ -40,8 +39,4 @@ public class DepAdvController implements MenuController {
         configController.setConfig(this.config);
         outputController.setConfig(this.config);
     }
-
-    public void runDepTest() {
-    }
-
 }

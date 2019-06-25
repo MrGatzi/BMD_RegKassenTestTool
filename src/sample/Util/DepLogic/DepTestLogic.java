@@ -9,8 +9,6 @@ import java.util.HashSet;
 import sample.Util.*;
 import sample.Util.DepLogic.Results.ShowResult;
 import sample.Util.DepLogic.Results.TestResult;
-import sample.Util.DepLogic.Helper.LogicInput;
-import sample.Util.DepLogic.Helper.LogicOutput;
 
 public class DepTestLogic {
 
@@ -60,7 +58,7 @@ public class DepTestLogic {
         //prepare
         FileOutputStream resultFile = new FileOutputStream(outputLocation.getPath());
         String depFileContent = ioTools.readTxtFile(depFileLocation);
-        LogicInput logicInput = new LogicInput(0,
+        TestData testData = new TestData(0,
                 "",
                 null,
                 new HashSet<String>(),
@@ -81,12 +79,12 @@ public class DepTestLogic {
             //decrypt
             Receipt[] receipts = decryptionLogic.convertDepReceiptsToReceipts(parts);
             //actual Test
-            logicInput = decryptionLogic.checkGroupOfReceipt(receipts,logicInput);
+            testData = decryptionLogic.checkGroupOfReceipt(receipts, testData);
         }
         //output
-        resultFile.write(logicInput.testResult.printResults().getBytes());
+        resultFile.write(testData.testResult.printResults().getBytes());
         resultFile.close();
-        return logicInput.testResult;
+        return testData.testResult;
     }
 
 }

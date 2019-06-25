@@ -64,7 +64,7 @@ public class MainController<called> {
        depMenu = new SplitPaneItem("resources/fxml/Menus/DepMenu.fxml",this.config);
        qrMenu = new SplitPaneItem("resources/fxml/Menus/QrMenu.fxml",this.config);
        settingsMenu = new SplitPaneItem("resources/fxml/Menus/SettingsMenu.fxml",this.config);
-       depAdvMenu = new SplitPaneItem("resources/fxml/Menus/AdvMenu.fxml",this.config);
+       depAdvMenu = new SplitPaneItem("resources/fxml/Menus/DepAdvMenu.fxml",this.config);
        extMenu = new SplitPaneItem("resources/fxml/Menus/ExtMenu.fxml",this.config);
     }
 
