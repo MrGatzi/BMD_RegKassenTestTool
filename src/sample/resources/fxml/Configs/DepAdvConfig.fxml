@@ -23,7 +23,7 @@
                 <padding>
                     <Insets top="20.0"/>
                 </padding>
-                <Label text="DEP-Test" BorderPane.alignment="CENTER"/>
+                <Label text="Advanced DEP-Test" BorderPane.alignment="CENTER"/>
             </VBox>
         </top>
         <center>
@@ -116,18 +116,16 @@
             <VBox fx:id="action" alignment="center" spacing="30">
                 <VBox alignment="center" spacing="20">
                     <HBox fx:id="DepShowCheckboxs" alignment="center" spacing="20">
-                        <JFXCheckBox fx:id="futureBox" mnemonicParsing="false" prefHeight="17.0" text="Futuredates valid"/>
-                        <JFXCheckBox fx:id="detailsBox" mnemonicParsing="false" prefHeight="17.0" text="Details"/>
+                        <JFXCheckBox fx:id="futureBox" mnemonicParsing="false" prefHeight="17.0"
+                                     text="Futuredates valid"/>
+                        <JFXCheckBox fx:id="startReceiptBox" mnemonicParsing="false" prefHeight="17.0"
+                                     text="Startreceipt not included"/>
                     </HBox>
-                    <JFXButton fx:id="DepShowButton" mnemonicParsing="false" onAction="#runDepTest" text="With-DepTest"
+                    <JFXButton fx:id="runWithoutTestButton" mnemonicParsing="false" onAction="#runDepTest"
+                               text="With-DepTest"
                                style="-fx-background-color: lightblue"/>
-                </VBox>
-                <VBox alignment="center" spacing="20">
-                    <HBox fx:id="DepTesCheckboxs" alignment="center" spacing="20">
-                        <JFXCheckBox fx:id="startReceiptBox" mnemonicParsing="false" prefHeight="17.0" text="Startreceipt not included"/>
-                        <JFXCheckBox mnemonicParsing="false" prefHeight="17.0" text="ToDo"/>
-                    </HBox>
-                    <JFXButton fx:id="DepTestButton" mnemonicParsing="false" onAction="#showDepFile" text="Without-DepTest"
+                    <JFXButton fx:id="runWithTestButton" mnemonicParsing="false" onAction="#showDepFile"
+                               text="Without-DepTest"
                                style="-fx-background-color: #e00000"/>
                     <padding>
                         <Insets bottom="20.0"/>

@@ -38,17 +38,15 @@ public class DepAdvConfigController implements MenuController {
     public JFXComboBox<CostumComboBoxItem> nameKeyFile;
     public JFXTextField folderAdvDepFile;
     public JFXComboBox<CostumComboBoxItem> nameAdvDepFile;
-    public Button DepShowButton;
+    public Button runWithoutTestButton;
     public AnchorPane ParentPane;
     public VBox input;
     public VBox action;
-    public Button DepTestButton;
+    public Button runWithTestButton;
     public HBox DepShowCheckboxs;
-    public HBox DepTesCheckboxs;
     public HBox inputLine;
     public JFXCheckBox startReceiptBox;
     public JFXCheckBox futureBox;
-    public JFXCheckBox detailsBox;
 
     OutputController outputController;
     Configuration config;
@@ -64,7 +62,6 @@ public class DepAdvConfigController implements MenuController {
         nameAdvDepFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
         nameKeyFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
         DepShowCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
-        DepTesCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
         setupTextField();
 
     }
@@ -163,7 +160,7 @@ public class DepAdvConfigController implements MenuController {
     }
 
     public void runDepTest() throws IOException {
-        File tmpFile = tmpFactory.getNewTmpFile(ResultTyp.RUNDEPTEST);
+        /*File tmpFile = tmpFactory.getNewTmpFile(ResultTyp.RUNDEPTEST);
         ResultTab resultTab = outputController.createNewResultTabPane(tmpFile.getName(), ResultTyp.RUNDEPTEST);
         resultTab.showLoading();
         Thread t = new Thread(() -> {
@@ -181,7 +178,7 @@ public class DepAdvConfigController implements MenuController {
             }
 
         });
-        t.start();
+        t.start();*/
     }
 
 
