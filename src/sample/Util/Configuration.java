@@ -47,7 +47,6 @@ public class Configuration {
     private static List<String> advDepFiles;
     private static List<String> advDepKeyFiles;
 
-
     public Configuration() {
 
     }
@@ -65,7 +64,7 @@ public class Configuration {
         startFolder = props.getProperty(startFolderProp);
         junkFolder = props.getProperty(junkFolderProp);
         externalDepToolLocation = props.getProperty(externalDepToolLocationProp);
-        externalQrToolLocation= props.getProperty(externalQrToolLocationProp);
+        externalQrToolLocation = props.getProperty(externalQrToolLocationProp);
         selectedRamInput = props.getProperty(selectedRamInputProp);
         popUp = Boolean.parseBoolean(props.getProperty(popUpProp));
         useDefaultDepTool = Boolean.parseBoolean(props.getProperty(useDefaultDepToolProp));
@@ -81,36 +80,28 @@ public class Configuration {
         return new Configuration();
     }
 
-
-    public void safe() throws IOException {
-        Properties props = new Properties();
-        props.put(depFileProp, String.join(",", depFiles));
-        props.put(depKeyFilesProp, String.join(",", depKeyFiles));
-        props.put(qrFilesProp, String.join(",", qrFiles));
-        props.put(qrKeyFilesProp, String.join(",", qrKeyFiles));
-        props.put(advDepFilesProp, String.join(",", advDepFiles));
-        props.put(advDepKeyFilesProp, String.join(",", advDepKeyFiles));
-        props.put(ramInputProp, String.join(",", ramInput));
-        props.put(versionNumberProp, versionNumber);
-        props.put(externalDepToolLocationProp,externalDepToolLocation);
-        props.put(externalQrToolLocationProp,externalQrToolLocation);
-        props.put(useDefaultDepToolProp,Boolean.toString(useDefaultDepTool));
-        props.put(startFolderProp, startFolder);
-        props.put(junkFolderProp, junkFolder);
-        props.put(selectedRamInputProp, selectedRamInput);
-        props.put(popUpProp, Boolean.toString(popUp));
-        props.put(askQuestionProp, Boolean.toString(askQuestion));
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        Date date = new Date(System.currentTimeMillis());
-        props.store(new FileOutputStream("config.properties"), "Safed by dependencies -" + formatter.format(date));
-    }
-
     public static boolean isUseDefaultDepTool() {
         return useDefaultDepTool;
     }
 
     public static void setUseDefaultDepTool(boolean useDefaultDepTool) {
         Configuration.useDefaultDepTool = useDefaultDepTool;
+    }
+
+    public static List<String> getAdvDepKeyFiles() {
+        return advDepKeyFiles;
+    }
+
+    public static void setAdvDepKeyFiles(List<String> advDepKeyFiles) {
+        Configuration.advDepKeyFiles = advDepKeyFiles;
+    }
+
+    public static List<String> getAdvDepFiles() {
+        return advDepFiles;
+    }
+
+    public static void setAdvDepFiles(List<String> advDepFiles) {
+        Configuration.advDepFiles = advDepFiles;
     }
 
     public static String getExternalDepToolLocation() {
@@ -129,16 +120,39 @@ public class Configuration {
         Configuration.externalDepToolLocation = externalDepToolLocation;
     }
 
+    public void safe() throws IOException {
+        Properties props = new Properties();
+        props.put(depFileProp, String.join(",", depFiles));
+        props.put(depKeyFilesProp, String.join(",", depKeyFiles));
+        props.put(qrFilesProp, String.join(",", qrFiles));
+        props.put(qrKeyFilesProp, String.join(",", qrKeyFiles));
+        props.put(advDepFilesProp, String.join(",", advDepFiles));
+        props.put(advDepKeyFilesProp, String.join(",", advDepKeyFiles));
+        props.put(ramInputProp, String.join(",", ramInput));
+        props.put(versionNumberProp, versionNumber);
+        props.put(externalDepToolLocationProp, externalDepToolLocation);
+        props.put(externalQrToolLocationProp, externalQrToolLocation);
+        props.put(useDefaultDepToolProp, Boolean.toString(useDefaultDepTool));
+        props.put(startFolderProp, startFolder);
+        props.put(junkFolderProp, junkFolder);
+        props.put(selectedRamInputProp, selectedRamInput);
+        props.put(popUpProp, Boolean.toString(popUp));
+        props.put(askQuestionProp, Boolean.toString(askQuestion));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+        Date date = new Date(System.currentTimeMillis());
+        props.store(new FileOutputStream("config.properties"), "Safed by dependencies -" + formatter.format(date));
+    }
+
     public List<String> getRamInput() {
         return ramInput;
     }
 
-    public void setSelectedRamInput(String selectedRamInput) {
-        Configuration.selectedRamInput = selectedRamInput;
-    }
-
     public String getSelectedRamInput() {
         return selectedRamInput;
+    }
+
+    public void setSelectedRamInput(String selectedRamInput) {
+        Configuration.selectedRamInput = selectedRamInput;
     }
 
     public boolean isAskQuestion() {

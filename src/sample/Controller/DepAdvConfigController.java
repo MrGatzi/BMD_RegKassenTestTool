@@ -15,7 +15,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import sample.Util.Configuration;
 import sample.Util.DepLogic.DepTestLogic;
-import sample.Util.DepLogic.Results.ShowResult;
 import sample.Util.DepLogic.Results.TestResult;
 import sample.Util.Enums.ResultTyp;
 import sample.Util.Factories.TmpFactory;
@@ -50,8 +49,8 @@ public class DepAdvConfigController implements MenuController {
 
     OutputController outputController;
     Configuration config;
-    List<CostumComboBoxItem> depFiles;
-    List<CostumComboBoxItem> depKeyFiles;
+    List<CostumComboBoxItem> advDepFiles;
+    List<CostumComboBoxItem> advDepKeyFiles;
     DepTestLogic depTestLogic;
     TmpFactory tmpFactory;
 
@@ -66,7 +65,8 @@ public class DepAdvConfigController implements MenuController {
 
     }
 
-    public void shutdown() {
+    public void shutdown(){
+        //TODO SHUT DOWN METHODS!
         /*this.config.setDepFiles(depFiles);
         this.config.setDepKeyFiles(depKeyFiles);*/
     }
@@ -78,11 +78,11 @@ public class DepAdvConfigController implements MenuController {
 
     public void setConfig(Configuration config) {
         this.config = config;
-        depFiles = converteToComboBoxItems(config.getDepFiles());
-        depKeyFiles = converteToComboBoxItems(config.getDepKeyFiles());
+        advDepFiles = converteToComboBoxItems(config.getAdvDepFiles());
+        advDepKeyFiles = converteToComboBoxItems(config.getAdvDepKeyFiles());
 
-        setSavedFileNames(depFiles, nameAdvDepFile);
-        setSavedFileNames(depKeyFiles, nameKeyFile);
+        setSavedFileNames(advDepFiles, nameAdvDepFile);
+        setSavedFileNames(advDepKeyFiles, nameKeyFile);
         depTestLogic = new DepTestLogic(config);
         tmpFactory = new TmpFactory(config);
     }
