@@ -21,73 +21,64 @@ import java.util.regex.Pattern;
 
 public class DecryptionLogic {
 
-    public LogicOutput decryptParts(LogicInput logicInput) throws IOException, NoSuchAlgorithmException, ParseException {
-        Receipt[] parts = logicInput.parts;
-        boolean isFristReceiptNotIncluded = logicInput.isFristReceiptNotIncluded;
-        double oldRevenueValue = logicInput.oldRevenueValue;
-        String oldSignature = logicInput.oldSignature;
-        String oldDate = logicInput.oldDate;
-        HashSet allReceiptIds = logicInput.allReceiptIds;
-        boolean errorBlocker = logicInput.errorBlocker;
-        String cryptoFileLocation = logicInput.cryptoFileLocation;
-        TestResult testResult = logicInput.testResult;
-        FileOutputStream resultFile = logicInput.resultFile;
-
+    public LogicInput checkGroupOfReceipt(Receipt[] parts , LogicInput logicInput) throws IOException, NoSuchAlgorithmException, ParseException {
         for (int i = 0; i < parts.length; i++) {
-            Receipt receiptToTest = parts[i]; //DepStringToReceipt(i, parts[i]);
-            if (receiptToTest != null) {
-                int wrongSetValues = receiptToTest.calculateNumberValuesOfReceiptStrings();
-
-                if (i == 0 && !isFristReceiptNotIncluded) {
-                    receiptToTest.calculatePreviousAndNextSignitarues(receiptToTest.getRegisterId());
-                } else {
-                    receiptToTest.calculatePreviousAndNextSignitarues(oldSignature);
-                }
-
-                oldRevenueValue = receiptToTest.calculateRevenueShouldBe(oldRevenueValue, cryptoFileLocation, isFristReceiptNotIncluded, errorBlocker);
-
-                if (errorBlocker && receiptToTest.wasErrorBlockerUsed()) {
-                    errorBlocker = false;
-                }
-                resultFile.write(receiptToTest.toString().getBytes());
-                //Tests
-                testResult.addChainedReceipt(i, receiptToTest.isProperChained());
-                testResult.addRevenueSet(i, receiptToTest.isRevenueProperEncrypted());
-                if (isDateProperFormated(receiptToTest.getReceiptDate())) {
-                    if (oldDate != null && !isDateProperChained(receiptToTest.getReceiptDate(), oldDate)) {
-                        testResult.addWrongChainedDate(i);
-                        resultFile.write("Datumverkettung: FEHLER\r\n".getBytes());
-                    } else {
-                        oldDate = receiptToTest.getReceiptDate();
-                    }
-                } else {
-                    testResult.addWrongDate(i);
-                    resultFile.write("Datumsformat: FEHLER\r\n".getBytes());
-                }
-
-                if (wrongSetValues > 0) {
-                    testResult.addWrongSetValue(i);
-                    resultFile.write("Betragsspalte: FEHLER\r\n".getBytes());
-                }
-                if (allReceiptIds.contains(receiptToTest.getReceiptId())) {
-                    testResult.addWrongReceiptId(i);
-                    resultFile.write("BelegNummer: FEHLER\r\n".getBytes());
-                } else {
-                    allReceiptIds.add(receiptToTest.getReceiptId());
-                }
-
-                oldDate = receiptToTest.getReceiptDate();
-                oldSignature = receiptToTest.getWholeReceipt();
-
-            } else {
-                testResult.addWrongStructureValues(i);
-            }
+            Receipt receiptToTest = parts[i];
+            logicInput=checkReceipt(receiptToTest,logicInput);
         }
-        LogicOutput logicOutput = new LogicOutput(oldRevenueValue, oldSignature, oldDate, allReceiptIds, errorBlocker, isFristReceiptNotIncluded, testResult);
-        return logicOutput;
-
+        return logicInput;
     }
 
+    public LogicInput checkReceipt(Receipt receiptToTest, LogicInput logicInput) throws IOException, NoSuchAlgorithmException, ParseException {
+        if (receiptToTest != null) {
+            int wrongSetValues = receiptToTest.calculateNumberValuesOfReceiptStrings();
+
+            if (receiptToTest.getReceiptNumber() == 0 && !logicInput.isFristReceiptNotIncluded) {
+                receiptToTest.calculatePreviousAndNextSignitarues(receiptToTest.getRegisterId());
+            } else {
+                receiptToTest.calculatePreviousAndNextSignitarues(logicInput.oldSignature);
+            }
+
+            logicInput.oldRevenueValue = receiptToTest.calculateRevenueShouldBe(logicInput.oldRevenueValue, logicInput.cryptoFileLocation, logicInput.isFristReceiptNotIncluded, logicInput.errorBlocker);
+
+            if (logicInput.errorBlocker && receiptToTest.wasErrorBlockerUsed()) {
+                logicInput.errorBlocker = false;
+            }
+            logicInput.resultFile.write(receiptToTest.toString().getBytes());
+            //Tests
+            logicInput.testResult.addChainedReceipt(receiptToTest.getReceiptNumber(), receiptToTest.isProperChained());
+            logicInput.testResult.addRevenueSet(receiptToTest.getReceiptNumber(), receiptToTest.isRevenueProperEncrypted());
+            if (isDateProperFormated(receiptToTest.getReceiptDate())) {
+                if (logicInput.oldDate != null && !isDateProperChained(receiptToTest.getReceiptDate(), logicInput.oldDate)) {
+                    logicInput.testResult.addWrongChainedDate(receiptToTest.getReceiptNumber());
+                    logicInput.resultFile.write("Datumverkettung: FEHLER\r\n".getBytes());
+                } else {
+                    logicInput.oldDate = receiptToTest.getReceiptDate();
+                }
+            } else {
+                logicInput.testResult.addWrongDate(receiptToTest.getReceiptNumber());
+                logicInput.resultFile.write("Datumsformat: FEHLER\r\n".getBytes());
+            }
+
+            if (wrongSetValues > 0) {
+                logicInput.testResult.addWrongSetValue(receiptToTest.getReceiptNumber());
+                logicInput.resultFile.write("Betragsspalte: FEHLER\r\n".getBytes());
+            }
+            if (logicInput.allReceiptIds.contains(receiptToTest.getReceiptId())) {
+                logicInput.testResult.addWrongReceiptId(receiptToTest.getReceiptNumber());
+                logicInput.resultFile.write("BelegNummer: FEHLER\r\n".getBytes());
+            } else {
+                logicInput.allReceiptIds.add(receiptToTest.getReceiptId());
+            }
+
+            logicInput.oldDate = receiptToTest.getReceiptDate();
+            logicInput.oldSignature = receiptToTest.getWholeReceipt();
+
+        } else {
+            logicInput.testResult.addWrongStructureValues(receiptToTest.getReceiptNumber());
+        }
+        return logicInput;
+    }
     //Helper methods
     public Receipt DepStringToReceipt(int receiptNumber, String input) throws UnsupportedEncodingException {
         CryptoTools cryptoTools = new CryptoTools();

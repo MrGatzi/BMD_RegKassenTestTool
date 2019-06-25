@@ -58,26 +58,25 @@ public class QrTestLogic {
     }
 
     public TestResult decryptAndStructureDepFile(String depFileLocation, String cryptoFileLocation, boolean isFristReceiptNotIncluded, File outputLocation) throws IOException, NoSuchAlgorithmException, ParseException {
-        TestResult testResult = new TestResult(outputLocation);
+        //prepare
         FileOutputStream resultFile = new FileOutputStream(outputLocation.getPath());
         String qrFileContent = ioTools.readTxtFile(depFileLocation);
-
-        double oldRevenueValue = 0;
-        String oldSignature = "";
-        String oldDate = null;
-        HashSet allReceiptIds = new HashSet<String>();
-        boolean errorBlocker = isFristReceiptNotIncluded;
-
+        LogicInput logicInput = new LogicInput(0,
+                "",
+                null,
+                new HashSet<String>(),
+                isFristReceiptNotIncluded,
+                isFristReceiptNotIncluded,
+                cryptoFileLocation,
+                new TestResult(outputLocation),
+                resultFile);
+        //decrypt
         Receipt[] receipts = decryptionLogic.convertQrInputToReceipts(qrFileContent);
         //actual Test
-        LogicInput logicInput = new LogicInput(receipts, oldRevenueValue, oldSignature, oldDate, allReceiptIds, errorBlocker, isFristReceiptNotIncluded, cryptoFileLocation, testResult, resultFile);
-        LogicOutput logicOutput = decryptionLogic.decryptParts(logicInput);
+        logicInput = decryptionLogic.checkGroupOfReceipt(receipts,logicInput);
         //output
-
-        testResult = logicOutput.testResult;
-
-        resultFile.write(testResult.printResults().getBytes());
+        resultFile.write(logicInput.testResult.printResults().getBytes());
         resultFile.close();
-        return testResult;
+        return logicInput.testResult;
     }
 }
