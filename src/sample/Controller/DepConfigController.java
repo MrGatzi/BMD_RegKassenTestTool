@@ -38,13 +38,13 @@ public class DepConfigController implements MenuController {
     public JFXComboBox<CostumComboBoxItem> nameKeyFile;
     public JFXTextField folderDepFile;
     public JFXComboBox<CostumComboBoxItem> nameDepFile;
-    public Button DepShowButton;
+    public Button depShowButton;
     public AnchorPane ParentPane;
     public VBox input;
     public VBox action;
     public Button DepTestButton;
-    public HBox DepShowCheckboxs;
-    public HBox DepTesCheckboxs;
+    public HBox depShowCheckboxs;
+    public HBox depTestCheckboxs;
     public HBox inputLine;
     public JFXCheckBox startReceiptBox;
     public JFXCheckBox futureBox;
@@ -63,8 +63,8 @@ public class DepConfigController implements MenuController {
         folderDepFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
         nameDepFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
         nameKeyFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
-        DepShowCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
-        DepTesCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
+        depShowCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
+        depTestCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
         setupTextField();
 
     }

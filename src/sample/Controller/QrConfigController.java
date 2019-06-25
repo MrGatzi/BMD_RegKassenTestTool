@@ -38,13 +38,13 @@ public class QrConfigController implements MenuController {
     public JFXComboBox<CostumComboBoxItem> nameKeyFile;
     public JFXTextField folderQrFile;
     public JFXComboBox<CostumComboBoxItem> nameQrFile;
-    public Button DepShowButton;
+    public Button qrShowButton;
     public AnchorPane ParentPane;
     public VBox input;
     public VBox action;
     public Button DepTestButton;
-    public HBox DepShowCheckboxs;
-    public HBox DepTesCheckboxs;
+    public HBox qrShowCheckboxs;
+    public HBox qrTestCheckboxs;
     public HBox inputLine;
     public JFXCheckBox startReceiptBox;
     public JFXCheckBox futureBox;
@@ -63,8 +63,8 @@ public class QrConfigController implements MenuController {
         folderQrFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
         nameQrFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
         nameKeyFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
-        DepShowCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
-        DepTesCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
+        qrShowCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
+        qrTestCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
         setupTextField();
 
     }

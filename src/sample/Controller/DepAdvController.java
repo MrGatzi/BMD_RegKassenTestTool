@@ -12,7 +12,7 @@ public class DepAdvController implements MenuController {
     public AnchorPane configPane;
     public AnchorPane outputPane;
     OutputController outputController;
-    DepConfigController configController;
+    DepAdvConfigController configController;
 
     Configuration config;
 
@@ -26,7 +26,7 @@ public class DepAdvController implements MenuController {
             FXMLLoader configLoader= new FXMLLoader(Main.class.getResource("resources/fxml/Configs/DepAdvConfig.fxml"));
             AnchorPane config = configLoader.load();
             configPane.getChildren().add(config);
-            configController = configLoader.<DepConfigController>getController();
+            configController = configLoader.<DepAdvConfigController>getController();
             configController.setOutputController(outputController);
 
         } catch (IOException e) {

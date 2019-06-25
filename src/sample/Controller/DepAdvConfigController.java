@@ -36,8 +36,8 @@ public class DepAdvConfigController implements MenuController {
 
     public JFXTextField folderKeyFile;
     public JFXComboBox<CostumComboBoxItem> nameKeyFile;
-    public JFXTextField folderDepFile;
-    public JFXComboBox<CostumComboBoxItem> nameDepFile;
+    public JFXTextField folderAdvDepFile;
+    public JFXComboBox<CostumComboBoxItem> nameAdvDepFile;
     public Button DepShowButton;
     public AnchorPane ParentPane;
     public VBox input;
@@ -60,8 +60,8 @@ public class DepAdvConfigController implements MenuController {
     public void initialize() {
         inputLine.prefWidthProperty().bind(ParentPane.widthProperty());
         folderKeyFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
-        folderDepFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
-        nameDepFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
+        folderAdvDepFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
+        nameAdvDepFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
         nameKeyFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
         DepShowCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
         DepTesCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
@@ -84,18 +84,18 @@ public class DepAdvConfigController implements MenuController {
         depFiles = converteToComboBoxItems(config.getDepFiles());
         depKeyFiles = converteToComboBoxItems(config.getDepKeyFiles());
 
-        setSavedFileNames(depFiles, nameDepFile);
+        setSavedFileNames(depFiles, nameAdvDepFile);
         setSavedFileNames(depKeyFiles, nameKeyFile);
         depTestLogic = new DepTestLogic(config);
         tmpFactory = new TmpFactory(config);
     }
 
     public void chooseDepFile(MouseEvent mouseEvent) throws IOException {
-        addNewFileToChoose(nameDepFile);
+        addNewFileToChoose(nameAdvDepFile);
     }
 
     public void openDepFile(MouseEvent mouseEvent) throws IOException {
-        openFile(nameDepFile.getSelectionModel().getSelectedItem().getPath());
+        openFile(nameAdvDepFile.getSelectionModel().getSelectedItem().getPath());
     }
 
     public void chooseKeyFile(MouseEvent mouseEvent) throws IOException {
@@ -147,10 +147,10 @@ public class DepAdvConfigController implements MenuController {
             }
         });
 
-        nameDepFile.valueProperty().addListener(new ChangeListener<CostumComboBoxItem>() {
+        nameAdvDepFile.valueProperty().addListener(new ChangeListener<CostumComboBoxItem>() {
             @Override
             public void changed(ObservableValue ov, CostumComboBoxItem olditem, CostumComboBoxItem newitem) {
-                folderDepFile.setText(newitem.getPathTo());
+                folderAdvDepFile.setText(newitem.getPathTo());
             }
         });
     }
@@ -169,7 +169,7 @@ public class DepAdvConfigController implements MenuController {
         Thread t = new Thread(() -> {
             try {
                 ShowResult showResult = depTestLogic.runDepTest(
-                        nameDepFile.getSelectionModel().getSelectedItem().getPath(),
+                        nameAdvDepFile.getSelectionModel().getSelectedItem().getPath(),
                         nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         futureBox.isSelected(),
                         detailsBox.isSelected(),
@@ -193,7 +193,7 @@ public class DepAdvConfigController implements MenuController {
         Thread t = new Thread(() -> {
             try {
                 TestResult testResult = depTestLogic.decryptAndStructureDepFile(
-                        nameDepFile.getSelectionModel().getSelectedItem().getPath(),
+                        nameAdvDepFile.getSelectionModel().getSelectedItem().getPath(),
                         nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         startReceiptBox.isSelected(),
                         tmpFile);

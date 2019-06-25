@@ -16,7 +16,7 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:id="ParentPane" style="-fx-background-color: #F0F0F0"
             AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
             AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx"
-            fx:controller="sample.Controller.DepConfigController">
+            fx:controller="sample.Controller.DepAdvConfigController">
     <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
         <top>
             <VBox alignment="center" spacing="20">
@@ -31,7 +31,7 @@
                 <VBox fx:id="input" alignment="CENTER" spacing="50">
                     <VBox spacing="5">
                         <HBox alignment="center">
-                            <JFXTextField fx:id="folderDepFile" disable="true"/>
+                            <JFXTextField fx:id="folderAdvDepFile" disable="true"/>
                             <ImageView fitHeight="25.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true"/>
                         </HBox>
                         <HBox alignment="center" spacing="10">
@@ -40,7 +40,7 @@
                                     <Image url="@../../Images/advDepFile.png"/>
                                 </image>
                             </ImageView>
-                            <JFXComboBox fx:id="nameDepFile" maxWidth="1.7976931348623157E308" prefWidth="150.0"/>
+                            <JFXComboBox fx:id="nameAdvDepFile" maxWidth="1.7976931348623157E308" prefWidth="150.0"/>
                             <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#chooseDepFile"
                                     stylesheets="@../../Styles/chooseButtons.css">
                                 <graphic>

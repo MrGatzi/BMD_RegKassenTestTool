@@ -114,15 +114,15 @@
         <bottom>
             <VBox fx:id="action" alignment="center" spacing="30">
                 <VBox alignment="center" spacing="20">
-                    <HBox fx:id="DepShowCheckboxs" alignment="center" spacing="20">
+                    <HBox fx:id="qrShowCheckboxs" alignment="center" spacing="20">
                         <JFXCheckBox fx:id="futureBox" mnemonicParsing="false" prefHeight="17.0" text="Futuredates valid"/>
                         <JFXCheckBox fx:id="detailsBox" mnemonicParsing="false" prefHeight="17.0" text="Details"/>
                     </HBox>
-                    <JFXButton fx:id="DepShowButton" mnemonicParsing="false" onAction="#runDepTest" text="Run Test"
+                    <JFXButton fx:id="qrShowButton" mnemonicParsing="false" onAction="#runDepTest" text="Run Test"
                                style="-fx-background-color: lightblue"/>
                 </VBox>
                 <VBox alignment="center" spacing="20">
-                    <HBox fx:id="DepTesCheckboxs" alignment="center" spacing="20">
+                    <HBox fx:id="qrTestCheckboxs" alignment="center" spacing="20">
                         <JFXCheckBox fx:id="startReceiptBox" mnemonicParsing="false" prefHeight="17.0" text="Startreceipt not included"/>
                         <JFXCheckBox mnemonicParsing="false" prefHeight="17.0" text="ToDo"/>
                     </HBox>
