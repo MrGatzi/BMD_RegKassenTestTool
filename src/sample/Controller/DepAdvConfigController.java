@@ -185,16 +185,17 @@ public class DepAdvConfigController implements MenuController {
 
     public void showDepFile(ActionEvent actionEvent) throws IOException {
         //TODO CHECK for better possibility
-        File tmpFile = tmpFactory.getNewTmpFile(ResultTyp.SHOWDEPFILE);
+        File tmpFile = tmpFactory.getNewTmpFile(ResultTyp.ADVDEPTEST);
         ResultTab resultTab = outputController.createNewResultTabPane(tmpFile.getName(), ResultTyp.SHOWDEPFILE);
         resultTab.showLoading();
+        //todo ask if split
         Thread t = new Thread(() -> {
             try {
                 advDepTestLogic.runWithDEP(
                         nameAdvDepFile.getSelectionModel().getSelectedItem().getPath(),
                         nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         startReceiptBox.isSelected(),
-                        tmpFile);
+                        tmpFile, true);
                // resultTab.printResult(testResult);
             } catch (IOException  | ParseException e) {
                 //TODO ERROR HANDLING !

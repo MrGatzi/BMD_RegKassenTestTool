@@ -4,6 +4,7 @@ import sample.Util.Receipt;
 import sample.Util.DepLogic.Results.TestResult;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashSet;
 
 public class TestData {
@@ -17,6 +18,10 @@ public class TestData {
     public TestResult testResult;
     public FileOutputStream resultFile;
 
+    public TestData(){
+
+    }
+
     public TestData(double oldRevenueValue, String oldSignature, String oldDate, HashSet allReceiptIds, boolean errorBlocker, boolean isFristReceiptNotIncluded, String cryptoFileLocation, TestResult testResult, FileOutputStream resultFile) {
         this.oldRevenueValue = oldRevenueValue;
         this.oldSignature = oldSignature;
@@ -26,6 +31,13 @@ public class TestData {
         this.isFristReceiptNotIncluded = isFristReceiptNotIncluded;
         this.cryptoFileLocation = cryptoFileLocation;
         this.testResult = testResult;
+        this.resultFile = resultFile;
+    }
+
+    public void switchOutputStream(FileOutputStream resultFile) throws IOException {
+        if(this.resultFile!=null) {
+            this.resultFile.close();
+        }
         this.resultFile = resultFile;
     }
 }

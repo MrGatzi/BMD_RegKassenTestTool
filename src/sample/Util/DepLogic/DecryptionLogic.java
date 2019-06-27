@@ -19,12 +19,12 @@ public class DecryptionLogic {
     public TestData checkGroupOfReceipt(Receipt[] parts , TestData testData) throws IOException, NoSuchAlgorithmException, ParseException {
         for (int i = 0; i < parts.length; i++) {
             Receipt receiptToTest = parts[i];
-            testData =checkReceipt(receiptToTest, testData);
+            testData = checkAndPrintReceipt(receiptToTest, testData);
         }
         return testData;
     }
 
-    public TestData checkReceipt(Receipt receiptToTest, TestData testData) throws IOException, NoSuchAlgorithmException, ParseException {
+    public TestData checkAndPrintReceipt(Receipt receiptToTest, TestData testData) throws IOException, NoSuchAlgorithmException, ParseException {
         if (receiptToTest != null) {
             int wrongSetValues = receiptToTest.calculateNumberValuesOfReceiptStrings();
 

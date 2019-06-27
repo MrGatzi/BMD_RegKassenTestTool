@@ -87,5 +87,16 @@ public class TmpFactory {
         tempFile.deleteOnExit();
         return tempFile;
     }
+    public File getNewTxtTmpFile(String name) throws IOException {
+        File junkFolder = new File(config.getJunkFolder());
+
+        if (!junkFolder.exists()) {
+            junkFolder.mkdir();
+        }
+
+        File tempFile = File.createTempFile(name+"_", ".tmp.json", junkFolder);
+        tempFile.deleteOnExit();
+        return tempFile;
+    }
 
 }
