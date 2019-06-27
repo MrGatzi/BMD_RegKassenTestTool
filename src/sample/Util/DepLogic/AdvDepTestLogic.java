@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+@SuppressWarnings("ALL")
 public class AdvDepTestLogic {
     Configuration config;
     TmpFactory tmpFactory;
@@ -27,21 +28,20 @@ public class AdvDepTestLogic {
         this.tmpFactory = new TmpFactory(config);
     }
 
-    public void runWithDEP(String depFileLocation,String cryptoFileLocation,boolean isFristReceiptNotIncluded) throws IOException, ParseException {
+    public void runWithDEP(String depFileLocation,String cryptoFileLocation,boolean isFristReceiptNotIncluded, File outputLocation) throws IOException, ParseException {
         String open = "{\r\n  \"Belege-Gruppe\": [\r\n    {\r\n      \"Signaturzertifikat\": \"\",\r\n      \"Zertifizierungsstellen\": [],\r\n      \"Belege-kompakt\": [";
         String end = "      ]\r\n    }\r\n   ]\r\n}";
-        String linebefore = "";
 
 
-        FileOutputStream resultFile = new FileOutputStream("");
-        TestData testData = new TestData(0,
+        FileOutputStream resultFile = new FileOutputStream(outputLocation.getPath());
+        TestData allDepFileTestData = new TestData(0,
                 "",
                 null,
                 new HashSet<String>(),
                 isFristReceiptNotIncluded,
                 isFristReceiptNotIncluded,
                 cryptoFileLocation,
-                new TestResult(new File("")),
+                new TestResult(outputLocation),
                 resultFile);
 
 
@@ -53,20 +53,19 @@ public class AdvDepTestLogic {
             //TODO: couldn't order DepTests ErrorMessage
         }
         try {
-            File file;
-            BufferedWriter writer;
-            File file2;
-            BufferedWriter writer2;
+            File depPartFile;
+            BufferedWriter depPartFileWriter;
+            File depPartStructerdFile;
+            BufferedWriter depPartStructerdFileWriter;
             int forcounter = 0;
             int forcounter2 = 0;
             Receipt receipt;
             boolean firstLineFlag = true;
             for (String element : firstDepLinesOrdered) {
-                //TODO: create new Tmp Files?
-                file =tmpFactory.getNewJsonTmpFile(ResultTyp.ADVDEPTEST);
-                writer = new BufferedWriter(new FileWriter(file));
-                file2 =tmpFactory.getNewJsonTmpFile(ResultTyp.ADVDEPTEST);
-                writer2 = new BufferedWriter(new FileWriter(file2));
+
+                depPartFile =tmpFactory.getNewJsonTmpFile("depPart",forcounter);
+                depPartFileWriter = new BufferedWriter(new FileWriter(depPartFile));
+
                 forcounter2 = 0;
 
                 BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(depFileLocation)));
@@ -74,53 +73,44 @@ public class AdvDepTestLogic {
                 int lineNr=0;
                 while ((line = br.readLine()) != null) {
                     if (line.contains("Belege-kompakt") && firstLineFlag) {
-                        writer.newLine();
+                        depPartFileWriter.newLine();
                         firstLineFlag = false;
                     }
                     if (firstLineFlag && line.contains(".")) {
                         lineNr++;
                         receipt=decryptionLogic.DepStringToReceipt(lineNr,line);
-                        writer2.write(receipt.toString());
-                        testData = decryptionLogic.checkReceipt(receipt, testData);
-                        linebefore = line;
-                        writer.write(line);
-                        writer.newLine();
+                        allDepFileTestData = decryptionLogic.checkReceipt(receipt, allDepFileTestData);
+                        depPartFileWriter.write(line);
+                        depPartFileWriter.newLine();
                     }
 
                     if (line.contains(element)) {
-                        writer.write(open);
-                        writer.newLine();
+                        depPartFileWriter.write(open);
+                        depPartFileWriter.newLine();
                         for (String element2 : firstDepLinesOrdered) {
-                            if (forcounter2 < forcounter) {
+                            if (forcounter2 < forcounter) //noinspection MagicConstant
+                            {
                                 lineNr++;
                                 receipt=decryptionLogic.DepStringToReceipt(lineNr,line);
-                                writer2.write(receipt.toString());
-                                testData = decryptionLogic.checkReceipt(receipt, testData);
-                                linebefore = element2;
-                                writer.write(element2);
-                                writer.newLine();
+                                allDepFileTestData = decryptionLogic.checkReceipt(receipt, allDepFileTestData);
+                                depPartFileWriter.write(element2);
+                                depPartFileWriter.newLine();
                             }
                             forcounter2++;
                         }
                         lineNr++;
                         receipt=decryptionLogic.DepStringToReceipt(lineNr,line);
-                        writer2.write(receipt.toString());
-                        testData = decryptionLogic.checkReceipt(receipt, testData);
-                        linebefore = line;
-                        writer.write(line);
-                        writer.newLine();
+                        allDepFileTestData = decryptionLogic.checkReceipt(receipt, allDepFileTestData);
+                        depPartFileWriter.write(line);
+                        depPartFileWriter.newLine();
                         firstLineFlag = true;
                     }
 
                 }
-                writer2.write(testData.testResult.printResults());
                 forcounter++;
-                writer.write(end);
-                writer.flush();
-                writer.close();
-                writer2.flush();
-                writer2.close();
-
+                depPartFileWriter.write(end);
+                depPartFileWriter.flush();
+                depPartFileWriter.close();
             }
 
         } catch (IOException | NoSuchAlgorithmException e) {

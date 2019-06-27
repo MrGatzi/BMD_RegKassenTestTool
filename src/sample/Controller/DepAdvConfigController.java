@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import sample.Util.Configuration;
+import sample.Util.DepLogic.AdvDepTestLogic;
 import sample.Util.DepLogic.DepTestLogic;
 import sample.Util.DepLogic.Results.TestResult;
 import sample.Util.Enums.ResultTyp;
@@ -51,7 +52,7 @@ public class DepAdvConfigController implements MenuController {
     Configuration config;
     List<CostumComboBoxItem> advDepFiles;
     List<CostumComboBoxItem> advDepKeyFiles;
-    DepTestLogic depTestLogic;
+    AdvDepTestLogic advDepTestLogic;
     TmpFactory tmpFactory;
 
     public void initialize() {
@@ -83,7 +84,7 @@ public class DepAdvConfigController implements MenuController {
 
         setSavedFileNames(advDepFiles, nameAdvDepFile);
         setSavedFileNames(advDepKeyFiles, nameKeyFile);
-        depTestLogic = new DepTestLogic(config);
+        advDepTestLogic = new AdvDepTestLogic(config);
         tmpFactory = new TmpFactory(config);
     }
 
@@ -189,13 +190,13 @@ public class DepAdvConfigController implements MenuController {
         resultTab.showLoading();
         Thread t = new Thread(() -> {
             try {
-                TestResult testResult = depTestLogic.decryptAndStructureDepFile(
+                advDepTestLogic.runWithDEP(
                         nameAdvDepFile.getSelectionModel().getSelectedItem().getPath(),
                         nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         startReceiptBox.isSelected(),
                         tmpFile);
-                resultTab.printResult(testResult);
-            } catch (IOException | NoSuchAlgorithmException | ParseException e) {
+               // resultTab.printResult(testResult);
+            } catch (IOException  | ParseException e) {
                 //TODO ERROR HANDLING !
                 e.printStackTrace();
             }
