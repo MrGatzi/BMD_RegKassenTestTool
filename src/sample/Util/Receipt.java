@@ -143,6 +143,7 @@ public class Receipt {
 
         receiptString.append("Signatur: ");
         receiptString.append(signature);
+
         receiptString.append("\r\n");
 
         return receiptString.toString();

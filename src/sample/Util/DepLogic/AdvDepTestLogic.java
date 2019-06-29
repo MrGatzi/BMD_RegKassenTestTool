@@ -98,7 +98,7 @@ public class AdvDepTestLogic {
                         receipt = decryptionLogic.DepStringToReceipt(lineNr, line);
                         testData = decryptionLogic.checkAndPrintReceipt(receipt, testData);
                         depPartFileWriter.write(line);
-
+                        depPartFileWriter.write("\r\n");
                     }
 
                     if (line.contains(element)) {
@@ -159,7 +159,7 @@ public class AdvDepTestLogic {
 
             Runtime runtime = Runtime.getRuntime();
             Process process = null;
-            String processString = ioTools.createDepProcessString(depTestFile.getAbsolutePath(), cryptoFileLocation, null, validFutureDates, showDetails);
+            String processString = ioTools.createDepProcessString(depPartFile.getAbsolutePath(), cryptoFileLocation, null, validFutureDates, showDetails);
             process = runtime.exec(processString);
             InputStream is = process.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
@@ -167,11 +167,9 @@ public class AdvDepTestLogic {
             String lineDep;
             while ((lineDep = brDep.readLine()) != null) {
                 depTestFileWriter.write(lineDep + "\r\n");
-                System.out.println(lineDep);
                 if (lineDep.contains("Step 2: RKSV-DEP-EXPORT Validation:")) {
                     process.destroy();
                     depTestFileWriter.write("NOT DONE ! \r\n");
-                    System.out.println("stopped Process on Step 2 !");
                 }
 
             }

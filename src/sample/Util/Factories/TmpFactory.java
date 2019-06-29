@@ -36,10 +36,11 @@ public class TmpFactory {
                 name = "AdvDepTest";
                 break;
         }
-        File tempFile = File.createTempFile(name, ".tmp.txt", junkFolder);
+        File tempFile = File.createTempFile("_" + name, ".tmp.txt", junkFolder);
         tempFile.deleteOnExit();
         return tempFile;
     }
+
     public File getNewJsonTmpFile(ResultTyp typ) throws IOException {
         File junkFolder = new File(config.getJunkFolder());
 
@@ -61,10 +62,11 @@ public class TmpFactory {
                 name = "AdvDepTest";
                 break;
         }
-        File tempFile = File.createTempFile(name, ".tmp.json", junkFolder);
+        File tempFile = File.createTempFile("_" + name, ".tmp.json", junkFolder);
         tempFile.deleteOnExit();
         return tempFile;
     }
+
     public File getNewJsonTmpFile(String name, int number) throws IOException {
         File junkFolder = new File(config.getJunkFolder());
 
@@ -72,10 +74,11 @@ public class TmpFactory {
             junkFolder.mkdir();
         }
 
-        File tempFile = File.createTempFile(name+number+"_", ".tmp.json", junkFolder);
+        File tempFile = File.createTempFile("_" + name + number + "_", ".tmp.json", junkFolder);
         tempFile.deleteOnExit();
         return tempFile;
     }
+
     public File getNewTxtTmpFile(String name, int number) throws IOException {
         File junkFolder = new File(config.getJunkFolder());
 
@@ -83,10 +86,11 @@ public class TmpFactory {
             junkFolder.mkdir();
         }
 
-        File tempFile = File.createTempFile(name+number+"_", ".tmp.json", junkFolder);
+        File tempFile = File.createTempFile("_" + name + number + "_", ".tmp.json", junkFolder);
         tempFile.deleteOnExit();
         return tempFile;
     }
+
     public File getNewTxtTmpFile(String name) throws IOException {
         File junkFolder = new File(config.getJunkFolder());
 
@@ -94,7 +98,7 @@ public class TmpFactory {
             junkFolder.mkdir();
         }
 
-        File tempFile = File.createTempFile(name+"_", ".tmp.json", junkFolder);
+        File tempFile = File.createTempFile("_" + name + "_", ".tmp.json", junkFolder);
         tempFile.deleteOnExit();
         return tempFile;
     }

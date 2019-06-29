@@ -65,7 +65,7 @@ public class DecryptionLogic {
             } else {
                 testData.allReceiptIds.add(receiptToTest.getReceiptId());
             }
-            testData.resultFile.write("/r/n".getBytes());
+            testData.resultFile.write("\r\n".getBytes());
             testData.oldDate = receiptToTest.getReceiptDate();
             testData.oldSignature = receiptToTest.getWholeReceipt();
 
