@@ -61,11 +61,11 @@ public class DecryptionLogic {
             }
             if (testData.allReceiptIds.contains(receiptToTest.getReceiptId())) {
                 testData.testResult.addWrongReceiptId(receiptToTest.getReceiptNumber());
-                testData.resultFile.write("BelegNummer: FEHLER\r\n".getBytes());
+                testData.resultFile.write("Belegnummer: FEHLER\r\n".getBytes());
             } else {
                 testData.allReceiptIds.add(receiptToTest.getReceiptId());
             }
-
+            testData.resultFile.write("/r/n".getBytes());
             testData.oldDate = receiptToTest.getReceiptDate();
             testData.oldSignature = receiptToTest.getWholeReceipt();
 

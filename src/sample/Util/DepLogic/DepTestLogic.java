@@ -26,8 +26,6 @@ public class DepTestLogic {
         ShowResult showResult = new ShowResult(outputFile);
         FileOutputStream resultFile = new FileOutputStream(outputFile.getPath());
 
-        String decodedPath = URLDecoder.decode(DepTestLogic.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8");
-
         String processString = ioTools.createDepProcessString(DefaultStringDEP, DefaultStringCRYPTO, outputFile.getAbsolutePath(), futurBox, DetailsBox);
 
         Process process = Runtime.getRuntime().exec(processString);

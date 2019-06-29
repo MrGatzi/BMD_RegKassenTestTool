@@ -20,7 +20,7 @@ public class AdvResult implements Result {
         depPartFiles = new ArrayList<File>();
         depStructuredFiles = new ArrayList<File>();
         depTestFiles = new ArrayList<File>();
-        testData=null;
+        testData = null;
     }
 
     @Override
@@ -33,15 +33,26 @@ public class AdvResult implements Result {
         outputLocation = file;
     }
 
-    public void addPartFile(File file){
+    public int numberOfDepFilesFound() {
+        return depPartFiles.size();
+    }
+
+    public List<File> getDepPartFiles() {
+        return depPartFiles;
+    }
+
+    public void addDepPartFile(File file) {
         depPartFiles.add(file);
     }
-    public void adddepStructuredFile(File file){
+
+    public void addDepStructuredFile(File file) {
         depStructuredFiles.add(file);
     }
-    public void adddepTestFile(File file){
+
+    public void addDepTestFile(File file) {
         depTestFiles.add(file);
     }
+
     public TestData getTestData() {
         return testData;
     }

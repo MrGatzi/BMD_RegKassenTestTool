@@ -3,9 +3,10 @@ package sample.Util.DepLogic;
 import org.apache.commons.codec.binary.Base64;
 import sample.Util.Configuration;
 import sample.Util.CryptoTools;
+import sample.Util.DepLogic.Results.AdvResult;
 import sample.Util.DepLogic.Results.TestResult;
-import sample.Util.Enums.ResultTyp;
 import sample.Util.Factories.TmpFactory;
+import sample.Util.IOTools;
 import sample.Util.Receipt;
 
 import java.io.*;
@@ -21,18 +22,22 @@ public class AdvDepTestLogic {
     Configuration config;
     TmpFactory tmpFactory;
     DecryptionLogic decryptionLogic;
+    IOTools ioTools;
 
     public AdvDepTestLogic(Configuration config) {
         this.config = config;
         this.decryptionLogic = new DecryptionLogic();
         this.tmpFactory = new TmpFactory(config);
+        this.ioTools = new IOTools(config);
     }
 
-    public void runWithDEP(String depFileLocation, String cryptoFileLocation, boolean isFristReceiptNotIncluded, File outputLocation, boolean splitStructuredDepFiles) throws IOException, ParseException {
+    public AdvResult runWithDEP(String depFileLocation, String cryptoFileLocation, boolean isFristReceiptNotIncluded, File outputLocation, boolean splitStructuredDepFiles, boolean validFutureDates, boolean showDetails, boolean runDepTests) throws IOException, ParseException {
+        AdvResult advResult = new AdvResult(outputLocation);
         String open = "{\r\n  \"Belege-Gruppe\": [\r\n    {\r\n      \"Signaturzertifikat\": \"\",\r\n      \"Zertifizierungsstellen\": [],\r\n      \"Belege-kompakt\": [";
         String end = "      ]\r\n    }\r\n   ]\r\n}";
 
-        FileOutputStream resultFile=null;
+        File resultFile = null;
+        FileOutputStream resultFileStream = null;
         TestData testData = new TestData(0,
                 "",
                 null,
@@ -41,11 +46,13 @@ public class AdvDepTestLogic {
                 isFristReceiptNotIncluded,
                 cryptoFileLocation,
                 new TestResult(outputLocation),
-                resultFile);
+                resultFileStream);
 
         if (!splitStructuredDepFiles) {
-            resultFile = new FileOutputStream(tmpFactory.getNewTxtTmpFile("allDepPartsStructured"));
-            testData.switchOutputStream(resultFile);
+            resultFile = tmpFactory.getNewTxtTmpFile("allDepPartsStructured");
+            resultFileStream = new FileOutputStream(resultFile);
+            testData.switchOutputStream(resultFileStream);
+            advResult.addDepStructuredFile(resultFile);
         }
 
         List<String> firstDepLines = getFirstDepLines(depFileLocation);
@@ -62,21 +69,25 @@ public class AdvDepTestLogic {
             int forcounter2 = 0;
             Receipt receipt;
             boolean firstLineFlag = true;
+            int lineNr = 0;
             for (String element : firstDepLinesOrdered) {
 
                 depPartFile = tmpFactory.getNewJsonTmpFile("depPart", forcounter);
                 depPartFileWriter = new BufferedWriter(new FileWriter(depPartFile));
+                advResult.addDepPartFile(depPartFile);
 
                 if (splitStructuredDepFiles) {
-                    resultFile = new FileOutputStream(tmpFactory.getNewTxtTmpFile("depPartStructured", forcounter));
-                    testData.switchOutputStream(resultFile);
+                    resultFile = tmpFactory.getNewTxtTmpFile("depPartStructured", forcounter);
+                    resultFileStream = new FileOutputStream(resultFile);
+                    testData.switchOutputStream(resultFileStream);
+                    advResult.addDepStructuredFile(resultFile);
                 }
 
                 forcounter2 = 0;
 
                 BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(depFileLocation)));
                 String line;
-                int lineNr = 0;
+
                 while ((line = br.readLine()) != null) {
                     if (line.contains("Belege-kompakt") && firstLineFlag) {
                         depPartFileWriter.newLine();
@@ -118,51 +129,68 @@ public class AdvDepTestLogic {
                 depPartFileWriter.flush();
                 depPartFileWriter.close();
             }
-            resultFile.close();
+            resultFileStream.close();
 
         } catch (IOException | NoSuchAlgorithmException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        /*try {
-
-            File fileDep;
-
-            int forcounterDep = 0;
-            BufferedWriter writerDep;
-            for (String element1 : firstDepLinesOrdered) {
-
-                forcounterDep++;
-                fileDep = new File(OutFolder + "/_DepTest_" + (forcounterDep) + ".json");
-                fileDep.createNewFile();
-                writerDep = new BufferedWriter(new FileWriter(fileDep));
-                Runtime runtime = Runtime.getRuntime();
-                Process process = null;
-                process = runtime.exec("java -jar regkassen-verification-depformat-1.1.1.jar -f -i " + OutFolder + "/_Dep_" + (forcounterDep) + ".json" + " -c " + CryptoFile + " -o " + OutFolder + "/out");
-                InputStream is = process.getInputStream();
-                InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader brDep = new BufferedReader(isr);
-                String lineDep;
-                while ((lineDep = brDep.readLine()) != null) {
-                    writerDep.write(lineDep + "\r\n");
-                    System.out.println(lineDep);
-                    if (lineDep.contains("Step 2: RKSV-DEP-EXPORT Validation:")) {
-                        process.destroy();
-                        writerDep.write("NOT DONE ! \r\n");
-                        System.out.println("stopped Process on Step 2 !");
-                    }
-
-                }
-                writerDep.flush();
-                writerDep.close();
+        if (runDepTests) {
+            try {
+                advResult = runDepTestForAllResults(advResult, cryptoFileLocation, validFutureDates, showDetails);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                // TODO fix errorhandling
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }*/
+        }
+        //TODO check Date check
+        advResult.setTestData(testData);
+        printResult(advResult);
+        return advResult;
+    }
 
-        //TODO PRINT RESULT
+    private AdvResult runDepTestForAllResults(AdvResult advResult, String cryptoFileLocation, boolean validFutureDates, boolean showDetails) throws IOException {
+        int filecounter = 0;
+        for (File depPartFile : advResult.getDepPartFiles()) {
+            File depTestFile = tmpFactory.getNewJsonTmpFile("depPartTest", filecounter);
+            BufferedWriter depTestFileWriter = new BufferedWriter(new FileWriter(depTestFile));
+            advResult.addDepTestFile(depTestFile);
+
+            Runtime runtime = Runtime.getRuntime();
+            Process process = null;
+            String processString = ioTools.createDepProcessString(depTestFile.getAbsolutePath(), cryptoFileLocation, null, validFutureDates, showDetails);
+            process = runtime.exec(processString);
+            InputStream is = process.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader brDep = new BufferedReader(isr);
+            String lineDep;
+            while ((lineDep = brDep.readLine()) != null) {
+                depTestFileWriter.write(lineDep + "\r\n");
+                System.out.println(lineDep);
+                if (lineDep.contains("Step 2: RKSV-DEP-EXPORT Validation:")) {
+                    process.destroy();
+                    depTestFileWriter.write("NOT DONE ! \r\n");
+                    System.out.println("stopped Process on Step 2 !");
+                }
+
+            }
+            depTestFileWriter.flush();
+            depTestFileWriter.close();
+            filecounter++;
+        }
+        return advResult;
+    }
+
+
+    private void printResult(AdvResult advResult) throws IOException {
+        BufferedWriter output = new BufferedWriter(new FileWriter(advResult.getOuputLocation()));
+        output.write("Splitting DepFile successful!\r\n");
+        output.write("Number of DepFiles found : " + advResult.numberOfDepFilesFound() + "\r\n\r\n");
+        output.write("Results:  \r\n");
+        output.write(advResult.getTestData().testResult.printResults());
+        output.flush();
+        output.close();
     }
 
     private List<String> getFirstDepLines(String depFileLocation) throws IOException {

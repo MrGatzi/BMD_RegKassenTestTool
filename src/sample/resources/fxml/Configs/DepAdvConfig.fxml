@@ -120,6 +120,12 @@
                                      text="Futuredates valid"/>
                         <JFXCheckBox fx:id="startReceiptBox" mnemonicParsing="false" prefHeight="17.0"
                                      text="Startreceipt not included"/>
+
+                    </HBox>
+
+                    <HBox fx:id="DepShowCheckboxs2" alignment="center" spacing="20">
+                    <JFXCheckBox fx:id="splitIntoDepFilesBox" mnemonicParsing="false" prefHeight="17.0"
+                                 text="Split structured output"/>
                     </HBox>
                     <JFXButton fx:id="runWithoutTestButton" mnemonicParsing="false" onAction="#runDepTest"
                                text="With-DepTest"

@@ -16,6 +16,7 @@ import javafx.stage.FileChooser;
 import sample.Util.Configuration;
 import sample.Util.DepLogic.AdvDepTestLogic;
 import sample.Util.DepLogic.DepTestLogic;
+import sample.Util.DepLogic.Results.AdvResult;
 import sample.Util.DepLogic.Results.TestResult;
 import sample.Util.Enums.ResultTyp;
 import sample.Util.Factories.TmpFactory;
@@ -47,6 +48,8 @@ public class DepAdvConfigController implements MenuController {
     public HBox inputLine;
     public JFXCheckBox startReceiptBox;
     public JFXCheckBox futureBox;
+    public JFXCheckBox splitIntoDepFilesBox;
+    public HBox DepShowCheckboxs2;
 
     OutputController outputController;
     Configuration config;
@@ -62,6 +65,7 @@ public class DepAdvConfigController implements MenuController {
         nameAdvDepFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
         nameKeyFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
         DepShowCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
+        DepShowCheckboxs2.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
         setupTextField();
 
     }
@@ -191,12 +195,16 @@ public class DepAdvConfigController implements MenuController {
         //todo ask if split
         Thread t = new Thread(() -> {
             try {
-                advDepTestLogic.runWithDEP(
+                AdvResult advResult=advDepTestLogic.runWithDEP(
                         nameAdvDepFile.getSelectionModel().getSelectedItem().getPath(),
                         nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         startReceiptBox.isSelected(),
-                        tmpFile, true);
-               // resultTab.printResult(testResult);
+                        tmpFile,
+                        true,
+                        true,
+                        false,
+                        true);
+                resultTab.printResult(advResult);
             } catch (IOException  | ParseException e) {
                 //TODO ERROR HANDLING !
                 e.printStackTrace();

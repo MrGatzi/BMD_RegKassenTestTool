@@ -69,9 +69,10 @@ public class IOTools {
             if (file.isDirectory()) {
                 depProcessString.append(outputFileLocation);
             } else {
-                depProcessString.append("OutputFiles");
+                depProcessString.append(config.getJunkFolder());
             }
         } else {
+            depProcessString.append(config.getJunkFolder());
             //TODO: add ERROR HAndling + tmp Files
         }
         return depProcessString.toString();
