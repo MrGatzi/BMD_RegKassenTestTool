@@ -195,6 +195,6 @@ public class DecryptionLogic {
         String oldDateString = oldReceiptDate.replace('T', ' ');
         Date oldDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(oldDateString);
 
-        return currentDate.compareTo(oldDate) > 0;
+        return currentDate.compareTo(oldDate) >= 0;
     }
 }

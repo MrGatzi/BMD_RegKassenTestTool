@@ -50,6 +50,7 @@ public class DepAdvConfigController implements MenuController {
     public JFXCheckBox futureBox;
     public JFXCheckBox splitIntoDepFilesBox;
     public HBox DepShowCheckboxs2;
+    public JFXCheckBox detailsBox;
 
     OutputController outputController;
     Configuration config;
@@ -165,25 +166,29 @@ public class DepAdvConfigController implements MenuController {
     }
 
     public void runDepTest() throws IOException {
-        /*File tmpFile = tmpFactory.getNewTmpFile(ResultTyp.RUNDEPTEST);
-        ResultTab resultTab = outputController.createNewResultTabPane(tmpFile.getName(), ResultTyp.RUNDEPTEST);
+        //TODO CHECK for better possibility
+        File tmpFile = tmpFactory.getNewTmpFile(ResultTyp.ADVDEPTEST);
+        ResultTab resultTab = outputController.createNewResultTabPane(tmpFile.getName(), ResultTyp.SHOWDEPFILE);
         resultTab.showLoading();
+        //todo ask if split
         Thread t = new Thread(() -> {
             try {
-                ShowResult showResult = depTestLogic.runDepTest(
+                AdvResult advResult=advDepTestLogic.runWithDEP(
                         nameAdvDepFile.getSelectionModel().getSelectedItem().getPath(),
                         nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
-                        futureBox.isSelected(),
+                        startReceiptBox.isSelected(),
+                        tmpFile,
+                        futureBox.isDisableVisualFocus(),
                         detailsBox.isSelected(),
-                        tmpFile);
-                resultTab.printResult(showResult);
-            } catch (IOException e) {
-                //TODO HANDLE EXEPTIONS
+                        false);
+                resultTab.printResult(advResult);
+            } catch (IOException  | ParseException e) {
+                //TODO ERROR HANDLING !
                 e.printStackTrace();
             }
 
         });
-        t.start();*/
+        t.start();
     }
 
 
@@ -200,9 +205,8 @@ public class DepAdvConfigController implements MenuController {
                         nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         startReceiptBox.isSelected(),
                         tmpFile,
-                        true,
-                        true,
-                        false,
+                        futureBox.isDisableVisualFocus(),
+                        detailsBox.isSelected(),
                         true);
                 resultTab.printResult(advResult);
             } catch (IOException  | ParseException e) {

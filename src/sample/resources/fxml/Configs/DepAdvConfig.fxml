@@ -113,20 +113,22 @@
             </HBox>
         </center>
         <bottom>
-            <VBox fx:id="action" alignment="center" spacing="30">
+            <VBox fx:id="action" alignment="center" spacing="
+            30">
                 <VBox alignment="center" spacing="20">
                     <HBox fx:id="DepShowCheckboxs" alignment="center" spacing="20">
                         <JFXCheckBox fx:id="futureBox" mnemonicParsing="false" prefHeight="17.0"
                                      text="Futuredates valid"/>
-                        <JFXCheckBox fx:id="startReceiptBox" mnemonicParsing="false" prefHeight="17.0"
-                                     text="Startreceipt not included"/>
-
+                        <JFXCheckBox fx:id="detailsBox" mnemonicParsing="false" prefHeight="17.0"
+                                     text="Details"/>
                     </HBox>
 
                     <HBox fx:id="DepShowCheckboxs2" alignment="center" spacing="20">
-                    <JFXCheckBox fx:id="splitIntoDepFilesBox" mnemonicParsing="false" prefHeight="17.0"
-                                 text="Split structured output"/>
+
+                        <JFXCheckBox fx:id="startReceiptBox" mnemonicParsing="false" prefHeight="17.0"
+                                     text="Startreceipt not included"/>
                     </HBox>
+
                     <JFXButton fx:id="runWithoutTestButton" mnemonicParsing="false" onAction="#runDepTest"
                                text="With-DepTest"
                                style="-fx-background-color: lightblue"/>

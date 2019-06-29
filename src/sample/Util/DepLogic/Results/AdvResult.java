@@ -12,7 +12,7 @@ public class AdvResult implements Result {
     private List<File> depPartFiles;
     private List<File> depStructuredFiles;
     private List<File> depTestFiles;
-    TestData testData;
+    private List<TestData>  testData;
 
 
     public AdvResult(File outputLocation) {
@@ -20,7 +20,7 @@ public class AdvResult implements Result {
         depPartFiles = new ArrayList<File>();
         depStructuredFiles = new ArrayList<File>();
         depTestFiles = new ArrayList<File>();
-        testData = null;
+        testData =  new ArrayList<TestData>();
     }
 
     @Override
@@ -53,12 +53,15 @@ public class AdvResult implements Result {
         depTestFiles.add(file);
     }
 
-    public TestData getTestData() {
+    public List<TestData> getAllTestData() {
         return testData;
     }
+    public TestData getSingleTestData(int index) {
+        return testData.get(index);
+    }
 
-    public void setTestData(TestData testData) {
-        this.testData = testData;
+    public void addTestData(TestData testData) {
+        this.testData.add(testData);
     }
 
 }
