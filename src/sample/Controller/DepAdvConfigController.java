@@ -165,7 +165,7 @@ public class DepAdvConfigController implements MenuController {
         }
     }
 
-    public void runDepTest() throws IOException {
+    public void withoutDepTest() throws IOException {
         //TODO CHECK for better possibility
         File tmpFile = tmpFactory.getNewTmpFile(ResultTyp.ADVDEPTEST);
         ResultTab resultTab = outputController.createNewResultTabPane(tmpFile.getName(), ResultTyp.SHOWDEPFILE);
@@ -192,7 +192,7 @@ public class DepAdvConfigController implements MenuController {
     }
 
 
-    public void showDepFile(ActionEvent actionEvent) throws IOException {
+    public void withDepTest(ActionEvent actionEvent) throws IOException {
         //TODO CHECK for better possibility
         File tmpFile = tmpFactory.getNewTmpFile(ResultTyp.ADVDEPTEST);
         ResultTab resultTab = outputController.createNewResultTabPane(tmpFile.getName(), ResultTyp.SHOWDEPFILE);

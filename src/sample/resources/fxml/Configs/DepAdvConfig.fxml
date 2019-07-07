@@ -129,10 +129,10 @@
                                      text="Startreceipt not included"/>
                     </HBox>
 
-                    <JFXButton fx:id="runWithoutTestButton" mnemonicParsing="false" onAction="#runDepTest"
+                    <JFXButton fx:id="runWithoutTestButton" mnemonicParsing="false" onAction="#withDepTest"
                                text="With-DepTest"
                                style="-fx-background-color: lightblue"/>
-                    <JFXButton fx:id="runWithTestButton" mnemonicParsing="false" onAction="#showDepFile"
+                    <JFXButton fx:id="runWithTestButton" mnemonicParsing="false" onAction="#withoutDepTest"
                                text="Without-DepTest"
                                style="-fx-background-color: #e00000"/>
                     <padding>
