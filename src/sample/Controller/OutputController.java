@@ -78,7 +78,7 @@ public class OutputController {
                 chooser.setTitle("Export advFiles");
                 File newLocation = chooser.showDialog(resultTabPane.getScene().getWindow());
                 if (newLocation != null&& newLocation.isDirectory()) {
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
                     Date date = new Date(System.currentTimeMillis());
                     String dateString = formatter.format(date);
                     int i=1;

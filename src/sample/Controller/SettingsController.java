@@ -81,12 +81,19 @@ public class SettingsController implements MenuController {
     }
 
     public void clearStorage(ActionEvent actionEvent) throws IOException {
-        //TODO: cealr storage
         FileUtils.cleanDirectory(new File(config.getJunkFolder()));
     }
 
     public void updateProgramm(ActionEvent actionEvent) {
-        //TODO : input updaterLogic at the end!
+        Runtime runtime = Runtime.getRuntime();
+        Process process = null;
+        try {
+            process = runtime.exec("updaterHelper.exe");
+            System.exit(0);
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
     }
 
     private String chooseAndSetNewFolder(JFXTextField nameField) {
