@@ -8,6 +8,9 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import org.fxmisc.richtext.model.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
+import org.reactfx.Subscription;
 import sample.Util.Result;
 import sample.Util.Enums.ResultTabState;
 import sample.Util.Enums.ResultTyp;
@@ -16,61 +19,75 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.Duration;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.fxmisc.flowless.VirtualizedScrollPane;
+import org.fxmisc.richtext.CodeArea;
 
 public class ResultTab extends Tab {
     Result result;
-    TextArea textArea;
     ResultTyp resultTyp;
     ResultTabState resultTabState;
+    CodeArea codeArea;
+
     public ResultTab(String filename, ResultTyp resultTyp) {
         super.setText(filename);
         this.result = null;
-        this.textArea = new TextArea();
+        this.codeArea = new CodeArea();
         this.resultTyp = resultTyp;
 
         this.setOnClosed(c -> {
             onClose();
         });
-        resultTabState= ResultTabState.CREATED;
+        resultTabState = ResultTabState.CREATED;
     }
+
+    ;
 
     public ResultTab(String filename, ResultTyp resultTyp, Result result) throws IOException {
         super.setText(filename);
         this.result = null;
-        this.textArea = new TextArea();
+        this.codeArea = new CodeArea();
         this.resultTyp = resultTyp;
 
         this.setOnClosed(c -> {
             onClose();
         });
         printResult(result);
-        resultTabState= ResultTabState.CREATED;
+        resultTabState = ResultTabState.CREATED;
     }
 
     public void printResult(Result result) throws IOException {
         this.result = result;
 
-        this.textArea.setEditable(false);
-        this.textArea.setWrapText(true);
-
+        StringBuilder textToDisplay = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(result.getOuputLocation()))) {
             String sCurrentLine;
             while ((sCurrentLine = br.readLine()) != null) {
-                textArea.appendText(sCurrentLine);
-                textArea.appendText("\r\n");
+                textToDisplay.append(sCurrentLine);
+                textToDisplay.append("\r\n");
             }
         }
 
+        resultTabState = ResultTabState.PRINTED;
+
+        codeArea.setWrapText(true);
+        codeArea.setEditable(false);
+        codeArea.replaceText(0, 0, textToDisplay.toString());
         BorderPane root = new BorderPane();
-        root.setCenter(this.textArea);
+        codeArea.requestFollowCaret();
+        root.setCenter(new VirtualizedScrollPane<>(codeArea));
 
         Platform.runLater(() -> {
             this.setContent(root);
         });
-        resultTabState= ResultTabState.PRINTED;
-    }
 
-    ;
+
+    }
 
     public void showLoading() {
         HBox hbox = new HBox();
@@ -80,7 +97,7 @@ public class ResultTab extends Tab {
         hbox.setSpacing(10);
         hbox.getChildren().addAll(loadingSpinner, loadingLabel);
         this.setContent(hbox);
-        resultTabState= ResultTabState.LOADING;
+        resultTabState = ResultTabState.LOADING;
     }
 
     public ResultTabState getResultTabState() {
@@ -106,7 +123,7 @@ public class ResultTab extends Tab {
     }
 
     public String getCurrentlyDisplayedText() {
-        return this.textArea.getText();
+        return this.codeArea.getText();
     }
 
     public ResultTyp getResultTyp() {

@@ -31,7 +31,7 @@ public class AdvDepTestLogic {
         this.ioTools = new IOTools(config);
     }
 
-    public AdvResult runWithDEP(String depFileLocation, String cryptoFileLocation, boolean isFristReceiptNotIncluded, File outputLocation, boolean validFutureDates, boolean showDetails, boolean runDepTests) throws IOException, ParseException {
+    public AdvResult runAdvDepTest(String depFileLocation, String cryptoFileLocation, boolean isFristReceiptNotIncluded, File outputLocation, boolean validFutureDates, boolean showDetails, boolean runDepTests) throws IOException, ParseException {
         AdvResult advResult = new AdvResult(outputLocation);
         String open = "{\r\n  \"Belege-Gruppe\": [\r\n    {\r\n      \"Signaturzertifikat\": \"\",\r\n      \"Zertifizierungsstellen\": [],\r\n      \"Belege-kompakt\": [";
         String end = "      ]\r\n    }\r\n   ]\r\n}";
@@ -64,7 +64,6 @@ public class AdvDepTestLogic {
             boolean firstLineFlag = true;
 
             for (String element : firstDepLinesOrdered) {
-
                 depPartFile = tmpFactory.getNewJsonTmpFile("depPart", forcounter+1);
                 depPartFileWriter = new BufferedWriter(new FileWriter(depPartFile));
                 advResult.addDepPartFile(depPartFile);
@@ -128,6 +127,7 @@ public class AdvDepTestLogic {
                 depPartFileWriter.write(end);
                 depPartFileWriter.flush();
                 depPartFileWriter.close();
+                resultFileStream.close();
             }
             resultFileStream.close();
 

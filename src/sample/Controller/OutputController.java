@@ -8,8 +8,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import sample.Util.Configuration;
+import sample.Util.DepLogic.Results.AdvResult;
 import sample.Util.DepLogic.Results.FilterResult;
 import sample.Util.Enums.ResultTabState;
 import sample.Util.Enums.ResultTyp;
@@ -20,8 +22,11 @@ import sample.Util.Factories.AlertFactory;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class OutputController {
 
@@ -68,14 +73,45 @@ public class OutputController {
     public void onSavePressed(MouseEvent mouseEvent) throws IOException {
         ResultTab currentTab = ((ResultTab) resultTabPane.getSelectionModel().getSelectedItem());
         if (currentTab != null && currentTab.getResultTabState() == ResultTabState.PRINTED) {
-            FileChooser chooser = new FileChooser();
-            chooser.setTitle("Export File");
-            FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Text", "txt");
-            chooser.getExtensionFilters().add(filter);
-            File file = chooser.showSaveDialog(resultTabPane.getScene().getWindow());
-            if (file != null) {
-                File newfile = new File(file + ".txt");
-                currentTab.getFile().renameTo(newfile);
+            if(currentTab.getResult() instanceof AdvResult){
+                DirectoryChooser chooser = new DirectoryChooser();
+                chooser.setTitle("Export advFiles");
+                File newLocation = chooser.showDialog(resultTabPane.getScene().getWindow());
+                if (newLocation != null&& newLocation.isDirectory()) {
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+                    Date date = new Date(System.currentTimeMillis());
+                    String dateString = formatter.format(date);
+                    int i=1;
+                    for(File fileToMove: ((AdvResult) currentTab.getResult()).getDepPartFiles()){
+                        File newfile = new File(newLocation +"\\"+ "DepPartFile_"+i+"_"+dateString);
+                        fileToMove.renameTo(newfile);
+                        i++;
+                    }
+                    i=1;
+                    for(File fileToMove: ((AdvResult) currentTab.getResult()).getDepStructuredFile()){
+                        File newfile = new File(newLocation +"\\"+ "DepStructuredFile_"+i+"_"+dateString);
+                        fileToMove.renameTo(newfile);
+                        i++;
+                    }
+                    i=1;
+                    for(File fileToMove: ((AdvResult) currentTab.getResult()).getDepTestFiles()){
+                        File newfile = new File(newLocation +"\\"+ "DepTestFile_"+i+"_"+dateString);
+                        fileToMove.renameTo(newfile);
+                        i++;
+                    }
+                    File newfile = new File(newLocation +"\\"+  currentTab.getFile().getName());
+                    currentTab.getFile().renameTo(newfile);
+                }
+            }else {
+                FileChooser chooser = new FileChooser();
+                chooser.setTitle("Export File");
+                FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Text", "txt");
+                chooser.getExtensionFilters().add(filter);
+                File file = chooser.showSaveDialog(resultTabPane.getScene().getWindow());
+                if (file != null) {
+                    File newfile = new File(file + ".txt");
+                    currentTab.getFile().renameTo(newfile);
+                }
             }
         }
     }

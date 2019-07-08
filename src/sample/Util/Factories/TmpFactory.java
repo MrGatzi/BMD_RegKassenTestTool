@@ -86,7 +86,7 @@ public class TmpFactory {
             junkFolder.mkdir();
         }
 
-        File tempFile = File.createTempFile("_" + name + number + "_", ".tmp.json", junkFolder);
+        File tempFile = File.createTempFile("_" + name + number + "_", ".tmp.txt", junkFolder);
         tempFile.deleteOnExit();
         return tempFile;
     }

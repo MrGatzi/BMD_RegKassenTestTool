@@ -15,9 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import sample.Util.Configuration;
 import sample.Util.DepLogic.AdvDepTestLogic;
-import sample.Util.DepLogic.DepTestLogic;
 import sample.Util.DepLogic.Results.AdvResult;
-import sample.Util.DepLogic.Results.TestResult;
 import sample.Util.Enums.ResultTyp;
 import sample.Util.Factories.TmpFactory;
 import sample.Util.Ui.CostumComboBoxItem;
@@ -27,7 +25,6 @@ import sample.Util.Ui.ResultTab;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -173,7 +170,7 @@ public class DepAdvConfigController implements MenuController {
         //todo ask if split
         Thread t = new Thread(() -> {
             try {
-                AdvResult advResult=advDepTestLogic.runWithDEP(
+                AdvResult advResult=advDepTestLogic.runAdvDepTest(
                         nameAdvDepFile.getSelectionModel().getSelectedItem().getPath(),
                         nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         startReceiptBox.isSelected(),
@@ -200,7 +197,7 @@ public class DepAdvConfigController implements MenuController {
         //todo ask if split
         Thread t = new Thread(() -> {
             try {
-                AdvResult advResult=advDepTestLogic.runWithDEP(
+                AdvResult advResult=advDepTestLogic.runAdvDepTest(
                         nameAdvDepFile.getSelectionModel().getSelectedItem().getPath(),
                         nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         startReceiptBox.isSelected(),

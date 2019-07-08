@@ -12,10 +12,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
+import org.apache.commons.io.FileUtils;
 import sample.Util.Configuration;
 import sample.Util.Ui.MenuController;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class SettingsController implements MenuController {
@@ -78,8 +80,9 @@ public class SettingsController implements MenuController {
         }
     }
 
-    public void clearStorage(ActionEvent actionEvent) {
+    public void clearStorage(ActionEvent actionEvent) throws IOException {
         //TODO: cealr storage
+        FileUtils.cleanDirectory(new File(config.getJunkFolder()));
     }
 
     public void updateProgramm(ActionEvent actionEvent) {
