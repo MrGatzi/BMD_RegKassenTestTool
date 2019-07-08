@@ -39,4 +39,9 @@ public class DepAdvController implements MenuController {
         configController.setConfig(this.config);
         outputController.setConfig(this.config);
     }
+
+    public void shutdown(){
+        configController.shutdown();
+        outputController.shutdown();
+    }
 }

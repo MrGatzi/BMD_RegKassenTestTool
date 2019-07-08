@@ -40,7 +40,8 @@ public class DepController implements MenuController {
         outputController.setConfig(this.config);
     }
 
-    public void runDepTest() {
+    public void shutdown(){
+        configController.shutdown();
+        outputController.shutdown();
     }
-
 }

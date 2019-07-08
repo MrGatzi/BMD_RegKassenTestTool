@@ -49,6 +49,9 @@ public class OutputController {
         });
     }
 
+    public void shutdown(){
+        //TODO: Mybe delte all open files?
+    }
     public ResultTab createNewResultTabPane(String tabName, ResultTyp resultTyp) {
         resultTabPane.prefHeightProperty().bind(vbox.heightProperty());
         ResultTab newTab = new ResultTab(tabName, resultTyp);

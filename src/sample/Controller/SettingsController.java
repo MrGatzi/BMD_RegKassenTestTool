@@ -56,6 +56,11 @@ public class SettingsController implements MenuController {
         setSettings();
     }
 
+    @Override
+    public void shutdown() {
+
+    }
+
     public void setSettings() {
         startFolderTextField.setText(config.getStartFolder());
         junkFolderTextField.setText(config.getJunkFolder());

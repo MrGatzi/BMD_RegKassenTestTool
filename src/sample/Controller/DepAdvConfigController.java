@@ -70,8 +70,8 @@ public class DepAdvConfigController implements MenuController {
 
     public void shutdown(){
         //TODO SHUT DOWN METHODS!
-        /*this.config.setDepFiles(depFiles);
-        this.config.setDepKeyFiles(depKeyFiles);*/
+        this.config.setAdvDepFiles(convertToStringItems(nameKeyFile.getItems()));
+        this.config.setAdvDepKeyFiles(convertToStringItems(nameKeyFile.getItems()));
     }
 
 
@@ -114,6 +114,9 @@ public class DepAdvConfigController implements MenuController {
         if (selectedFile != null) {
             CostumComboBoxItem newItem = new CostumComboBoxItem(selectedFile.getAbsolutePath());
             nameField.getItems().add(newItem);
+            if(nameField.getItems().size()>7){
+                nameField.getItems().remove(0);
+            }
             nameField.getSelectionModel().select(newItem);
         }
     }
@@ -130,6 +133,15 @@ public class DepAdvConfigController implements MenuController {
 
         for (String file : savedDepFileNames) {
             items.add(new CostumComboBoxItem(file));
+        }
+        return items;
+    }
+
+    private List<String> convertToStringItems(List<CostumComboBoxItem> costumComboBox){
+        List<String> items = new ArrayList<>();
+
+        for (CostumComboBoxItem item : costumComboBox) {
+            items.add(item.getPath());
         }
         return items;
     }

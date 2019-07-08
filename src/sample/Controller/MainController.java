@@ -49,6 +49,11 @@ public class MainController<called> {
 
     //TODO: CHECK when called
     public void shutdown() throws IOException {
+        depMenu.getController().shutdown();
+        qrMenu.getController().shutdown();
+        settingsMenu.getController().shutdown();
+        depAdvMenu.getController().shutdown();
+        extMenu.getController().shutdown();
         safeConfig();
     }
 

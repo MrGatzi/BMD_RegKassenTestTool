@@ -70,8 +70,8 @@ public class QrConfigController implements MenuController {
     }
 
     public void shutdown() {
-        /*this.config.setDepFiles(depFiles);
-        this.config.setDepKeyFiles(depKeyFiles);*/
+        this.config.setQrFiles(convertToStringItems(nameQrFile.getItems()));
+        this.config.setQrKeyFiles(convertToStringItems(nameKeyFile.getItems()));
     }
 
 
@@ -114,6 +114,9 @@ public class QrConfigController implements MenuController {
         if (selectedFile != null) {
             CostumComboBoxItem newItem = new CostumComboBoxItem(selectedFile.getAbsolutePath());
             nameField.getItems().add(newItem);
+            if(nameField.getItems().size()>7){
+                nameField.getItems().remove(0);
+            }
             nameField.getSelectionModel().select(newItem);
         }
     }
@@ -130,6 +133,15 @@ public class QrConfigController implements MenuController {
 
         for (String file : savedDepFileNames) {
             items.add(new CostumComboBoxItem(file));
+        }
+        return items;
+    }
+
+    private List<String> convertToStringItems(List<CostumComboBoxItem> costumComboBox){
+        List<String> items = new ArrayList<>();
+
+        for (CostumComboBoxItem item : costumComboBox) {
+            items.add(item.getPath());
         }
         return items;
     }
