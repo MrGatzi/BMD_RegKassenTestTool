@@ -13,7 +13,6 @@ import java.util.Properties;
 
 public class Configuration {
 
-    static String versionNumberProp = "versionNumber";
     static String startFolderProp = "startFolder";
     static String depFileProp = "depFiles";
     static String depKeyFilesProp = "depKeyFiles";
@@ -30,7 +29,7 @@ public class Configuration {
     static String externalQrToolLocationProp = "externalQrToolLocation";
     static String useDefaultDepToolProp = "useDefaultDepTool";
 
-    private static String versionNumber;
+
     private static String startFolder;
     private static String junkFolder;
     private static String selectedRamInput;
@@ -60,7 +59,6 @@ public class Configuration {
         Properties props = new Properties();
         props.load(new FileInputStream("config.properties"));
 
-        versionNumber = props.getProperty(versionNumberProp);
         startFolder = props.getProperty(startFolderProp);
         junkFolder = props.getProperty(junkFolderProp);
         externalDepToolLocation = props.getProperty(externalDepToolLocationProp);
@@ -129,7 +127,6 @@ public class Configuration {
         props.put(advDepFilesProp, String.join(",", advDepFiles));
         props.put(advDepKeyFilesProp, String.join(",", advDepKeyFiles));
         props.put(ramInputProp, String.join(",", ramInput));
-        props.put(versionNumberProp, versionNumber);
         props.put(externalDepToolLocationProp, externalDepToolLocation);
         props.put(externalQrToolLocationProp, externalQrToolLocation);
         props.put(useDefaultDepToolProp, Boolean.toString(useDefaultDepTool));
@@ -185,14 +182,6 @@ public class Configuration {
 
     public void setStartFolder(String startFolder) {
         this.startFolder = startFolder;
-    }
-
-    public String getVersionNumber() {
-        return versionNumber;
-    }
-
-    public void setVersionNumber(String versionNumber) {
-        this.versionNumber = versionNumber;
     }
 
     public List<String> getDepFiles() {

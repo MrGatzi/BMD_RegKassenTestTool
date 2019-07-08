@@ -15,6 +15,7 @@ import javafx.stage.DirectoryChooser;
 import org.apache.commons.io.FileUtils;
 import sample.Util.Configuration;
 import sample.Util.Ui.MenuController;
+import sample.Util.Version;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,11 +40,12 @@ public class SettingsController implements MenuController {
     public SplitPane settingPane;
 
     Configuration config;
+    Version version;
 
-
-    public void initialize() {
+    public void initialize() throws IOException {
         //TODO: FONTSIZE && FONT
         //TODO: ExternalDepToolLocation
+        version = new Version();
     }
 
     @Override
@@ -67,7 +69,7 @@ public class SettingsController implements MenuController {
         saveQuestionEnabledButton.setSelected(config.isAskQuestion());
         popUpEnabledButton.setSelected(config.isPopUp());
         setRamInput(config.getRamInput(),config.getSelectedRamInput(),depTestRamComboBox);
-        versionLable.setText(config.getVersionNumber());
+        versionLable.setText(version.getVersionNumber());
     }
 
     public void setNewStartFolder(ActionEvent actionEvent) {

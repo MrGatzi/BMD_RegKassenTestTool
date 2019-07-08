@@ -132,7 +132,9 @@ public class DepConfigController implements MenuController {
         List<CostumComboBoxItem> items = new ArrayList<>();
 
         for (String file : savedDepFileNames) {
-            items.add(new CostumComboBoxItem(file));
+            if(!file.equals("")) {
+                items.add(new CostumComboBoxItem(file));
+            }
         }
         return items;
     }
