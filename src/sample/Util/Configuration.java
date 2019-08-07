@@ -1,5 +1,6 @@
 package sample.Util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -137,7 +138,13 @@ public class Configuration {
         props.put(askQuestionProp, Boolean.toString(askQuestion));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         Date date = new Date(System.currentTimeMillis());
-        props.store(new FileOutputStream("config.properties"), "Safed by dependencies -" + formatter.format(date));
+        File file = new File ("config.properties");
+        if(!file.setWritable(true,false)){
+            //TODO: Permission is missing ! throw error!
+        }
+        file.setReadable(true,false);
+        file.setExecutable(true,false);
+        props.store(new FileOutputStream(file), "Safed by dependencies -" + formatter.format(date));
     }
 
     public List<String> getRamInput() {
