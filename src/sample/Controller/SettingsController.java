@@ -95,7 +95,7 @@ public class SettingsController implements MenuController {
         Runtime runtime = Runtime.getRuntime();
         Process process = null;
         try {
-            process = runtime.exec("updaterHelper.exe");
+            process = runtime.exec("BMD_RegKassenTestToolUpdater.exe");
             System.exit(0);
         } catch (IOException e1) {
             // TODO Auto-generated catch block

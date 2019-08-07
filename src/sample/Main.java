@@ -10,6 +10,7 @@ import sample.Controller.MainController;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.security.Security;
 
 
 public class Main extends Application {
@@ -18,13 +19,15 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
         primaryStage.getIcons().add(new Image("sample/resources/Images/BMD_RegKassenTestTool_Logo.png"));
         FXMLLoader rootloader = new FXMLLoader(getClass().getResource("resources/fxml/MainMenu.fxml"));
         System.out.println(Paths.get(".").toAbsolutePath().normalize().toString());
         Parent root = rootloader.load();
         this.rootController = rootloader.<MainController>getController();
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 900, 800));
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        primaryStage.setTitle("BMD_RegKassenTestTool");
+        primaryStage.setScene(new Scene(root, 1400, 900));
         primaryStage.show();
 
     }

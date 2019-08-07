@@ -39,7 +39,6 @@ public class IOTools {
 
     public String createDepProcessString(String depFileLocation, String cryptoFileLocation, String outputFileLocation, boolean futureReceiptValid, boolean printDetails) {
         StringBuilder depProcessString = new StringBuilder();
-
         depProcessString.append("java -Xmx");
         depProcessString.append(config.getSelectedRamInput());
         depProcessString.append("m -jar ");
@@ -59,28 +58,28 @@ public class IOTools {
         }
 
         depProcessString.append(" -i ");
-        depProcessString.append(depFileLocation);
+        depProcessString.append("\""+depFileLocation+"\"");
         depProcessString.append(" -c ");
-        depProcessString.append(cryptoFileLocation);
+        depProcessString.append("\""+cryptoFileLocation+"\"");
         depProcessString.append(" -o ");
 
         if (outputFileLocation != null) {
             File file = new File(outputFileLocation);
             if (file.isDirectory()) {
-                depProcessString.append(outputFileLocation);
+                depProcessString.append("\""+outputFileLocation+"\"");
             } else {
-                depProcessString.append(config.getJunkFolder());
+                depProcessString.append("\""+config.getJunkFolder()+"\"");
             }
         } else {
-            depProcessString.append(config.getJunkFolder());
+            depProcessString.append("\""+config.getJunkFolder()+"\"");
             //TODO: add ERROR HAndling + tmp Files
         }
+        System.out.println(depProcessString.toString());
         return depProcessString.toString();
     }
 
     public String createQrProcessString(String depFileLocation, String cryptoFileLocation, String outputFileLocation, boolean futureReceiptValid, boolean printDetails) {
         StringBuilder depProcessString = new StringBuilder();
-
         depProcessString.append("java -Xmx");
         depProcessString.append(config.getSelectedRamInput());
         depProcessString.append("m -jar ");

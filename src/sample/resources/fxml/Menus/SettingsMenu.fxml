@@ -99,7 +99,7 @@
                                     <Image url="@../../Images/BMD_RegKassenTestTool_Logo.png" />
                                 </image>
                             </ImageView>
-                            <Label text="BMD RegKassenTestTool" />
+                            <Label text="BMD RegKassenTestTool - Second Beta" />
                             <Label fx:id="versionLable" text="Version: 1" />
                             <Label textAlignment="center" wrapText="true" text="Labels and Icons: Fontawesome and Google Material Design Icons." />
                         </children>

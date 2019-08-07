@@ -21,7 +21,7 @@ public class Configuration {
     static String advDepKeyFilesProp = "advDepKeyFiles";
     static String advDepFilesProp = "advDepFiles";
     static String junkFolderProp = "junkFolder";
-    static String popUpProp = "popUp;";
+    static String popUpProp = "popUp";
     static String askQuestionProp = "askQuestion";
     static String selectedRamInputProp = "selectedRamInput";
     static String ramInputProp = "ramInput";
