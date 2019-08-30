@@ -86,23 +86,23 @@ public class OutputController {
                     String dateString = formatter.format(date);
                     int i=1;
                     for(File fileToMove: ((AdvResult) currentTab.getResult()).getDepPartFiles()){
-                        File newfile = new File(newLocation +"\\"+ "DepPartFile_"+i+"_"+dateString);
+                        File newfile = new File(newLocation +"\\"+ "DepPartFile_"+i+"_"+dateString+".json");
                         fileToMove.renameTo(newfile);
                         i++;
                     }
                     i=1;
                     for(File fileToMove: ((AdvResult) currentTab.getResult()).getDepStructuredFile()){
-                        File newfile = new File(newLocation +"\\"+ "DepStructuredFile_"+i+"_"+dateString);
+                        File newfile = new File(newLocation +"\\"+ "DepStructuredFile_"+i+"_"+dateString+".txt");
                         fileToMove.renameTo(newfile);
                         i++;
                     }
                     i=1;
                     for(File fileToMove: ((AdvResult) currentTab.getResult()).getDepTestFiles()){
-                        File newfile = new File(newLocation +"\\"+ "DepTestFile_"+i+"_"+dateString);
+                        File newfile = new File(newLocation +"\\"+ "DepTestFile_"+i+"_"+dateString+".json");
                         fileToMove.renameTo(newfile);
                         i++;
                     }
-                    File newfile = new File(newLocation +"\\"+  currentTab.getFile().getName());
+                    File newfile = new File(newLocation +"\\"+  currentTab.getFile().getName()+".txt");
                     currentTab.getFile().renameTo(newfile);
                 }
             }else {

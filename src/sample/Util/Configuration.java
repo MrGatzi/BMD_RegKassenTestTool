@@ -83,40 +83,40 @@ public class Configuration {
         return useDefaultDepTool;
     }
 
-    public static void setUseDefaultDepTool(boolean useDefaultDepTool) {
-        Configuration.useDefaultDepTool = useDefaultDepTool;
+    public void setUseDefaultDepTool(boolean useDefaultDepTool) {
+        this.useDefaultDepTool = useDefaultDepTool;
     }
 
     public static List<String> getAdvDepKeyFiles() {
         return advDepKeyFiles;
     }
 
-    public static void setAdvDepKeyFiles(List<String> advDepKeyFiles) {
-        Configuration.advDepKeyFiles = advDepKeyFiles;
+    public void setAdvDepKeyFiles(List<String> advDepKeyFiles) {
+        this.advDepKeyFiles = advDepKeyFiles;
     }
 
     public static List<String> getAdvDepFiles() {
         return advDepFiles;
     }
 
-    public static void setAdvDepFiles(List<String> advDepFiles) {
-        Configuration.advDepFiles = advDepFiles;
+    public void setAdvDepFiles(List<String> advDepFiles) {
+        this.advDepFiles = advDepFiles;
     }
 
     public static String getExternalDepToolLocation() {
         return externalDepToolLocation;
     }
 
-    public static void setExternalDepToolLocation(String externalDepToolLocation) {
-        Configuration.externalDepToolLocation = externalDepToolLocation;
+    public void setExternalDepToolLocation(String externalDepToolLocation) {
+        this.externalDepToolLocation = externalDepToolLocation;
     }
 
     public static String getExternalQrToolLocation() {
         return externalQrToolLocation;
     }
 
-    public static void setExternalQrToolLocation(String externalQrToolLocation) {
-        Configuration.externalDepToolLocation = externalDepToolLocation;
+    public void setExternalQrToolLocation(String externalQrToolLocation) {
+        this.externalDepToolLocation = externalDepToolLocation;
     }
 
     public void safe() throws IOException {
@@ -156,7 +156,7 @@ public class Configuration {
     }
 
     public void setSelectedRamInput(String selectedRamInput) {
-        Configuration.selectedRamInput = selectedRamInput;
+        this.selectedRamInput = selectedRamInput;
     }
 
     public boolean isAskQuestion() {
@@ -164,7 +164,7 @@ public class Configuration {
     }
 
     public void setAskQuestion(boolean askQuestion) {
-        Configuration.askQuestion = askQuestion;
+        this.askQuestion = askQuestion;
     }
 
     public boolean isPopUp() {
@@ -172,7 +172,7 @@ public class Configuration {
     }
 
     public void setPopUp(boolean popUp) {
-        Configuration.popUp = popUp;
+        this.popUp = popUp;
     }
 
     public String getJunkFolder() {
@@ -180,7 +180,7 @@ public class Configuration {
     }
 
     public void setJunkFolder(String junkFolder) {
-        Configuration.junkFolder = junkFolder;
+        this.junkFolder = junkFolder;
     }
 
     public String getStartFolder() {

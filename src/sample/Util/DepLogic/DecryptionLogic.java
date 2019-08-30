@@ -29,9 +29,11 @@ public class DecryptionLogic {
             int wrongSetValues = receiptToTest.calculateNumberValuesOfReceiptStrings();
 
             if (receiptToTest.getReceiptNumber() == 0 && !testData.isFristReceiptNotIncluded) {
-                receiptToTest.calculatePreviousAndNextSignitarues(receiptToTest.getRegisterId());
+                receiptToTest.calculatePreviousAndNextSignitarues(receiptToTest.getRegisterId(),false);
+            }else if(receiptToTest.getReceiptNumber() == 0 && testData.isFristReceiptNotIncluded){
+                receiptToTest.calculatePreviousAndNextSignitarues("",true);
             } else {
-                receiptToTest.calculatePreviousAndNextSignitarues(testData.oldSignature);
+                receiptToTest.calculatePreviousAndNextSignitarues(testData.oldSignature,false);
             }
 
             testData.oldRevenueValue = receiptToTest.calculateRevenueShouldBe(testData.oldRevenueValue, testData.cryptoFileLocation, testData.isFristReceiptNotIncluded, testData.errorBlocker);

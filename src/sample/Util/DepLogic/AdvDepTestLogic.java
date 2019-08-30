@@ -38,6 +38,7 @@ public class AdvDepTestLogic {
 
         File resultFile = null;
         FileOutputStream resultFileStream = null;
+        boolean depOrdered=true;
         TestData testData = new TestData(0,
                 "",
                 null,
@@ -52,9 +53,20 @@ public class AdvDepTestLogic {
         List<String> firstDepLinesOrdered = new ArrayList<>();
         try {
             firstDepLinesOrdered = orderDepLines(firstDepLines);
+
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e1) {
             //TODO: couldn't order DepTests ErrorMessage
+            firstDepLinesOrdered = firstDepLines;
         }
+
+        if(firstDepLinesOrdered.size()<firstDepLines.size()){
+            //CARE ! If this happens, the Dep-File could not be ordered!
+            firstDepLinesOrdered = firstDepLines;
+            testData.isFristReceiptNotIncluded=true;
+            testData.errorBlocker=true;
+            depOrdered=false;
+        }
+
         try {
             File depPartFile;
             BufferedWriter depPartFileWriter;
@@ -103,16 +115,17 @@ public class AdvDepTestLogic {
                     if (line.contains(element)) {
                         depPartFileWriter.write(open);
                         depPartFileWriter.newLine();
-                        for (String element2 : firstDepLinesOrdered) {
-                            if (forcounter2 < forcounter) //noinspection MagicConstant
-                            {
-                                receipt = decryptionLogic.DepStringToReceipt(lineNr, element2);
-                                testData = decryptionLogic.checkAndPrintReceipt(receipt, testData);
-                                depPartFileWriter.write(element2);
-                                depPartFileWriter.newLine();
-                                lineNr++;
+                        if(depOrdered) {
+                            for (String element2 : firstDepLinesOrdered) {
+                                if (forcounter2 < forcounter) {
+                                    receipt = decryptionLogic.DepStringToReceipt(lineNr, element2);
+                                    testData = decryptionLogic.checkAndPrintReceipt(receipt, testData);
+                                    depPartFileWriter.write(element2);
+                                    depPartFileWriter.newLine();
+                                    lineNr++;
+                                }
+                                forcounter2++;
                             }
-                            forcounter2++;
                         }
                         receipt = decryptionLogic.DepStringToReceipt(lineNr, line);
                         testData = decryptionLogic.checkAndPrintReceipt(receipt, testData);

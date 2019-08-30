@@ -35,7 +35,8 @@ public class ResultTab extends Tab {
     CodeArea codeArea;
 
     public ResultTab(String filename, ResultTyp resultTyp) {
-        super.setText(filename);
+
+        super.setText(filename.substring(0,filename.indexOf(".")));
         this.result = null;
         this.codeArea = new CodeArea();
         this.resultTyp = resultTyp;

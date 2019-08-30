@@ -157,14 +157,18 @@ public class DepConfigController implements MenuController {
         nameKeyFile.valueProperty().addListener(new ChangeListener<CostumComboBoxItem>() {
             @Override
             public void changed(ObservableValue ov, CostumComboBoxItem olditem, CostumComboBoxItem newitem) {
+                if(newitem!=null) {
                 folderKeyFile.setText(newitem.getPathTo());
+                }
             }
         });
 
         nameDepFile.valueProperty().addListener(new ChangeListener<CostumComboBoxItem>() {
             @Override
             public void changed(ObservableValue ov, CostumComboBoxItem olditem, CostumComboBoxItem newitem) {
-                folderDepFile.setText(newitem.getPathTo());
+                if(newitem!=null) {
+                    folderDepFile.setText(newitem.getPathTo());
+                }
             }
         });
     }

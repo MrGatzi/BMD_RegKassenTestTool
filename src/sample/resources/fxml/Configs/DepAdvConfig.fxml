@@ -80,7 +80,7 @@
                                     <Image url="@../../Images/key.png"/>
                                 </image>
                             </ImageView>
-                            <JFXComboBox fx:id="nameKeyFile" maxWidth="1.7976931348623157E308" prefWidth="150.0"/>
+                            <JFXComboBox fx:id="nameAdvKeyFile" maxWidth="1.7976931348623157E308" prefWidth="150.0"/>
                             <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#chooseKeyFile"
                                     stylesheets="@../../Styles/chooseButtons.css">
                                 <graphic>

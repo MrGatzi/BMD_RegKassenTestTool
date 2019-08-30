@@ -226,14 +226,21 @@ public class Receipt {
         }
     }
 
-    public void calculatePreviousAndNextSignitarues(String inputForPreviousSignature) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        this.signaturePreviousValueCalculated = calculateSignature(inputForPreviousSignature);
-        this.signatureNextValueCalculated = calculateSignature(wholeReceipt);
-        if(signaturePreviousValueCalculated.equals(signaturePreviousValue)){
-            receiptProperChained=true;
+    public void calculatePreviousAndNextSignitarues(String inputForPreviousSignature, boolean setPreviousSignatureAsTrue) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+
+        if(!setPreviousSignatureAsTrue) {
+            this.signaturePreviousValueCalculated = calculateSignature(inputForPreviousSignature);
+            this.signatureNextValueCalculated = calculateSignature(wholeReceipt);
+            if (signaturePreviousValueCalculated.equals(signaturePreviousValue)) {
+                receiptProperChained = true;
+            } else {
+                receiptProperChained = false;
+                signaturePreviousValueCalculated = signaturePreviousValueCalculated + " -FEHLER";
+            }
         }else{
-            receiptProperChained=false;
-            signaturePreviousValueCalculated=signaturePreviousValueCalculated+" -FEHLER";
+            this.signaturePreviousValueCalculated= this.signaturePreviousValue;
+            this.signatureNextValueCalculated = calculateSignature(wholeReceipt);
+            receiptProperChained = true;
         }
     }
 

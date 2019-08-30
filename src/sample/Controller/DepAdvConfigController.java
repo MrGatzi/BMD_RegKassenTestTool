@@ -33,7 +33,7 @@ import java.util.List;
 public class DepAdvConfigController implements MenuController {
 
     public JFXTextField folderKeyFile;
-    public JFXComboBox<CostumComboBoxItem> nameKeyFile;
+    public JFXComboBox<CostumComboBoxItem> nameAdvKeyFile;
     public JFXTextField folderAdvDepFile;
     public JFXComboBox<CostumComboBoxItem> nameAdvDepFile;
     public Button runWithoutTestButton;
@@ -61,7 +61,7 @@ public class DepAdvConfigController implements MenuController {
         folderKeyFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
         folderAdvDepFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
         nameAdvDepFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
-        nameKeyFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
+        nameAdvKeyFile.prefWidthProperty().bind(ParentPane.widthProperty().divide(2));
         DepShowCheckboxs.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
         DepShowCheckboxs2.maxWidthProperty().bind(ParentPane.widthProperty().subtract(10));
         setupTextField();
@@ -70,8 +70,8 @@ public class DepAdvConfigController implements MenuController {
 
     public void shutdown(){
         //TODO SHUT DOWN METHODS!
-        this.config.setAdvDepFiles(convertToStringItems(nameKeyFile.getItems()));
-        this.config.setAdvDepKeyFiles(convertToStringItems(nameKeyFile.getItems()));
+        this.config.setAdvDepFiles(convertToStringItems(nameAdvDepFile.getItems()));
+        this.config.setAdvDepKeyFiles(convertToStringItems(nameAdvKeyFile.getItems()));
     }
 
 
@@ -85,7 +85,7 @@ public class DepAdvConfigController implements MenuController {
         advDepKeyFiles = converteToComboBoxItems(config.getAdvDepKeyFiles());
 
         setSavedFileNames(advDepFiles, nameAdvDepFile);
-        setSavedFileNames(advDepKeyFiles, nameKeyFile);
+        setSavedFileNames(advDepKeyFiles, nameAdvKeyFile);
         advDepTestLogic = new AdvDepTestLogic(config);
         tmpFactory = new TmpFactory(config);
     }
@@ -99,18 +99,18 @@ public class DepAdvConfigController implements MenuController {
     }
 
     public void chooseKeyFile(MouseEvent mouseEvent) throws IOException {
-        addNewFileToChoose(nameKeyFile);
+        addNewFileToChoose(nameAdvKeyFile);
     }
 
     public void openKeyFile(MouseEvent mouseEvent) throws IOException {
-        openFile(nameKeyFile.getSelectionModel().getSelectedItem().getPath());
+        openFile(nameAdvKeyFile.getSelectionModel().getSelectedItem().getPath());
     }
 
     private void addNewFileToChoose(ComboBox nameField) {
         FileChooser chooseFile = new FileChooser();
         chooseFile.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Json Files", "*.json"));
         setInitialDirectory(chooseFile);
-        File selectedFile = chooseFile.showOpenDialog(nameKeyFile.getScene().getWindow());
+        File selectedFile = chooseFile.showOpenDialog(nameAdvKeyFile.getScene().getWindow());
         if (selectedFile != null) {
             CostumComboBoxItem newItem = new CostumComboBoxItem(selectedFile.getAbsolutePath());
             nameField.getItems().add(newItem);
@@ -154,17 +154,21 @@ public class DepAdvConfigController implements MenuController {
     }
 
     private void setupTextField() {
-        nameKeyFile.valueProperty().addListener(new ChangeListener<CostumComboBoxItem>() {
+        nameAdvKeyFile.valueProperty().addListener(new ChangeListener<CostumComboBoxItem>() {
             @Override
             public void changed(ObservableValue ov, CostumComboBoxItem olditem, CostumComboBoxItem newitem) {
-                folderKeyFile.setText(newitem.getPathTo());
+                if(newitem!=null) {
+                    folderKeyFile.setText(newitem.getPathTo());
+                }
             }
         });
 
         nameAdvDepFile.valueProperty().addListener(new ChangeListener<CostumComboBoxItem>() {
             @Override
             public void changed(ObservableValue ov, CostumComboBoxItem olditem, CostumComboBoxItem newitem) {
-                folderAdvDepFile.setText(newitem.getPathTo());
+                if(newitem!=null) {
+                    folderAdvDepFile.setText(newitem.getPathTo());
+                }
             }
         });
     }
@@ -186,7 +190,7 @@ public class DepAdvConfigController implements MenuController {
             try {
                 AdvResult advResult=advDepTestLogic.runAdvDepTest(
                         nameAdvDepFile.getSelectionModel().getSelectedItem().getPath(),
-                        nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
+                        nameAdvKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         startReceiptBox.isSelected(),
                         tmpFile,
                         futureBox.isDisableVisualFocus(),
@@ -213,7 +217,7 @@ public class DepAdvConfigController implements MenuController {
             try {
                 AdvResult advResult=advDepTestLogic.runAdvDepTest(
                         nameAdvDepFile.getSelectionModel().getSelectedItem().getPath(),
-                        nameKeyFile.getSelectionModel().getSelectedItem().getPath(),
+                        nameAdvKeyFile.getSelectionModel().getSelectedItem().getPath(),
                         startReceiptBox.isSelected(),
                         tmpFile,
                         futureBox.isDisableVisualFocus(),
