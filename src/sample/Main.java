@@ -41,6 +41,13 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+
+        if(args.length==0){
+            launch(args);
+        }else{
+          BatchLogic batchLogic = new BatchLogic();
+          batchLogic.start(args);
+        }
+
     }
 }
