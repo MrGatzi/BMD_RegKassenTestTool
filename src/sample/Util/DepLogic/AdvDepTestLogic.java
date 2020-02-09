@@ -31,7 +31,7 @@ public class AdvDepTestLogic {
         this.ioTools = new IOTools(config);
     }
 
-    public AdvResult runAdvDepTest(String depFileLocation, String cryptoFileLocation, boolean isFristReceiptNotIncluded, File outputLocation, boolean validFutureDates, boolean showDetails, boolean runDepTests) throws IOException, ParseException {
+    public AdvResult runAdvDepTest(String depFileLocation, String cryptoFileLocation, boolean isFristReceiptNotIncluded, File outputLocation, boolean validFutureDates, boolean showDetails, boolean runDepTests, boolean printAtEnd) throws IOException, ParseException {
         AdvResult advResult = new AdvResult(outputLocation);
         String open = "{\r\n  \"Belege-Gruppe\": [\r\n    {\r\n      \"Signaturzertifikat\": \"\",\r\n      \"Zertifizierungsstellen\": [],\r\n      \"Belege-kompakt\": [";
         String end = "      ]\r\n    }\r\n   ]\r\n}";
@@ -158,7 +158,9 @@ public class AdvDepTestLogic {
             }
         }
         //TODO check Date check
-        printResult(advResult);
+        if(printAtEnd) {
+            printResult(advResult);
+        }
         return advResult;
     }
 
@@ -196,13 +198,7 @@ public class AdvDepTestLogic {
     private void printResult(AdvResult advResult) throws IOException {
         BufferedWriter output = new BufferedWriter(new FileWriter(advResult.getOuputLocation()));
         output.write("Splitting DepFile successful!\r\n");
-        output.write("Number of DepFiles found : " + advResult.numberOfDepFilesFound() + "\r\n\r\n");
-        output.write("Results:  \r\n");
-        for(int i=0;i<advResult.getAllTestData().size();i++){
-            output.write("Part: "+(i+1)+"  \r\n");
-            output.write(advResult.getSingleTestData(i).testResult.printResults());
-            output.write(" \r\n");
-        }
+        output.write(advResult.printTestData());
         output.flush();
         output.close();
     }

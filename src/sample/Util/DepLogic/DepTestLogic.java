@@ -70,9 +70,9 @@ public class DepTestLogic {
         //muliple differnetDepFile in one
         while (nextReceiptField > -1) {
             //prepare
-            depFileContent = depFileContent.substring(depFileContent.indexOf("Belege-kompakt"), depFileContent.length()); //check reduntant
+            depFileContent = depFileContent.substring(nextReceiptField, depFileContent.length()); //check reduntant
             String depFileReceipts = depFileContent.substring(depFileContent.indexOf("["), depFileContent.indexOf("]"));
-            nextReceiptField = depFileContent.indexOf("Belege-kompakt", depFileContent.indexOf("Belege-kompakt") + 1);
+            nextReceiptField = depFileContent.indexOf("Belege-kompakt", nextReceiptField);
             String[] parts = depFileReceipts.split(",");
             //decrypt
             Receipt[] receipts = decryptionLogic.convertDepReceiptsToReceipts(parts);

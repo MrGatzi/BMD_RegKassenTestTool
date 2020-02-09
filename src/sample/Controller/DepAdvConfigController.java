@@ -195,7 +195,7 @@ public class DepAdvConfigController implements MenuController {
                         tmpFile,
                         futureBox.isDisableVisualFocus(),
                         detailsBox.isSelected(),
-                        false);
+                        false, true);
                 resultTab.printResult(advResult);
             } catch (IOException  | ParseException e) {
                 //TODO ERROR HANDLING !
@@ -222,7 +222,7 @@ public class DepAdvConfigController implements MenuController {
                         tmpFile,
                         futureBox.isDisableVisualFocus(),
                         detailsBox.isSelected(),
-                        true);
+                        true, true);
                 resultTab.printResult(advResult);
             } catch (IOException  | ParseException e) {
                 //TODO ERROR HANDLING !

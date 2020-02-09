@@ -73,4 +73,16 @@ public class AdvResult implements Result {
         this.testData.add(testData);
     }
 
+    public String printTestData(){
+        StringBuilder outputString = new StringBuilder();
+        outputString.append("Number of DepFiles found : " + numberOfDepFilesFound() + "\r\n\r\n");
+        outputString.append("Results:  \r\n");
+        for(int i=0;i<getAllTestData().size();i++){
+            outputString.append("Part: "+(i+1)+"  \r\n");
+            outputString.append(getSingleTestData(i).testResult.printResults());
+            outputString.append(" \r\n");
+        }
+        return outputString.toString();
+    }
+
 }
