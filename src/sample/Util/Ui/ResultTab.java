@@ -5,12 +5,8 @@ import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import org.fxmisc.richtext.model.StyleSpans;
-import org.fxmisc.richtext.model.StyleSpansBuilder;
-import org.reactfx.Subscription;
 import sample.Util.Result;
 import sample.Util.Enums.ResultTabState;
 import sample.Util.Enums.ResultTyp;
@@ -19,11 +15,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.Duration;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
@@ -36,7 +27,7 @@ public class ResultTab extends Tab {
 
     public ResultTab(String filename, ResultTyp resultTyp) {
 
-        super.setText(filename.substring(0,filename.indexOf(".")));
+        super.setText(filename.substring(0, filename.indexOf(".")));
         this.result = null;
         this.codeArea = new CodeArea();
         this.resultTyp = resultTyp;

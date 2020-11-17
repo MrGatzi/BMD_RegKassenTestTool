@@ -38,7 +38,7 @@ public class AdvDepTestLogic {
 
         File resultFile = null;
         FileOutputStream resultFileStream = null;
-        boolean depOrdered=true;
+        boolean depOrdered = true;
         TestData testData = new TestData(0,
                 "",
                 null,
@@ -59,12 +59,12 @@ public class AdvDepTestLogic {
             firstDepLinesOrdered = firstDepLines;
         }
 
-        if(firstDepLinesOrdered.size()<firstDepLines.size()){
+        if (firstDepLinesOrdered.size() < firstDepLines.size()) {
             //CARE ! If this happens, the Dep-File could not be ordered!
             firstDepLinesOrdered = firstDepLines;
-            testData.isFristReceiptNotIncluded=true;
-            testData.errorBlocker=true;
-            depOrdered=false;
+            testData.isFristReceiptNotIncluded = true;
+            testData.errorBlocker = true;
+            depOrdered = false;
         }
 
         try {
@@ -76,11 +76,11 @@ public class AdvDepTestLogic {
             boolean firstLineFlag = true;
 
             for (String element : firstDepLinesOrdered) {
-                depPartFile = tmpFactory.getNewJsonTmpFile("depPart", forcounter+1);
+                depPartFile = tmpFactory.getNewJsonTmpFile("depPart", forcounter + 1);
                 depPartFileWriter = new BufferedWriter(new FileWriter(depPartFile));
                 advResult.addDepPartFile(depPartFile);
 
-                resultFile = tmpFactory.getNewTxtTmpFile("depPartStructured", forcounter+1);
+                resultFile = tmpFactory.getNewTxtTmpFile("depPartStructured", forcounter + 1);
                 resultFileStream = new FileOutputStream(resultFile);
                 testData = new TestData(0,
                         "",
@@ -115,7 +115,7 @@ public class AdvDepTestLogic {
                     if (line.contains(element)) {
                         depPartFileWriter.write(open);
                         depPartFileWriter.newLine();
-                        if(depOrdered) {
+                        if (depOrdered) {
                             for (String element2 : firstDepLinesOrdered) {
                                 if (forcounter2 < forcounter) {
                                     receipt = decryptionLogic.DepStringToReceipt(lineNr, element2);
@@ -158,7 +158,7 @@ public class AdvDepTestLogic {
             }
         }
         //TODO check Date check
-        if(printAtEnd) {
+        if (printAtEnd) {
             printResult(advResult);
         }
         return advResult;
@@ -167,7 +167,7 @@ public class AdvDepTestLogic {
     private AdvResult runDepTestForAllResults(AdvResult advResult, String cryptoFileLocation, boolean validFutureDates, boolean showDetails) throws IOException {
         int filecounter = 0;
         for (File depPartFile : advResult.getDepPartFiles()) {
-            File depTestFile = tmpFactory.getNewJsonTmpFile("depPartTest", filecounter+1);
+            File depTestFile = tmpFactory.getNewJsonTmpFile("depPartTest", filecounter + 1);
             BufferedWriter depTestFileWriter = new BufferedWriter(new FileWriter(depTestFile));
             advResult.addDepTestFile(depTestFile);
 

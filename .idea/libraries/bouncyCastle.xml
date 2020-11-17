@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="bouncyCastle">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/bcpkix-jdk15on-1.52.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/bcprov-jdk15on-1.52.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/sample/libs/bcpkix-jdk15on-1.52.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/sample/libs/bcprov-jdk15on-1.52.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

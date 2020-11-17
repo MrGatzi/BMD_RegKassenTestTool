@@ -16,77 +16,58 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 public class BatchLogic {
+    AdvDepTestLogic advDepTestLogic;
+    TmpFactory tmpFactory;
+    DepTestLogic depTestLogic;
+
     public void start(String[] args) {
 
 
         Configuration config = new Configuration();
         String location = System.getProperty("java.io.tmpdir");
         config.setJunkFolder(location);
-        DepTestLogic depTestLogic = new DepTestLogic(config);
-        AdvDepTestLogic advDepTestLogic = new AdvDepTestLogic(config);
-        TmpFactory tmpFactory = new TmpFactory(config);
-
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        Date date = new Date();
-        System.out.println("Test on "+dateFormat.format(date));
+        this.depTestLogic = new DepTestLogic(config);
+        this.advDepTestLogic = new AdvDepTestLogic(config);
+        this.tmpFactory = new TmpFactory(config);
 
         boolean appendFlag = false;
         boolean firstReceiptFlag = false;
-        FileOutputStream outputFileStream;
-
+        System.out.println("checking parameter...");
         if (args.length > 2) {
             if (fileExists(args[0]) && fileExists(args[1])) {
-                if (args.length > 3 && args[3].equals("-a")) {
+                if (args.length > 3 && Arrays.asList(args).contains("-a")) {
                     appendFlag = true;
                 }
-                if ((args.length > 3 && args[3].equals("-r")) || (args.length > 4 && args[4].equals("-r"))) {
+                if (args.length > 3 && Arrays.asList(args).contains("-r")) {
                     firstReceiptFlag = true;
                 }
-                if((args.length > 3 && args[3].equals("-adv")) || (args.length > 4 && args[4].equals("-adv"))|| (args.length > 5 && args[5].equals("-adv"))){
+                if (args.length > 3 && Arrays.asList(args).contains("-adv")) {
                     try {
-                        outputFileStream = checkandPrepareOutputFile(args[2], appendFlag);
+                        int fnp = Arrays.asList(args).indexOf("-fn");
+                        String fileName = null;
+                        if (fnp != -1 && args.length > (fnp + 1)) {
+                            fileName = args[fnp + 1];
 
-                        File outputFile = checkAndGetOutputFile(args[2]);
-                        AdvResult advResult = advDepTestLogic.runAdvDepTest(args[0], args[1], firstReceiptFlag, outputFile, false, false, false,false);
-                        safeAdvDepResult(advResult, outputFile);
-
-                        outputFileStream.write("Test on ".getBytes());
-                        outputFileStream.write(dateFormat.format(date).getBytes());
-                        outputFileStream.write("\r\n".getBytes());
-                        outputFileStream.write(advResult.printTestData().getBytes());
-                        outputFileStream.write("\r\n".getBytes());
-                        outputFileStream.close();
-
-                        System.out.println(advResult.printTestData());
+                        }
+                        executeWithAdv(firstReceiptFlag, appendFlag, args[0], args[1], args[2], fileName);
                     } catch (IOException | ParseException e) {
                         System.out.println("ERROR: Something went wrong during decryption process");
                         e.printStackTrace();
                         System.exit(0);
                     }
-                }else{
+                } else {
                     try {
-                        outputFileStream = checkandPrepareOutputFile(args[2], appendFlag);
-
-                        File tmpFile = tmpFactory.getNewTmpFile(ResultTyp.SHOWDEPFILE);
-                        TestResult testResult = depTestLogic.decryptAndStructureDepFile(args[0], args[1], firstReceiptFlag, tmpFile);
-                        System.out.println(testResult.printResults());
-
-                        outputFileStream.write("Test on ".getBytes());
-                        outputFileStream.write(dateFormat.format(date).getBytes());
-                        outputFileStream.write("\r\n".getBytes());
-                        outputFileStream.write(testResult.printResults().getBytes());
-                        outputFileStream.write("\r\n".getBytes());
-                        outputFileStream.close();
+                        executeNormal(firstReceiptFlag, appendFlag, args[0], args[1], args[2]);
                     } catch (IOException | NoSuchAlgorithmException | ParseException e) {
                         System.out.println("ERROR: Something went wrong during decryption process.");
                         e.printStackTrace();
                         System.exit(0);
                     }
                 }
-
 
 
             } else {
@@ -115,6 +96,7 @@ public class BatchLogic {
         }
         return null;
     }
+
     private File checkAndGetOutputFile(String fileLocation) {
         File outputfile = new File(fileLocation);
         try {
@@ -153,5 +135,73 @@ public class BatchLogic {
             i++;
         }
         return true;
+    }
+
+    private boolean safeAdvDepResult(AdvResult advResult, File output, String fileName) {
+        String newLocation = output.getParent();
+        int i = 1;
+        for (File fileToMove : advResult.getDepPartFiles()) {
+            File newfile = new File(newLocation + "\\" + fileName + "dep" + i + ".json");
+            fileToMove.renameTo(newfile);
+            i++;
+        }
+        i = 1;
+        for (File fileToMove : advResult.getDepStructuredFile()) {
+            File newfile = new File(newLocation + "\\" + fileName + "dep" + i + ".txt");
+            fileToMove.renameTo(newfile);
+            i++;
+        }
+        i = 1;
+        for (File fileToMove : advResult.getDepTestFiles()) {
+            File newfile = new File(newLocation + "\\" + "fileName" + "_test" + i + ".json");
+            fileToMove.renameTo(newfile);
+            i++;
+        }
+        return true;
+    }
+
+    private void executeWithAdv(boolean firstReceiptFlag, boolean appendFlag, String depFileLocation, String cryptoFileLocation, String outputFileLocation, String fileName) throws IOException, ParseException {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+
+        System.out.println("Test on " + dateFormat.format(date));
+
+        FileOutputStream outputFileStream;
+        outputFileStream = checkandPrepareOutputFile(outputFileLocation, appendFlag);
+
+        File outputFile = checkAndGetOutputFile(outputFileLocation);
+        AdvResult advResult = advDepTestLogic.runAdvDepTest(depFileLocation, cryptoFileLocation, firstReceiptFlag, outputFile, false, false, false, false);
+        if (fileName != null) {
+            safeAdvDepResult(advResult, outputFile, fileName);
+        } else {
+            safeAdvDepResult(advResult, outputFile);
+        }
+
+        outputFileStream.write("Test on ".getBytes());
+        outputFileStream.write(dateFormat.format(date).getBytes());
+        outputFileStream.write("\r\n".getBytes());
+        outputFileStream.write(advResult.printTestData().getBytes());
+        outputFileStream.write("\r\n".getBytes());
+        outputFileStream.close();
+
+        System.out.println(advResult.printTestData());
+    }
+
+    private void executeNormal(boolean firstReceiptFlag, boolean appendFlag, String depFileLocation, String cryptoFileLocation, String outputFileLocation) throws IOException, ParseException, NoSuchAlgorithmException {
+        FileOutputStream outputFileStream;
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        outputFileStream = checkandPrepareOutputFile(outputFileLocation, appendFlag);
+
+        File tmpFile = tmpFactory.getNewTmpFile(ResultTyp.SHOWDEPFILE);
+        TestResult testResult = depTestLogic.decryptAndStructureDepFile(depFileLocation, cryptoFileLocation, firstReceiptFlag, tmpFile);
+        System.out.println(testResult.printResults());
+
+        outputFileStream.write("Test on ".getBytes());
+        outputFileStream.write(dateFormat.format(date).getBytes());
+        outputFileStream.write("\r\n".getBytes());
+        outputFileStream.write(testResult.printResults().getBytes());
+        outputFileStream.write("\r\n".getBytes());
+        outputFileStream.close();
     }
 }
