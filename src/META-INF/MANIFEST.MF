@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Class-Path: lib/bcpkix-jdk15on-1.52.jar lib/bcprov-jdk15on-1.52.jar
-Main-Class: sample.Main
-

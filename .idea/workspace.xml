@@ -1,49 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6a667a9-d166-4afc-9fb6-d26eb6f47854" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/BMD_RegKassenTestTool_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/BMD_RegKassenTestTool_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/bouncyCastle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/bouncyCastle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/jfoenix_8_0_8.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/jfoenix_8_0_8.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/lib.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/config.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sample/BatchLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sample/BatchLogic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sample/Controller/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sample/Controller/MainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sample/Util/DepLogic/AdvDepTestLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sample/Util/DepLogic/AdvDepTestLogic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sample/Util/Ui/ResultTab.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sample/Util/Ui/ResultTab.java" afterDir="false" />
-    </list>
+    <list default="true" id="57876b93-211a-4de2-896a-a2b0a48f38a8" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
-  <component name="ProjectId" id="1kNIpx6nf1q0H4MaJqV7VsArS8A" />
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="C:\Users\Martin\.m2\repository" />
+        <option name="mavenHome" value="E:/InteliJ_Pro/IntelliJ IDEA 2020.2.1/plugins/maven/lib/maven3" />
+        <option name="userSettingsFile" value="C:\Users\Martin\.m2\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="2Ij9KwN0oDWeIzED0eknx17RebQ" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/sample/libs/zxing-javase.jar" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources/com.bmd_regkassentesttoolupdater/fxml" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Artifacts" />
-    <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.25862068" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.bmd_regkassentesttool.Util.Ui" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\BMD\BMD_RegKassenTestTool\src\main\resources\com.bmd_regkassentesttoolupdater\fxml" />
+      <recent name="D:\BMD\BMD_RegKassenTestTool" />
+      <recent name="D:\BMD\BMD_RegKassenTestTool\src" />
+      <recent name="D:\BMD\BMD_RegKassenTestTool\src\main\java\com\bmd_regkassentesttool" />
+      <recent name="D:\BMD\BMD_RegKassenTestTool\src\main\resources\com\bmd_regkassentesttool" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\BMD\BMD_RegKassenTestTool\src\main\resources\com\bmd_regkassentesttool\fxml" />
+      <recent name="D:\BMD\BMD_RegKassenTestTool" />
+      <recent name="D:\BMD\BMD_RegKassenTestTool\src\main\resources\com\bmd_regkassentesttool" />
+      <recent name="D:\BMD\BMD_RegKassenTestTool\src\main\resources" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.bmd_regkassentesttool" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.bmd_regkassentesttoolupdater" />
+      <recent name="" />
+      <recent name="com.bmd_regkassentesttool" />
+    </key>
   </component>
   <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="sample.Main" />
+      <option name="MAIN_CLASS_NAME" value="com.bmd_regkassentesttool.Main" />
       <module name="BMD_RegKassenTestTool" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="sample.*" />
+          <option name="PATTERN" value="com.bmd_regkassentesttool.Updater.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -51,62 +93,35 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="shell arguments" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="sample.Main" />
-      <module name="BMD_RegKassenTestTool" />
-      <option name="PROGRAM_PARAMETERS" value="E:\Git_Projekte\BMD_Testfolder\16_11_2020\test_normal_1.json E:\Git_Projekte\BMD_Testfolder\16_11_2020\testcf.json E:\Git_Projekte\BMD_Testfolder\16_11_2020\out.txt -a -r" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="BMD_RegKassenTestTool" />
-      <option name="filePath" value="" />
-      <option name="vmParameters" value="" />
-      <option name="alternativeJrePath" />
-      <option name="programParameters" value="" />
-      <option name="passParentEnvs" value="true" />
-      <option name="workingDirectory" value="" />
-      <option name="isAlternativeJrePathEnabled" value="false" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="WORKING_DIRECTORY" />
-      <option name="filePath" value="" />
-      <option name="vmParameters" value="" />
-      <option name="alternativeJrePath" />
-      <option name="programParameters" value="" />
-      <option name="passParentEnvs" value="true" />
-      <option name="workingDirectory" value="" />
-      <option name="isAlternativeJrePathEnabled" value="false" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="WORKING_DIRECTORY" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
+    <configuration name="Build JAR" type="MavenRunConfiguration" factoryName="Maven">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="mvn" />
+                <option value="package" />
+              </list>
+            </option>
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Application.shell arguments" />
       <item itemvalue="Application.Main" />
+      <item itemvalue="Maven.Build JAR" />
     </list>
     <recent_temporary>
       <list>
@@ -117,120 +132,50 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="c6a667a9-d166-4afc-9fb6-d26eb6f47854" name="Default Changelist" comment="" />
-      <created>1605534808710</created>
+      <changelist id="57876b93-211a-4de2-896a-a2b0a48f38a8" name="Changes" comment="" />
+      <created>1670684065821</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1605534808710</updated>
-      <workItem from="1605534809804" duration="2710000" />
-      <workItem from="1605539298054" duration="4704000" />
-      <workItem from="1605623707995" duration="9451000" />
+      <updated>1670684065821</updated>
+      <workItem from="1670684067119" duration="4158000" />
+      <workItem from="1670688314034" duration="269000" />
+      <workItem from="1670688609556" duration="99000" />
+      <workItem from="1670688727540" duration="2640000" />
+      <workItem from="1670759536287" duration="6250000" />
+      <workItem from="1670765880274" duration="6249000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="-1350" y="188" key="#Project_Structure" timestamp="1605539545977">
-      <screen x="-1920" y="0" width="1920" height="1040" />
-    </state>
-    <state x="-1350" y="188" key="#Project_Structure/-1920.0.1920.1040/0.0.2560.1400@-1920.0.1920.1040" timestamp="1605539545977" />
-    <state x="760" y="274" key="#Project_Structure/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605537509396" />
-    <state x="339" y="67" width="1733" height="1116" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605639322711">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state x="339" y="67" width="1733" height="1116" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605639322711" />
-    <state x="1030" y="607" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1605541118845">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state x="1030" y="607" key="#com.intellij.ide.util.TreeClassChooserDialog/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605541118845" />
-    <state x="438" y="106" width="1607" height="931" key="CommitChangelistDialog2" timestamp="1605627592416">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state x="438" y="106" width="1607" height="931" key="CommitChangelistDialog2/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605627592416" />
-    <state x="986" y="441" key="FileChooserDialogImpl" timestamp="1605640448023">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state x="-1180" y="328" key="FileChooserDialogImpl/-1920.0.1920.1040/0.0.2560.1400@-1920.0.1920.1040" timestamp="1605539522559" />
-    <state x="986" y="441" key="FileChooserDialogImpl/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605640448023" />
-    <state width="1877" height="196" key="GridCell.Tab.0.bottom" timestamp="1605641300858">
-      <screen x="-1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="196" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.2560.1400@-1920.0.1920.1040" timestamp="1605641300858" />
-    <state width="2517" height="259" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605639355288" />
-    <state width="1877" height="196" key="GridCell.Tab.0.center" timestamp="1605641300857">
-      <screen x="-1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="196" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.2560.1400@-1920.0.1920.1040" timestamp="1605641300857" />
-    <state width="2517" height="259" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605639355288" />
-    <state width="1877" height="196" key="GridCell.Tab.0.left" timestamp="1605641300857">
-      <screen x="-1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="196" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.2560.1400@-1920.0.1920.1040" timestamp="1605641300857" />
-    <state width="2517" height="259" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605639355288" />
-    <state width="1877" height="196" key="GridCell.Tab.0.right" timestamp="1605641300858">
-      <screen x="-1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="196" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.2560.1400@-1920.0.1920.1040" timestamp="1605641300858" />
-    <state width="2517" height="259" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605639355288" />
-    <state width="1877" height="259" key="GridCell.Tab.1.bottom" timestamp="1605641298429">
-      <screen x="-1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="259" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.2560.1400@-1920.0.1920.1040" timestamp="1605641298429" />
-    <state width="2517" height="259" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605639355830" />
-    <state width="1877" height="259" key="GridCell.Tab.1.center" timestamp="1605641298429">
-      <screen x="-1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="259" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.2560.1400@-1920.0.1920.1040" timestamp="1605641298429" />
-    <state width="2517" height="259" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605639355829" />
-    <state width="1877" height="259" key="GridCell.Tab.1.left" timestamp="1605641298429">
-      <screen x="-1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="259" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.2560.1400@-1920.0.1920.1040" timestamp="1605641298429" />
-    <state width="2517" height="259" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605639355829" />
-    <state width="1877" height="259" key="GridCell.Tab.1.right" timestamp="1605641298429">
-      <screen x="-1920" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="259" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.2560.1400@-1920.0.1920.1040" timestamp="1605641298429" />
-    <state width="2517" height="259" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605639355830" />
-    <state x="316" y="240" width="1729" height="852" key="SettingsEditor" timestamp="1605641054332">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state x="316" y="240" width="1729" height="852" key="SettingsEditor/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605641054332" />
-    <state x="-1180" y="222" width="555" height="596" key="find.popup" timestamp="1605641283428">
-      <screen x="-1920" y="0" width="1920" height="1040" />
-    </state>
-    <state x="-1180" y="222" width="555" height="596" key="find.popup/-1920.0.1920.1040/0.0.2560.1400@-1920.0.1920.1040" timestamp="1605641283428" />
-    <state x="987" y="299" width="585" height="801" key="find.popup/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605541883357" />
-    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup" timestamp="1605535377669">
-      <screen x="0" y="0" width="2560" height="1400" />
-    </state>
-    <state x="943" y="315" width="672" height="678" key="search.everywhere.popup/-1920.0.1920.1040/0.0.2560.1400@0.0.2560.1400" timestamp="1605535377669" />
-  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/sample/BatchLogic.java</url>
-          <line>39</line>
-          <option name="timeStamp" value="2" />
+          <url>file://$PROJECT_DIR$/src/main/java/com/bmd_regkassentesttool/Updater/Updater.java</url>
+          <line>67</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/sample/BatchLogic.java</url>
-          <line>47</line>
-          <option name="timeStamp" value="3" />
+          <url>file://$PROJECT_DIR$/src/main/java/com/bmd_regkassentesttool/Updater/Updater.java</url>
+          <line>56</line>
+          <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/sample/BatchLogic.java</url>
-          <line>63</line>
-          <option name="timeStamp" value="4" />
+          <url>file://$PROJECT_DIR$/src/main/java/com/bmd_regkassentesttool/Updater/Updater.java</url>
+          <line>55</line>
+          <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
-        <watch expression="args[2]" language="JAVA" />
+        <watch expression="config.isUseDefaultDepTool()" language="JAVA" />
+        <watch expression="config.getExternalDepToolLocation()" language="JAVA" />
+        <watch expression="this.getClass().getResource(&quot;&quot;)" language="JAVA" />
+        <watch expression="this.getClass().getResource(&quot;../Updater.fxml&quot;)" language="JAVA" />
+        <watch expression="getClass().getResource(&quot;../fxml/Updater.fxml&quot;)" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>

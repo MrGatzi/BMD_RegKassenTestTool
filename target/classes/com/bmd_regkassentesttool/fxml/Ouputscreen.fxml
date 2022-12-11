@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<?import javafx.scene.control.Button?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorpane" style="-fx-background-color: #E9E9E9"
+            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+            AnchorPane.topAnchor="0.0"
+            fx:controller="com.bmd_regkassentesttool.Controller.OutputController">
+    <children>
+        <VBox fx:id="vbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+            <children>
+                <HBox fx:id="hbox" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onSavePressed"
+                                    stylesheets="@../Styles/chooseButtons.css">
+                                <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                        <image>
+                                            <Image url="@../Images/save.png"/>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onDeletePressed"
+                                    stylesheets="@../Styles/chooseButtons.css">
+                                <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
+                                               preserveRatio="true">
+                                        <image>
+                                            <Image url="@../Images/delete.png"/>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Button fx:id="filterButton" contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onFilterPressed"
+                                    stylesheets="@../Styles/chooseButtons.css">
+                                <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
+                                               preserveRatio="true">
+                                        <image>
+                                            <Image url="@../Images/filter.png"/>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Button contentDisplay="GRAPHIC_ONLY" onMouseClicked="#onShowPressed"
+                                    stylesheets="@../Styles/chooseButtons.css">
+                                <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true"
+                                               preserveRatio="true">
+                                        <image>
+                                            <Image url="@../Images/show.png"/>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                        <VBox alignment="CENTER_RIGHT">
+                            <Text fx:id="checkedTextField" strokeType="OUTSIDE" strokeWidth="0.0" text="Checked: XX Errors:XX">
+                                <VBox.margin>
+                                    <Insets right="10.0" left="10.0"/>
+                                </VBox.margin>
+                            </Text>
+                        </VBox>
+                    </children>
+                </HBox>
+                <TabPane fx:id="resultTabPane" stylesheets="@../Styles/TabPaneStyle.css">
+                    <tabs>
+                    </tabs>
+                </TabPane>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
