@@ -177,7 +177,38 @@ function Row({ label, value, ok, mono, highlight, className }) {
   );
 }
 
-function ResultPanel({ result, tab }) {
+function StreamPanel({ lines, done, exitCode, durationMs }) {
+  const hasFail = lines.some((l) => /\bFAIL\b/.test(l));
+  const passed = done && exitCode === 0 && !hasFail;
+  return (
+    <div className="space-y-3">
+      {done && <Badge ok={passed} />}
+      {done && (
+        <p className="text-xs text-slate-500">
+          Exit code: {exitCode} — {(durationMs / 1000).toFixed(1)}s
+        </p>
+      )}
+      <div className="relative max-h-[40rem] overflow-auto rounded-xl border border-slate-200 bg-slate-950 p-4 font-mono text-xs leading-relaxed text-slate-100">
+        {lines.length === 0 && !done && (
+          <span className="flex items-center gap-2 text-slate-500">
+            <Loader2 className="h-3 w-3 animate-spin" /> Warte auf Backend…
+          </span>
+        )}
+        {lines.map((line, i) => (
+          <div key={i} className={/\bPASS\b/.test(line) ? "text-emerald-400" : /\bFAIL\b/.test(line) ? "text-rose-400 font-bold" : ""}>
+            {line}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ResultPanel({ result, tab, stream }) {
+  if (stream && (stream.lines.length > 0 || !stream.done)) {
+    return <StreamPanel {...stream} />;
+  }
+
   if (!result) {
     return (
       <div className="flex h-48 items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 text-sm text-slate-400">
@@ -214,10 +245,13 @@ function ResultPanel({ result, tab }) {
   );
 }
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_RKSV_BACKEND_URL || "";
+
 export default function Home() {
   const [activeTab, setActiveTab] = useState("structured");
   const [isBusy, setIsBusy] = useState({});
   const [results, setResults] = useState({});
+  const [streams, setStreams] = useState({});
 
   async function submitForm(tab, event, endpoint) {
     event.preventDefault();
@@ -229,6 +263,72 @@ export default function Home() {
       setResults((prev) => ({ ...prev, [tab]: payload }));
     } catch (error) {
       setResults((prev) => ({ ...prev, [tab]: { ok: false, error: String(error) } }));
+    } finally {
+      setIsBusy((prev) => ({ ...prev, [tab]: false }));
+    }
+  }
+
+  async function submitStreaming(tab, event, backendType) {
+    event.preventDefault();
+    const backendUrl = BACKEND_URL;
+    if (!backendUrl) {
+      return submitForm(tab, event, `/api/verify/${backendType}`);
+    }
+
+    setIsBusy((prev) => ({ ...prev, [tab]: true }));
+    setStreams((prev) => ({ ...prev, [tab]: { lines: [], done: false, exitCode: null, durationMs: 0 } }));
+    setResults((prev) => ({ ...prev, [tab]: null }));
+
+    try {
+      const form = new FormData(event.currentTarget);
+      const body = new FormData();
+      body.set("inputFile", form.get("depFile") || form.get("receiptFile"));
+      body.set("cryptoFile", form.get("cryptoFile"));
+      body.set("allowFuture", form.get("allowFuture") ? "true" : "false");
+      body.set("verbose", form.get("verbose") ? "true" : "false");
+      body.set("heapMb", form.get("heapMb") || "1500");
+
+      const res = await fetch(`${backendUrl}/verify/${backendType}`, { method: "POST", body });
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const parts = buf.split("\n\n");
+        buf = parts.pop() || "";
+        for (const part of parts) {
+          const eventMatch = part.match(/^event: (\w+)\ndata: (.+)$/s);
+          if (!eventMatch) continue;
+          const [, evtType, evtData] = eventMatch;
+          const data = JSON.parse(evtData);
+
+          if (evtType === "stdout" || evtType === "stderr") {
+            const newLines = data.text.split("\n").filter((l) => l.trim());
+            setStreams((prev) => ({
+              ...prev,
+              [tab]: { ...prev[tab], lines: [...prev[tab].lines, ...newLines] },
+            }));
+          } else if (evtType === "done") {
+            setStreams((prev) => ({
+              ...prev,
+              [tab]: { ...prev[tab], done: true, exitCode: data.exitCode, durationMs: data.durationMs },
+            }));
+          } else if (evtType === "error") {
+            setStreams((prev) => ({
+              ...prev,
+              [tab]: { ...prev[tab], done: true, lines: [...prev[tab].lines, `ERROR: ${data.message}`] },
+            }));
+          }
+        }
+      }
+    } catch (error) {
+      setStreams((prev) => ({
+        ...prev,
+        [tab]: { lines: [`Connection error: ${error}`], done: true, exitCode: -1, durationMs: 0 },
+      }));
     } finally {
       setIsBusy((prev) => ({ ...prev, [tab]: false }));
     }
@@ -326,7 +426,7 @@ export default function Home() {
             )}
 
             {activeTab === "dep" && (
-              <form className="space-y-5" onSubmit={(e) => submitForm("dep", e, "/api/verify/dep")}>
+              <form className="space-y-5" onSubmit={(e) => submitStreaming("dep", e, "dep")}>
                 <FileInput name="depFile" label="DEP-Export Datei" />
                 <FileInput name="cryptoFile" label="Kryptografisches Material" />
                 <OptionRow>
@@ -335,11 +435,12 @@ export default function Home() {
                 </OptionRow>
                 <HeapInput />
                 <SubmitButton busy={isBusy.dep} label="DEP-Test ausführen" />
+                {!BACKEND_URL && <BackendHint />}
               </form>
             )}
 
             {activeTab === "receipts" && (
-              <form className="space-y-5" onSubmit={(e) => submitForm("receipts", e, "/api/verify/receipts")}>
+              <form className="space-y-5" onSubmit={(e) => submitStreaming("receipts", e, "receipts")}>
                 <FileInput name="receiptFile" label="Belege (qr-code-rep.json / DEP)" />
                 <FileInput name="cryptoFile" label="Kryptografisches Material" />
                 <OptionRow>
@@ -348,6 +449,7 @@ export default function Home() {
                 </OptionRow>
                 <HeapInput />
                 <SubmitButton busy={isBusy.receipts} label="QR-Test ausführen" />
+                {!BACKEND_URL && <BackendHint />}
               </form>
             )}
 
@@ -364,6 +466,7 @@ export default function Home() {
                 <SubmitButton busy={isBusy.advanced} label="Erweiterten Test ausführen" />
               </form>
             )}
+
 
             {activeTab === "selftest" && (
               <div className="space-y-5">
@@ -389,7 +492,7 @@ export default function Home() {
 
           {/* Results panel (right) */}
           <section className="flex-1 overflow-y-auto bg-slate-50 p-6">
-            <ResultPanel result={results[activeTab]} tab={activeTab} />
+            <ResultPanel result={results[activeTab]} tab={activeTab} stream={streams[activeTab]} />
           </section>
         </div>
       </main>
@@ -451,6 +554,17 @@ function InfoCard({ title, children }) {
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
       <h4 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-500">{title}</h4>
       {children}
+    </div>
+  );
+}
+
+function BackendHint() {
+  return (
+    <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+      <strong>Hinweis:</strong> Kein Backend konfiguriert. Setze{" "}
+      <code className="rounded bg-amber-100 px-1 font-mono">NEXT_PUBLIC_RKSV_BACKEND_URL</code>{" "}
+      für Streaming-Verifizierung via externem Java-Backend (z.B. Cloud Run).
+      Ohne Backend wird die lokale API verwendet (benötigt Java auf dem Server).
     </div>
   );
 }
