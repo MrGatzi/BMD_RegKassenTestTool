@@ -217,7 +217,45 @@ function ResultPanel({ result, tab, stream }) {
     );
   }
 
-  if (tab === "structured" && result.ok && result.result) {
+  if (tab === "advanced" && result.ok && result.result?.segments) {
+    const r = result.result;
+    return (
+      <div className="space-y-4">
+        <div className={cx("rounded-2xl border-2 p-5", r.allOk ? "border-emerald-200 bg-emerald-50" : "border-rose-200 bg-rose-50")}>
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-600">Multi-Kassen Übersicht</h3>
+            <Badge ok={r.allOk} />
+          </div>
+          <pre className="whitespace-pre-wrap font-mono text-sm text-slate-700">
+{`Gruppen gefunden: ${r.groupCount}
+Reihenfolge (nach Kette): [${r.orderedGroupIndices.join(", ")}]
+Belege gesamt: ${r.totalReceipts}`}
+          </pre>
+        </div>
+        {r.segments.map((seg, idx) => (
+          <div key={idx} className="space-y-3">
+            <div className="flex items-center gap-3">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-xs font-bold text-white">{idx + 1}</span>
+              <div>
+                <span className="font-semibold text-slate-800">Kasse: {seg.registerId}</span>
+                <span className="ml-2 text-xs text-slate-400">{seg.receiptCount} Belege</span>
+                {seg.isStart && <span className="ml-2 rounded bg-indigo-100 px-1.5 py-0.5 text-[10px] font-bold text-indigo-700">START</span>}
+              </div>
+              <Badge ok={seg.summary.chainErrors.length === 0 && seg.summary.revenueErrors.length === 0} />
+            </div>
+            <SummaryCard summary={seg.summary} germanSummary={seg.germanSummary} />
+            <div className="space-y-2">
+              {seg.receipts.map((rc) => (
+                <ReceiptCard key={`${idx}-${rc.index}`} r={rc} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if ((tab === "structured" || tab === "receipts") && result.ok && result.result) {
     const { receipts, summary, germanSummary } = result.result;
     return (
       <div className="space-y-4">
@@ -440,31 +478,59 @@ export default function Home() {
             )}
 
             {activeTab === "receipts" && (
-              <form className="space-y-5" onSubmit={(e) => submitStreaming("receipts", e, "receipts")}>
-                <FileInput name="receiptFile" label="Belege (qr-code-rep.json / DEP)" />
-                <FileInput name="cryptoFile" label="Kryptografisches Material" />
-                <OptionRow>
-                  <Check name="allowFuture" label="Zukünftige Daten erlauben" />
-                  <Check name="verbose" label="Detaillierte Ausgabe" />
-                </OptionRow>
-                <HeapInput />
-                <SubmitButton busy={isBusy.receipts} label="QR-Test ausführen" />
-                {!BACKEND_URL && <BackendHint />}
-              </form>
+              <div className="space-y-6">
+                <form className="space-y-5" onSubmit={(e) => submitForm("receipts_struct", e, "/api/verify/structured-qr")}>
+                  <div className="rounded-lg bg-indigo-50 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-indigo-700">QR-Datei entschlüsseln</div>
+                  <FileInput name="qrFile" label="QR-Code Datei (qr-code-rep.json)" />
+                  <FileInput name="cryptoFile" label="Kryptografisches Material" />
+                  <label className="flex items-center gap-2 text-sm text-slate-600">
+                    <input name="firstReceiptNotIncluded" type="checkbox" className="rounded" />
+                    Startbeleg nicht enthalten
+                  </label>
+                  <SubmitButton busy={isBusy.receipts_struct} label="QR-Datei entschlüsseln" color="indigo" />
+                </form>
+                <div className="border-t border-slate-200" />
+                <form className="space-y-5" onSubmit={(e) => submitStreaming("receipts", e, "receipts")}>
+                  <div className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-600">Offizieller QR-Test (JAR)</div>
+                  <FileInput name="receiptFile" label="Belege (qr-code-rep.json / DEP)" />
+                  <FileInput name="cryptoFile" label="Kryptografisches Material" />
+                  <OptionRow>
+                    <Check name="allowFuture" label="Zukünftige Daten erlauben" />
+                    <Check name="verbose" label="Detaillierte Ausgabe" />
+                  </OptionRow>
+                  <HeapInput />
+                  <SubmitButton busy={isBusy.receipts} label="QR-Test ausführen" />
+                  {!BACKEND_URL && <BackendHint />}
+                </form>
+              </div>
             )}
 
             {activeTab === "advanced" && (
-              <form className="space-y-5" onSubmit={(e) => submitForm("advanced", e, "/api/verify/advanced")}>
-                <FileInput name="depFile" label="DEP-Export Datei" />
-                <FileInput name="cryptoFile" label="Kryptografisches Material" />
-                <OptionRow>
-                  <Check name="runDepTests" label="DEP-Test je Segment" defaultChecked />
-                  <Check name="allowFuture" label="Zukünftige Daten" />
-                  <Check name="verbose" label="Details" />
-                </OptionRow>
-                <HeapInput />
-                <SubmitButton busy={isBusy.advanced} label="Erweiterten Test ausführen" />
-              </form>
+              <div className="space-y-6">
+                <form className="space-y-5" onSubmit={(e) => submitForm("advanced_decrypt", e, "/api/verify/advanced-decrypt")}>
+                  <div className="rounded-lg bg-indigo-50 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-indigo-700">Multi-Kassen Entschlüsselung</div>
+                  <FileInput name="depFile" label="DEP-Export Datei" />
+                  <FileInput name="cryptoFile" label="Kryptografisches Material" />
+                  <label className="flex items-center gap-2 text-sm text-slate-600">
+                    <input name="firstReceiptNotIncluded" type="checkbox" className="rounded" />
+                    Startbeleg nicht enthalten
+                  </label>
+                  <SubmitButton busy={isBusy.advanced_decrypt} label="Split + Entschlüsseln" color="indigo" />
+                </form>
+                <div className="border-t border-slate-200" />
+                <form className="space-y-5" onSubmit={(e) => submitForm("advanced", e, "/api/verify/advanced")}>
+                  <div className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-600">Offizieller Split-Test (JAR)</div>
+                  <FileInput name="depFile" label="DEP-Export Datei" />
+                  <FileInput name="cryptoFile" label="Kryptografisches Material" />
+                  <OptionRow>
+                    <Check name="runDepTests" label="DEP-Test je Segment" defaultChecked />
+                    <Check name="allowFuture" label="Zukünftige Daten" />
+                    <Check name="verbose" label="Details" />
+                  </OptionRow>
+                  <HeapInput />
+                  <SubmitButton busy={isBusy.advanced} label="Erweiterten Test ausführen" />
+                </form>
+              </div>
             )}
 
 
@@ -492,7 +558,19 @@ export default function Home() {
 
           {/* Results panel (right) */}
           <section className="flex-1 overflow-y-auto bg-slate-50 p-6">
-            <ResultPanel result={results[activeTab]} tab={activeTab} stream={streams[activeTab]} />
+            {activeTab === "receipts" && (results.receipts_struct || results.receipts) ? (
+              <div className="space-y-6">
+                {results.receipts_struct && <ResultPanel result={results.receipts_struct} tab="structured" />}
+                {(streams.receipts || results.receipts) && <ResultPanel result={results.receipts} tab="receipts" stream={streams.receipts} />}
+              </div>
+            ) : activeTab === "advanced" && (results.advanced_decrypt || results.advanced) ? (
+              <div className="space-y-6">
+                {results.advanced_decrypt && <ResultPanel result={results.advanced_decrypt} tab="advanced" />}
+                {results.advanced && <ResultPanel result={results.advanced} tab="default" />}
+              </div>
+            ) : (
+              <ResultPanel result={results[activeTab]} tab={activeTab} stream={streams[activeTab]} />
+            )}
           </section>
         </div>
       </main>
