@@ -1,13 +1,33 @@
 "use client";
 
 import { useState, useRef } from "react";
+import {
+  FileText,
+  SearchCheck,
+  QrCode,
+  SplitSquareHorizontal,
+  FlaskConical,
+  FolderOpen,
+  ChevronUp,
+  ChevronDown,
+  CircleCheck,
+  CircleX,
+  Lock,
+  Unlock,
+  Link2,
+  ExternalLink,
+  Loader2,
+  FileJson,
+  Archive,
+  FileArchive,
+} from "lucide-react";
 
 const TABS = [
-  { id: "structured", label: "DEP-Datei", icon: "📄", desc: "Decrypt & structure" },
-  { id: "dep", label: "DEP-Test", icon: "🔍", desc: "Official JAR verification" },
-  { id: "receipts", label: "QR-Test", icon: "📱", desc: "Single receipt verification" },
-  { id: "advanced", label: "Erweitert", icon: "🔬", desc: "Advanced split + verify" },
-  { id: "selftest", label: "Selbsttest", icon: "⚙️", desc: "Workflow self-test" },
+  { id: "structured", label: "DEP-Datei", Icon: FileText, desc: "Decrypt & structure" },
+  { id: "dep", label: "DEP-Test", Icon: SearchCheck, desc: "Official JAR verification" },
+  { id: "receipts", label: "QR-Test", Icon: QrCode, desc: "Single receipt verification" },
+  { id: "advanced", label: "Erweitert", Icon: SplitSquareHorizontal, desc: "Advanced split + verify" },
+  { id: "selftest", label: "Selbsttest", Icon: FlaskConical, desc: "Workflow self-test" },
 ];
 
 function cx(...parts) {
@@ -25,7 +45,7 @@ function FileInput({ name, label, required = true, accept = ".json,.gz,.zip" }) 
         onClick={() => ref.current?.click()}
         className="flex w-full items-center gap-3 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-left text-sm transition hover:border-indigo-400 hover:bg-indigo-50"
       >
-        <span className="text-lg">📁</span>
+        <FolderOpen className="h-5 w-5 shrink-0 text-slate-400" />
         <span className={fileName ? "text-slate-800 font-medium" : "text-slate-400"}>
           {fileName || "Choose file…"}
         </span>
@@ -49,7 +69,7 @@ function Badge({ ok }) {
       "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider",
       ok ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"
     )}>
-      <span className={cx("inline-block h-2 w-2 rounded-full", ok ? "bg-emerald-500" : "bg-rose-500")} />
+      {ok ? <CircleCheck className="h-3.5 w-3.5" /> : <CircleX className="h-3.5 w-3.5" />}
       {ok ? "Erfolgreich" : "Fehler"}
     </span>
   );
@@ -102,9 +122,9 @@ function ReceiptCard({ r, defaultOpen = false }) {
           <span className="text-xs text-slate-400">{r.receiptDate}</span>
         </div>
         <div className="flex items-center gap-2">
-          {!r.chainOk && <span className="rounded bg-rose-200 px-1.5 py-0.5 text-[10px] font-bold text-rose-700">KETTE</span>}
-          {!r.revenueOk && <span className="rounded bg-rose-200 px-1.5 py-0.5 text-[10px] font-bold text-rose-700">UMSATZ</span>}
-          <span className="text-slate-400">{open ? "▲" : "▼"}</span>
+          {!r.chainOk && <span className="inline-flex items-center gap-1 rounded bg-rose-200 px-1.5 py-0.5 text-[10px] font-bold text-rose-700"><Link2 className="h-3 w-3" />KETTE</span>}
+          {!r.revenueOk && <span className="inline-flex items-center gap-1 rounded bg-rose-200 px-1.5 py-0.5 text-[10px] font-bold text-rose-700"><Lock className="h-3 w-3" />UMSATZ</span>}
+          {open ? <ChevronUp className="h-4 w-4 text-slate-400" /> : <ChevronDown className="h-4 w-4 text-slate-400" />}
         </div>
       </button>
       {open && (
@@ -237,23 +257,26 @@ export default function Home() {
           B
         </div>
         <nav className="flex flex-1 flex-col items-center gap-1">
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => setActiveTab(t.id)}
-              title={t.label}
-              className={cx(
-                "flex h-14 w-14 flex-col items-center justify-center rounded-xl text-xs transition",
-                activeTab === t.id
-                  ? "bg-slate-900 text-white shadow-md"
-                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-800"
-              )}
-            >
-              <span className="text-lg">{t.icon}</span>
-              <span className="mt-0.5 text-[9px] font-semibold leading-tight">{t.label}</span>
-            </button>
-          ))}
+          {TABS.map((t) => {
+            const Icon = t.Icon;
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setActiveTab(t.id)}
+                title={t.label}
+                className={cx(
+                  "flex h-14 w-14 flex-col items-center justify-center rounded-xl text-xs transition",
+                  activeTab === t.id
+                    ? "bg-slate-900 text-white shadow-md"
+                    : "text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+                )}
+              >
+                <Icon className="h-5 w-5" />
+                <span className="mt-1 text-[9px] font-semibold leading-tight">{t.label}</span>
+              </button>
+            );
+          })}
         </nav>
       </aside>
 
@@ -276,7 +299,7 @@ export default function Home() {
               rel="noreferrer"
               className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-200"
             >
-              BMF RKSV Docs ↗
+              <span className="flex items-center gap-1.5">BMF RKSV Docs <ExternalLink className="h-3 w-3" /></span>
             </a>
           </div>
         </header>
@@ -350,10 +373,10 @@ export default function Home() {
             {/* Info cards */}
             <div className="mt-8 space-y-4">
               <InfoCard title="Akzeptierte Eingabe">
-                <ul className="space-y-1 text-xs text-slate-500">
-                  <li>• .json Dateien direkt</li>
-                  <li>• .gz komprimiertes JSON</li>
-                  <li>• .zip Archive (automatische Auswahl)</li>
+                <ul className="space-y-2 text-xs text-slate-500">
+                  <li className="flex items-center gap-2"><FileJson className="h-3.5 w-3.5 text-slate-400" /> .json Dateien direkt</li>
+                  <li className="flex items-center gap-2"><Archive className="h-3.5 w-3.5 text-slate-400" /> .gz komprimiertes JSON</li>
+                  <li className="flex items-center gap-2"><FileArchive className="h-3.5 w-3.5 text-slate-400" /> .zip Archive (automatische Auswahl)</li>
                 </ul>
               </InfoCard>
             </div>
@@ -375,7 +398,6 @@ function SubmitButton({ busy, label, color = "slate", onClick }) {
     indigo: "bg-indigo-600 hover:bg-indigo-700",
     violet: "bg-violet-600 hover:bg-violet-700",
   };
-  const Tag = onClick ? "button" : "button";
   return (
     <button
       type={onClick ? "button" : "submit"}
@@ -388,7 +410,7 @@ function SubmitButton({ busy, label, color = "slate", onClick }) {
     >
       {busy ? (
         <span className="flex items-center justify-center gap-2">
-          <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+          <Loader2 className="h-4 w-4 animate-spin" />
           Wird ausgeführt…
         </span>
       ) : label}
