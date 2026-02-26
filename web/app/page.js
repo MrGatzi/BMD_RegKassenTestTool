@@ -253,8 +253,13 @@ export default function Home() {
     <div className="flex h-screen bg-slate-100">
       {/* Sidebar */}
       <aside className="flex w-20 flex-col items-center border-r border-slate-200 bg-white py-6">
-        <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 text-lg font-black text-white shadow-lg">
-          B
+        <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 shadow-lg shadow-slate-900/30">
+          <svg viewBox="0 0 32 32" className="h-7 w-7" fill="none">
+            <rect x="4" y="4" width="10" height="10" rx="2" fill="#f97316" />
+            <rect x="18" y="4" width="10" height="10" rx="2" fill="#fb923c" opacity="0.7" />
+            <rect x="4" y="18" width="10" height="10" rx="2" fill="#fb923c" opacity="0.7" />
+            <rect x="18" y="18" width="10" height="10" rx="2" fill="#f97316" />
+          </svg>
         </div>
         <nav className="flex flex-1 flex-col items-center gap-1">
           {TABS.map((t) => {
