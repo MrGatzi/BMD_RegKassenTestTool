@@ -1,41 +1,193 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const TABS = [
-  { id: "dep", label: "DEP export verification" },
-  { id: "receipts", label: "Single receipts verification" },
-  { id: "advanced", label: "Advanced split + verify" },
-  { id: "selftest", label: "Workflow self-test" },
+  { id: "structured", label: "DEP-Datei", icon: "📄", desc: "Decrypt & structure" },
+  { id: "dep", label: "DEP-Test", icon: "🔍", desc: "Official JAR verification" },
+  { id: "receipts", label: "QR-Test", icon: "📱", desc: "Single receipt verification" },
+  { id: "advanced", label: "Erweitert", icon: "🔬", desc: "Advanced split + verify" },
+  { id: "selftest", label: "Selbsttest", icon: "⚙️", desc: "Workflow self-test" },
 ];
 
-function clsx(...parts) {
+function cx(...parts) {
   return parts.filter(Boolean).join(" ");
 }
 
-function ResultPanel({ result }) {
+function FileInput({ name, label, required = true, accept = ".json,.gz,.zip" }) {
+  const ref = useRef(null);
+  const [fileName, setFileName] = useState(null);
+  return (
+    <div className="space-y-1.5">
+      <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</label>
+      <button
+        type="button"
+        onClick={() => ref.current?.click()}
+        className="flex w-full items-center gap-3 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-left text-sm transition hover:border-indigo-400 hover:bg-indigo-50"
+      >
+        <span className="text-lg">📁</span>
+        <span className={fileName ? "text-slate-800 font-medium" : "text-slate-400"}>
+          {fileName || "Choose file…"}
+        </span>
+      </button>
+      <input
+        ref={ref}
+        name={name}
+        type="file"
+        accept={accept}
+        required={required}
+        className="hidden"
+        onChange={(e) => setFileName(e.target.files?.[0]?.name || null)}
+      />
+    </div>
+  );
+}
+
+function Badge({ ok }) {
+  return (
+    <span className={cx(
+      "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider",
+      ok ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"
+    )}>
+      <span className={cx("inline-block h-2 w-2 rounded-full", ok ? "bg-emerald-500" : "bg-rose-500")} />
+      {ok ? "Erfolgreich" : "Fehler"}
+    </span>
+  );
+}
+
+function SummaryCard({ summary, germanSummary }) {
+  if (!summary) return null;
+  const allOk = summary.chainErrors.length === 0 &&
+    summary.revenueErrors.length === 0 &&
+    summary.amountFormatErrors.length === 0 &&
+    summary.structureErrors.length === 0 &&
+    summary.receiptIdErrors.length === 0 &&
+    summary.dateFormatErrors.length === 0 &&
+    summary.dateChainErrors.length === 0;
+  return (
+    <div className={cx(
+      "rounded-2xl border-2 p-5",
+      allOk ? "border-emerald-200 bg-emerald-50" : "border-rose-200 bg-rose-50"
+    )}>
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-600">Zusammenfassung</h3>
+        <Badge ok={allOk} />
+      </div>
+      <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed text-slate-700">{germanSummary}</pre>
+    </div>
+  );
+}
+
+function ReceiptCard({ r, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen);
+  const hasError = !r.chainOk || !r.revenueOk || !r.dateOk || !r.dateChainOk;
+  return (
+    <div className={cx(
+      "rounded-xl border transition",
+      hasError ? "border-rose-300 bg-rose-50/50" : "border-slate-200 bg-white",
+    )}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between px-4 py-3 text-left text-sm"
+      >
+        <div className="flex items-center gap-3">
+          <span className={cx(
+            "flex h-7 w-7 items-center justify-center rounded-lg text-xs font-bold",
+            hasError ? "bg-rose-200 text-rose-700" : "bg-slate-100 text-slate-600"
+          )}>
+            {r.index}
+          </span>
+          <span className="font-semibold text-slate-800">{r.receiptId}</span>
+          <span className="text-xs text-slate-400">{r.receiptDate}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          {!r.chainOk && <span className="rounded bg-rose-200 px-1.5 py-0.5 text-[10px] font-bold text-rose-700">KETTE</span>}
+          {!r.revenueOk && <span className="rounded bg-rose-200 px-1.5 py-0.5 text-[10px] font-bold text-rose-700">UMSATZ</span>}
+          <span className="text-slate-400">{open ? "▲" : "▼"}</span>
+        </div>
+      </button>
+      {open && (
+        <div className="border-t border-slate-100 px-4 pb-4 pt-3">
+          <div className="grid gap-x-8 gap-y-2 text-xs md:grid-cols-2">
+            <Row label="ZDA" value={r.zda} />
+            <Row label="Kassen-ID" value={r.registerId} />
+            <Row label="Belegnummer" value={r.receiptId} />
+            <Row label="Datum/Uhrzeit" value={r.receiptDate} ok={r.dateOk && r.dateChainOk} />
+            <div className="col-span-full my-1 border-t border-dashed border-slate-200" />
+            <Row label="Betrag Normal" value={r.setNormal} />
+            <Row label="Betrag Ermäßigt-1" value={r.setReduced1} />
+            <Row label="Betrag Ermäßigt-2" value={r.setReduced2} />
+            <Row label="Betrag Null" value={r.setNull} />
+            <Row label="Betrag Besonders" value={r.setSpecial} />
+            <div className="col-span-full my-1 border-t border-dashed border-slate-200" />
+            <Row label="Umsatz verschlüsselt (AES-256-ICM)" value={r.revenueEncrypted} mono />
+            <Row label="Umsatz entschlüsselt" value={r.revenueDecrypted} ok={r.revenueOk} highlight />
+            {r.revenueShouldBe !== null && (
+              <Row label="Umsatz Sollsumme" value={r.revenueShouldBe} ok={r.revenueOk} highlight />
+            )}
+            <div className="col-span-full my-1 border-t border-dashed border-slate-200" />
+            <Row label="Zertifikat-Seriennummer" value={r.certificateSerial} mono />
+            <Row label="Sig Voriger Beleg" value={r.chainValuePrevious} mono />
+            <Row label="Sig Voriger (berechnet)" value={r.chainValuePreviousCalc} ok={r.chainOk} mono />
+            <Row label="Sig Nächster (berechnet)" value={r.chainValueNext} mono />
+            <Row label="Signatur" value={r.signature} mono className="col-span-full" />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Row({ label, value, ok, mono, highlight, className }) {
+  return (
+    <div className={cx("flex items-start gap-2", className)}>
+      <span className="min-w-[180px] shrink-0 font-medium text-slate-500">{label}</span>
+      <span className={cx(
+        "break-all",
+        mono && "font-mono",
+        highlight && "font-semibold",
+        ok === false && "text-rose-600 font-bold",
+        ok === true && "text-emerald-700",
+        ok === undefined && "text-slate-800"
+      )}>
+        {value ?? "—"}
+      </span>
+    </div>
+  );
+}
+
+function ResultPanel({ result, tab }) {
   if (!result) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-300 bg-white/70 p-4 text-sm text-slate-600">
-        No result yet.
+      <div className="flex h-48 items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 text-sm text-slate-400">
+        Noch kein Ergebnis.
+      </div>
+    );
+  }
+
+  if (tab === "structured" && result.ok && result.result) {
+    const { receipts, summary, germanSummary } = result.result;
+    return (
+      <div className="space-y-4">
+        <SummaryCard summary={summary} germanSummary={germanSummary} />
+        <div className="space-y-2">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Belege ({receipts.length})
+          </h3>
+          {receipts.map((r) => (
+            <ReceiptCard key={r.index} r={r} defaultOpen={r.index === 0} />
+          ))}
+        </div>
       </div>
     );
   }
 
   const success = result.ok ?? result.result?.passed ?? false;
   return (
-    <div className="space-y-2">
-      <div
-        className={clsx(
-          "inline-flex rounded-full px-3 py-1 text-xs font-semibold",
-          success
-            ? "bg-emerald-100 text-emerald-800"
-            : "bg-rose-100 text-rose-700",
-        )}
-      >
-        {success ? "Success" : "Failed"}
-      </div>
-      <pre className="max-h-[30rem] overflow-auto rounded-xl border border-slate-200 bg-slate-950 p-4 text-xs text-slate-100">
+    <div className="space-y-3">
+      <Badge ok={success} />
+      <pre className="max-h-[40rem] overflow-auto rounded-xl border border-slate-200 bg-slate-950 p-4 font-mono text-xs leading-relaxed text-slate-100">
         {JSON.stringify(result, null, 2)}
       </pre>
     </div>
@@ -43,36 +195,20 @@ function ResultPanel({ result }) {
 }
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState("dep");
-  const [isBusy, setIsBusy] = useState({
-    dep: false,
-    receipts: false,
-    advanced: false,
-    selftest: false,
-  });
-  const [results, setResults] = useState({
-    dep: null,
-    receipts: null,
-    advanced: null,
-    selftest: null,
-  });
+  const [activeTab, setActiveTab] = useState("structured");
+  const [isBusy, setIsBusy] = useState({});
+  const [results, setResults] = useState({});
 
   async function submitForm(tab, event, endpoint) {
     event.preventDefault();
     setIsBusy((prev) => ({ ...prev, [tab]: true }));
     try {
       const formData = new FormData(event.currentTarget);
-      const response = await fetch(endpoint, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(endpoint, { method: "POST", body: formData });
       const payload = await response.json();
       setResults((prev) => ({ ...prev, [tab]: payload }));
     } catch (error) {
-      setResults((prev) => ({
-        ...prev,
-        [tab]: { ok: false, error: String(error) },
-      }));
+      setResults((prev) => ({ ...prev, [tab]: { ok: false, error: String(error) } }));
     } finally {
       setIsBusy((prev) => ({ ...prev, [tab]: false }));
     }
@@ -85,304 +221,209 @@ export default function Home() {
       const payload = await response.json();
       setResults((prev) => ({ ...prev, selftest: payload }));
     } catch (error) {
-      setResults((prev) => ({
-        ...prev,
-        selftest: { ok: false, error: String(error) },
-      }));
+      setResults((prev) => ({ ...prev, selftest: { ok: false, error: String(error) } }));
     } finally {
       setIsBusy((prev) => ({ ...prev, selftest: false }));
     }
   }
 
+  const tab = TABS.find((t) => t.id === activeTab);
+
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-slate-100 to-slate-200 p-6 text-slate-900 md:p-10">
-      <div className="mx-auto max-w-7xl space-y-6">
-        <header className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h1 className="text-3xl font-bold tracking-tight">
-            RKSV Verification Web Tool
-          </h1>
-          <p className="mt-2 max-w-4xl text-sm text-slate-600">
-            Modern Next.js wrapper around the official RKSV verifier jars. Upload
-            plain JSON, GZIP or ZIP files and run DEP/receipt verification with a
-            cleaner web workflow.
-          </p>
+    <div className="flex h-screen bg-slate-100">
+      {/* Sidebar */}
+      <aside className="flex w-20 flex-col items-center border-r border-slate-200 bg-white py-6">
+        <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 text-lg font-black text-white shadow-lg">
+          B
+        </div>
+        <nav className="flex flex-1 flex-col items-center gap-1">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setActiveTab(t.id)}
+              title={t.label}
+              className={cx(
+                "flex h-14 w-14 flex-col items-center justify-center rounded-xl text-xs transition",
+                activeTab === t.id
+                  ? "bg-slate-900 text-white shadow-md"
+                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+              )}
+            >
+              <span className="text-lg">{t.icon}</span>
+              <span className="mt-0.5 text-[9px] font-semibold leading-tight">{t.label}</span>
+            </button>
+          ))}
+        </nav>
+      </aside>
+
+      {/* Main content */}
+      <main className="flex flex-1 flex-col overflow-hidden">
+        {/* Header */}
+        <header className="flex items-center justify-between border-b border-slate-200 bg-white px-8 py-4">
+          <div>
+            <h1 className="text-xl font-bold tracking-tight text-slate-900">
+              BMD RegKassenTestTool
+            </h1>
+            <p className="text-xs text-slate-500">
+              {tab?.label} — {tab?.desc}
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <a
+              href="https://github.com/BMF-RKSV-Technik/at-registrierkassen-mustercode"
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-200"
+            >
+              BMF RKSV Docs ↗
+            </a>
+          </div>
         </header>
 
-        <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="mb-4 flex flex-wrap gap-2">
-              {TABS.map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveTab(tab.id)}
-                  className={clsx(
-                    "rounded-full px-4 py-2 text-sm font-medium transition",
-                    activeTab === tab.id
-                      ? "bg-slate-900 text-white"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200",
-                  )}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
+        {/* Split: config + output */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* Config panel (left) */}
+          <section className="w-[420px] shrink-0 overflow-y-auto border-r border-slate-200 bg-white p-6">
+            {activeTab === "structured" && (
+              <form className="space-y-5" onSubmit={(e) => submitForm("structured", e, "/api/verify/structured")}>
+                <FileInput name="depFile" label="DEP-Export Datei" />
+                <FileInput name="cryptoFile" label="Kryptografisches Material" />
+                <label className="flex items-center gap-2 text-sm text-slate-600">
+                  <input name="firstReceiptNotIncluded" type="checkbox" className="rounded" />
+                  Startbeleg nicht enthalten
+                </label>
+                <SubmitButton busy={isBusy.structured} label="DEP-Datei entschlüsseln" color="indigo" />
+              </form>
+            )}
 
             {activeTab === "dep" && (
-              <form
-                className="space-y-4"
-                onSubmit={(event) => submitForm("dep", event, "/api/verify/dep")}
-              >
-                <div className="grid gap-4 md:grid-cols-2">
-                  <label className="space-y-1 text-sm">
-                    <span className="font-medium">DEP export file</span>
-                    <input
-                      required
-                      name="depFile"
-                      type="file"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                    />
-                  </label>
-                  <label className="space-y-1 text-sm">
-                    <span className="font-medium">Crypto material file</span>
-                    <input
-                      required
-                      name="cryptoFile"
-                      type="file"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                    />
-                  </label>
-                </div>
-                <div className="flex flex-wrap items-center gap-4 text-sm">
-                  <label className="inline-flex items-center gap-2">
-                    <input name="allowFuture" type="checkbox" />
-                    Allow future timestamps
-                  </label>
-                  <label className="inline-flex items-center gap-2">
-                    <input name="verbose" type="checkbox" />
-                    Verbose verifier output
-                  </label>
-                  <label className="inline-flex items-center gap-2">
-                    Heap MB
-                    <input
-                      name="heapMb"
-                      type="number"
-                      min={256}
-                      max={8192}
-                      defaultValue={1500}
-                      className="w-24 rounded border border-slate-300 px-2 py-1"
-                    />
-                  </label>
-                </div>
-                <button
-                  disabled={isBusy.dep}
-                  className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
-                  type="submit"
-                >
-                  {isBusy.dep ? "Running..." : "Run DEP verification"}
-                </button>
-                <ResultPanel result={results.dep} />
+              <form className="space-y-5" onSubmit={(e) => submitForm("dep", e, "/api/verify/dep")}>
+                <FileInput name="depFile" label="DEP-Export Datei" />
+                <FileInput name="cryptoFile" label="Kryptografisches Material" />
+                <OptionRow>
+                  <Check name="allowFuture" label="Zukünftige Daten erlauben" />
+                  <Check name="verbose" label="Detaillierte Ausgabe" />
+                </OptionRow>
+                <HeapInput />
+                <SubmitButton busy={isBusy.dep} label="DEP-Test ausführen" />
               </form>
             )}
 
             {activeTab === "receipts" && (
-              <form
-                className="space-y-4"
-                onSubmit={(event) =>
-                  submitForm("receipts", event, "/api/verify/receipts")
-                }
-              >
-                <div className="grid gap-4 md:grid-cols-2">
-                  <label className="space-y-1 text-sm">
-                    <span className="font-medium">
-                      Receipts input (qr-code-rep.json, DEP, or lines)
-                    </span>
-                    <input
-                      required
-                      name="receiptFile"
-                      type="file"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                    />
-                  </label>
-                  <label className="space-y-1 text-sm">
-                    <span className="font-medium">Crypto material file</span>
-                    <input
-                      required
-                      name="cryptoFile"
-                      type="file"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                    />
-                  </label>
-                </div>
-                <div className="flex flex-wrap items-center gap-4 text-sm">
-                  <label className="inline-flex items-center gap-2">
-                    <input name="allowFuture" type="checkbox" />
-                    Allow future timestamps
-                  </label>
-                  <label className="inline-flex items-center gap-2">
-                    <input name="verbose" type="checkbox" />
-                    Verbose verifier output
-                  </label>
-                  <label className="inline-flex items-center gap-2">
-                    Heap MB
-                    <input
-                      name="heapMb"
-                      type="number"
-                      min={256}
-                      max={8192}
-                      defaultValue={1500}
-                      className="w-24 rounded border border-slate-300 px-2 py-1"
-                    />
-                  </label>
-                </div>
-                <button
-                  disabled={isBusy.receipts}
-                  className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
-                  type="submit"
-                >
-                  {isBusy.receipts ? "Running..." : "Run receipt verification"}
-                </button>
-                <ResultPanel result={results.receipts} />
+              <form className="space-y-5" onSubmit={(e) => submitForm("receipts", e, "/api/verify/receipts")}>
+                <FileInput name="receiptFile" label="Belege (qr-code-rep.json / DEP)" />
+                <FileInput name="cryptoFile" label="Kryptografisches Material" />
+                <OptionRow>
+                  <Check name="allowFuture" label="Zukünftige Daten erlauben" />
+                  <Check name="verbose" label="Detaillierte Ausgabe" />
+                </OptionRow>
+                <HeapInput />
+                <SubmitButton busy={isBusy.receipts} label="QR-Test ausführen" />
               </form>
             )}
 
             {activeTab === "advanced" && (
-              <form
-                className="space-y-4"
-                onSubmit={(event) =>
-                  submitForm("advanced", event, "/api/verify/advanced")
-                }
-              >
-                <div className="grid gap-4 md:grid-cols-2">
-                  <label className="space-y-1 text-sm">
-                    <span className="font-medium">DEP export file</span>
-                    <input
-                      required
-                      name="depFile"
-                      type="file"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                    />
-                  </label>
-                  <label className="space-y-1 text-sm">
-                    <span className="font-medium">Crypto material file</span>
-                    <input
-                      required
-                      name="cryptoFile"
-                      type="file"
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                    />
-                  </label>
-                </div>
-                <div className="flex flex-wrap items-center gap-4 text-sm">
-                  <label className="inline-flex items-center gap-2">
-                    <input defaultChecked name="runDepTests" type="checkbox" />
-                    Run DEP verification for each split
-                  </label>
-                  <label className="inline-flex items-center gap-2">
-                    <input name="allowFuture" type="checkbox" />
-                    Allow future timestamps
-                  </label>
-                  <label className="inline-flex items-center gap-2">
-                    <input name="verbose" type="checkbox" />
-                    Verbose verifier output
-                  </label>
-                  <label className="inline-flex items-center gap-2">
-                    Heap MB
-                    <input
-                      name="heapMb"
-                      type="number"
-                      min={256}
-                      max={8192}
-                      defaultValue={1500}
-                      className="w-24 rounded border border-slate-300 px-2 py-1"
-                    />
-                  </label>
-                </div>
-                <button
-                  disabled={isBusy.advanced}
-                  className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
-                  type="submit"
-                >
-                  {isBusy.advanced ? "Running..." : "Run advanced split workflow"}
-                </button>
-                <ResultPanel result={results.advanced} />
+              <form className="space-y-5" onSubmit={(e) => submitForm("advanced", e, "/api/verify/advanced")}>
+                <FileInput name="depFile" label="DEP-Export Datei" />
+                <FileInput name="cryptoFile" label="Kryptografisches Material" />
+                <OptionRow>
+                  <Check name="runDepTests" label="DEP-Test je Segment" defaultChecked />
+                  <Check name="allowFuture" label="Zukünftige Daten" />
+                  <Check name="verbose" label="Details" />
+                </OptionRow>
+                <HeapInput />
+                <SubmitButton busy={isBusy.advanced} label="Erweiterten Test ausführen" />
               </form>
             )}
 
             {activeTab === "selftest" && (
-              <div className="space-y-4">
-                <p className="text-sm text-slate-600">
-                  Runs the official demo generator in headless mode and verifies
-                  all workflows automatically (DEP, receipts, and advanced split).
+              <div className="space-y-5">
+                <p className="text-sm leading-relaxed text-slate-600">
+                  Führt den offiziellen Demo-Generator im Headless-Modus aus und verifiziert
+                  alle Workflows automatisch (DEP, Belege, Erweitert).
                 </p>
-                <button
-                  disabled={isBusy.selftest}
-                  onClick={runSelfTest}
-                  className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
-                  type="button"
-                >
-                  {isBusy.selftest ? "Running self-test..." : "Run workflow self-test"}
-                </button>
-                <ResultPanel result={results.selftest} />
+                <SubmitButton busy={isBusy.selftest} label="Selbsttest starten" color="violet" onClick={runSelfTest} />
               </div>
             )}
+
+            {/* Info cards */}
+            <div className="mt-8 space-y-4">
+              <InfoCard title="Akzeptierte Eingabe">
+                <ul className="space-y-1 text-xs text-slate-500">
+                  <li>• .json Dateien direkt</li>
+                  <li>• .gz komprimiertes JSON</li>
+                  <li>• .zip Archive (automatische Auswahl)</li>
+                </ul>
+              </InfoCard>
+            </div>
           </section>
 
-          <aside className="space-y-4">
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <h2 className="text-base font-semibold">Accepted input</h2>
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-600">
-                <li>.json files directly</li>
-                <li>.gz compressed JSON</li>
-                <li>.zip archives (best-matching JSON is auto-selected)</li>
-              </ul>
-            </section>
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <h2 className="text-base font-semibold">Official documentation</h2>
-              <ul className="mt-2 space-y-2 text-sm">
-                <li>
-                  <a
-                    className="text-indigo-700 underline"
-                    href="https://github.com/BMF-RKSV-Technik/at-registrierkassen-mustercode"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    BMF RKSV mustercode repository
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className="text-indigo-700 underline"
-                    href="https://github.com/BMF-RKSV-Technik/at-registrierkassen-mustercode/releases/tag/V1.1.1"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Prüftool 1.1.1 release
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className="text-indigo-700 underline"
-                    href="https://github.com/BMF-RKSV-Technik/at-registrierkassen-mustercode/releases/tag/V1.0.0"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Demo/test-data release
-                  </a>
-                </li>
-              </ul>
-            </section>
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-600 shadow-sm">
-              <p>
-                For Vercel hosting, this UI deploys directly. The API routes need
-                a Java runtime and access to verifier jars. If Java is unavailable
-                in your serverless runtime, host verification in a separate backend
-                service and point the UI there.
-              </p>
-            </section>
-          </aside>
+          {/* Results panel (right) */}
+          <section className="flex-1 overflow-y-auto bg-slate-50 p-6">
+            <ResultPanel result={results[activeTab]} tab={activeTab} />
+          </section>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
+  );
+}
+
+function SubmitButton({ busy, label, color = "slate", onClick }) {
+  const colors = {
+    slate: "bg-slate-900 hover:bg-slate-800",
+    indigo: "bg-indigo-600 hover:bg-indigo-700",
+    violet: "bg-violet-600 hover:bg-violet-700",
+  };
+  const Tag = onClick ? "button" : "button";
+  return (
+    <button
+      type={onClick ? "button" : "submit"}
+      disabled={busy}
+      onClick={onClick}
+      className={cx(
+        "w-full rounded-xl px-4 py-3 text-sm font-bold text-white shadow-sm transition disabled:opacity-50",
+        colors[color]
+      )}
+    >
+      {busy ? (
+        <span className="flex items-center justify-center gap-2">
+          <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+          Wird ausgeführt…
+        </span>
+      ) : label}
+    </button>
+  );
+}
+
+function OptionRow({ children }) {
+  return <div className="flex flex-wrap items-center gap-4">{children}</div>;
+}
+
+function Check({ name, label, defaultChecked }) {
+  return (
+    <label className="flex items-center gap-2 text-sm text-slate-600">
+      <input name={name} type="checkbox" defaultChecked={defaultChecked} className="rounded" />
+      {label}
+    </label>
+  );
+}
+
+function HeapInput() {
+  return (
+    <label className="flex items-center gap-2 text-sm text-slate-600">
+      Heap MB
+      <input name="heapMb" type="number" min={256} max={8192} defaultValue={1500}
+        className="w-20 rounded-lg border border-slate-300 px-2 py-1 text-sm" />
+    </label>
+  );
+}
+
+function InfoCard({ title, children }) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+      <h4 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-500">{title}</h4>
+      {children}
+    </div>
   );
 }
